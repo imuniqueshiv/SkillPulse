@@ -1,0 +1,11 @@
+name: web
+
+# CI is not part of Phase 1. This placeholder keeps GitHub Actions from parsing an empty file.
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Web CI is not configured yet."

@@ -1,0 +1,3 @@
+# Phase 1 local development does not use Docker.
+# Run the three apps with pnpm and uvicorn as described in README.md.
+services: {}
