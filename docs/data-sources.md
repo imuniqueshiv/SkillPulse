@@ -11,6 +11,65 @@ DataSource  →  Evidence.sourceId
 
 Those links preserve provenance. Connectors, HTTP clients, CSV import and job ingestion belong to later phases.
 
+## Ingestion contract (Phase 5.2)
+
+**DataSource Registry describes sources.
+Ingestion Contract standardizes records coming from those sources.
+Neither one performs ingestion.**
+
+The contract is a source-agnostic observation entering SkillPulse. It is not a Prisma `Job` row. Future flow:
+
+```text
+external source format
+        ↓
+   source adapter
+        ↓
+ SkillPulse ingestion contract   ← Phase 5.2 (this layer)
+        ↓
+ validation / dedup / freshness  ← not implemented
+        ↓
+ canonical Job persistence       ← not implemented
+```
+
+Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no connector.
+
+### Envelope
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `kind` | yes | Discriminator. Only `JOB` is implemented. Further kinds can be added later without changing the job payload. |
+| `contractVersion` | yes | Currently `"1"`. Identifies the contract shape. |
+| `adapterName` | yes | Which adapter produced the record |
+| `adapterVersion` | yes | Adapter implementation version |
+| `payload` | yes | Kind-specific observation |
+
+### JOB payload — required
+
+| Field | Meaning |
+| --- | --- |
+| `sourceId` and/or `sourceCode` | Registered DataSource identity. At least one is required. Codes are registry codes (`sp.source.ncs`); the contract does not look them up. |
+| `title` | Source-reported job title, preserved as given |
+| `observedAt` | When SkillPulse observed the source record (timezone-aware instant) |
+| `ingestedAt` | When SkillPulse accepted the record into the ingestion pipeline (timezone-aware instant) |
+
+### JOB payload — optional
+
+`externalId`, `description`, `employerName`, `location` (`raw`, `city`, `district`, `state`, `country`), `employmentType`, `experience`, `qualification`, `salary` (`raw`, `min`, `max`, `currency`), `sourceUrl` (http/https), `postedAt`, `expiresAt`, `sourceMetadata`, `rawRef`.
+
+`postedAt` / `expiresAt` are what the source claimed. They are not inferred from `observedAt`.
+
+Raw values are not normalized (e.g. `"React.js / React JS"` stays that string). No skill extraction.
+
+`rawRef` is an opaque pointer to an original payload stored elsewhere — not credentials, not a dump of secrets. `sourceMetadata` must not contain keys such as `password`, `token`, or `apiKey`.
+
+### Adapter boundary
+
+A future adapter receives a source-specific record, maps fields into this contract, and returns an object that `parseJobIngestionRecord` validates. Adapters do not live in the contract module. No NCS, data.gov.in, or Mahaswayam client is implemented. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
+
+### Intentionally not implemented
+
+Connectors, scraping, CSV/file ingest, raw-data storage, deduplication, freshness, skill extraction, NLP, demand/supply intelligence, queues, and scheduled jobs.
+
 ## What a DataSource is
 
 A registry row is a named, stable source identity. It is not a credential store and not a live feed.

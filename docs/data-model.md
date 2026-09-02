@@ -23,18 +23,20 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | SkillAlias | Raw term → one canonical skill (unique normalized form) |
 | SkillOccupation | Skill ↔ occupation with relation and confidence |
 | TaxonomyMapping | External codes (NCO, NIC, ESCO, O*NET, NCVET, NSQF) |
-| Job | Job posting; incomplete fields stay optional |
+| Job | Canonical persisted job posting; incomplete fields stay optional. Distinct from the Phase 5.2 ingestion observation contract |
 | JobSkill | Job ↔ Skill |
 | Course | Training course |
 | Curriculum | Versioned course curriculum |
 | CurriculumSkill | Curriculum ↔ Skill |
-| DataSource | Registry of external/internal sources (not ingestion). Jobs and Evidence point here |
+| DataSource | Registry of external/internal sources (not ingestion). Jobs and Evidence point here. The ingestion contract references `DataSource.id` / `DataSource.code`; it is not a table |
 | Evidence | Observation provenance and optional metadata |
 | DemandObservation | Stored demand signal (not the scoring engine) |
 | SkillGap | Stored gap result (not the gap engine) |
 | Recommendation | Stored recommendation (not the recommendation engine) |
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
+
+A validated ingestion contract record is not written to `Job` in Phase 5.2. See [data-sources.md](data-sources.md#ingestion-contract-phase-52).
 
 ## Commands
 
