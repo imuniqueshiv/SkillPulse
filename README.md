@@ -2,7 +2,7 @@
 
 India-wide skill-development and labour-market intelligence platform.
 
-Phase 3 is in place: Clerk authenticates identity, Express authorizes roles and organization scope, and Neon stores the application User. Domain intelligence features are not included yet.
+Phase 3 is in place: Clerk authenticates identity, Express authorizes roles and organization scope, and Neon stores the application User. Phase 4 adds the canonical skill taxonomy. Job intelligence features are not included yet.
 
 ## Architecture
 
@@ -112,7 +112,7 @@ pnpm db:seed
 pnpm db:studio
 ```
 
-See [docs/data-model.md](docs/data-model.md).
+See [docs/data-model.md](docs/data-model.md) and [docs/taxonomy.md](docs/taxonomy.md).
 
 ## Run intelligence service
 

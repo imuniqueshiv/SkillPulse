@@ -17,9 +17,12 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | Organization | Government, institutes, employers, industry bodies |
 | User | Application profile linked to Clerk (`clerkUserId`). Role and organization live here. No passwords. |
 | Location | India-wide country / state / district / city |
-| Sector | Industry sector |
-| Occupation | Occupational role, optional external code |
-| Skill | Canonical skill record (aliases/taxonomies come later) |
+| Sector | Industry grouping; optional NIC-2008 mapping |
+| Occupation | Occupational role; `code` is NCO-2015 when set |
+| Skill | Canonical skill (`code`, type, lifecycle status) |
+| SkillAlias | Raw term → one canonical skill (unique normalized form) |
+| SkillOccupation | Skill ↔ occupation with relation and confidence |
+| TaxonomyMapping | External codes (NCO, NIC, ESCO, O*NET, NCVET, NSQF) |
 | Job | Job posting; incomplete fields stay optional |
 | JobSkill | Job ↔ Skill |
 | Course | Training course |

@@ -75,6 +75,45 @@ enum RecommendationStatus {
   ARCHIVED
 }
 
+enum SkillStatus {
+  DRAFT
+  ACTIVE
+  DEPRECATED
+  ARCHIVED
+}
+
+enum SkillType {
+  TECHNICAL
+  TRANSVERSAL
+  LANGUAGE
+  TOOL
+  DOMAIN
+  PROCESS
+}
+
+enum TaxonomyStatus {
+  ACTIVE
+  DEPRECATED
+  ARCHIVED
+}
+
+enum TaxonomyAuthority {
+  SKILLPULSE
+  NCO_2015
+  NCVET_NQR
+  NSQF
+  NIC_2008
+  ESCO
+  ONET
+  OTHER
+}
+
+enum SkillOccupationRelation {
+  CORE
+  RELATED
+  OPTIONAL
+}
+
 model Organization {
   id        String           @id @default(uuid())
   name      String
@@ -123,53 +162,129 @@ model Location {
 }
 
 model Sector {
-  id          String   @id @default(uuid())
-  name        String   @unique
+  id          String          @id @default(uuid())
+  code        String?         @unique
+  name        String          @unique
   description String?
-  createdAt   DateTime @default(now()) @db.Timestamptz
-  updatedAt   DateTime @updatedAt @db.Timestamptz
+  status      TaxonomyStatus  @default(ACTIVE)
+  createdAt   DateTime        @default(now()) @db.Timestamptz
+  updatedAt   DateTime        @updatedAt @db.Timestamptz
 
   occupations        Occupation[]
   jobs               Job[]
   courses            Course[]
   demandObservations DemandObservation[]
+  taxonomyMappings   TaxonomyMapping[]
+
+  @@index([status])
 }
 
 model Occupation {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
-  code        String?
+  code        String?         @unique
   description String?
   sectorId    String?
-  createdAt   DateTime @default(now()) @db.Timestamptz
-  updatedAt   DateTime @updatedAt @db.Timestamptz
+  status      TaxonomyStatus  @default(ACTIVE)
+  createdAt   DateTime        @default(now()) @db.Timestamptz
+  updatedAt   DateTime        @updatedAt @db.Timestamptz
 
   sector             Sector?              @relation(fields: [sectorId], references: [id], onDelete: SetNull)
   jobs               Job[]
   courses            Course[]
   demandObservations DemandObservation[]
   recommendations    Recommendation[]
+  skillLinks         SkillOccupation[]
+  taxonomyMappings   TaxonomyMapping[]
 
   @@index([sectorId])
   @@index([name])
+  @@index([status])
 }
 
 model Skill {
-  id            String   @id @default(uuid())
+  id            String      @id @default(uuid())
+  code          String      @unique
   name          String
-  canonicalName String   @unique
+  canonicalName String      @unique
   description   String?
   category      String?
-  createdAt     DateTime @default(now()) @db.Timestamptz
-  updatedAt     DateTime @updatedAt @db.Timestamptz
+  skillType     SkillType   @default(TECHNICAL)
+  status        SkillStatus @default(ACTIVE)
+  createdAt     DateTime    @default(now()) @db.Timestamptz
+  updatedAt     DateTime    @updatedAt @db.Timestamptz
 
   jobSkills          JobSkill[]
   curriculumSkills   CurriculumSkill[]
   demandObservations DemandObservation[]
   skillGaps          SkillGap[]
   recommendations    Recommendation[]
+  aliases            SkillAlias[]
+  occupationLinks    SkillOccupation[]
+  taxonomyMappings   TaxonomyMapping[]
 
   @@index([category])
+  @@index([status])
+  @@index([skillType])
+}
+
+model SkillAlias {
+  id             String            @id @default(uuid())
+  skillId        String
+  rawTerm        String
+  normalizedTerm String            @unique
+  locale         String            @default("en-IN")
+  authority      TaxonomyAuthority @default(SKILLPULSE)
+  confidence     Float
+  notes          String?
+  createdAt      DateTime          @default(now()) @db.Timestamptz
+  updatedAt      DateTime          @updatedAt @db.Timestamptz
+
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@index([skillId])
+}
+
+model SkillOccupation {
+  id           String                   @id @default(uuid())
+  skillId      String
+  occupationId String
+  relation     SkillOccupationRelation
+  confidence   Float
+  authority    TaxonomyAuthority        @default(SKILLPULSE)
+  notes        String?
+  createdAt    DateTime                 @default(now()) @db.Timestamptz
+  updatedAt    DateTime                 @updatedAt @db.Timestamptz
+
+  skill      Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  occupation Occupation @relation(fields: [occupationId], references: [id], onDelete: Cascade)
+
+  @@unique([skillId, occupationId])
+  @@index([occupationId])
+}
+
+model TaxonomyMapping {
+  id           String            @id @default(uuid())
+  skillId      String?
+  occupationId String?
+  sectorId     String?
+  authority    TaxonomyAuthority
+  externalCode String
+  externalName String?
+  url          String?
+  confidence   Float
+  notes        String?
+  createdAt    DateTime          @default(now()) @db.Timestamptz
+  updatedAt    DateTime          @updatedAt @db.Timestamptz
+
+  skill      Skill?      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  occupation Occupation? @relation(fields: [occupationId], references: [id], onDelete: Cascade)
+  sector     Sector?     @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([authority, externalCode])
+  @@index([skillId])
+  @@index([occupationId])
+  @@index([sectorId])
 }
 
 model Job {

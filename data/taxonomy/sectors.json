@@ -1,0 +1,42 @@
+[
+  {
+    "code": "sp.sector.it-ites",
+    "name": "Information Technology",
+    "description": "IT-ITeS sector used in Indian skill-development programmes. Seeded as SkillPulse's IT sector record."
+  },
+  {
+    "code": "sp.sector.healthcare",
+    "name": "Healthcare and Life Sciences",
+    "description": "Healthcare services and related life-sciences training pathways."
+  },
+  {
+    "code": "sp.sector.electronics",
+    "name": "Electronics and Hardware",
+    "description": "Electronics design, assembly, and hardware support."
+  },
+  {
+    "code": "sp.sector.logistics",
+    "name": "Logistics and Supply Chain",
+    "description": "Warehousing, inventory, and goods movement."
+  },
+  {
+    "code": "sp.sector.bfsi",
+    "name": "Banking, Financial Services and Insurance",
+    "description": "BFSI occupations covering accounting and financial operations."
+  },
+  {
+    "code": "sp.sector.manufacturing",
+    "name": "Manufacturing",
+    "description": "Production and shop-floor quality operations."
+  },
+  {
+    "code": "sp.sector.construction",
+    "name": "Construction",
+    "description": "Building construction trades."
+  },
+  {
+    "code": "sp.sector.tourism",
+    "name": "Tourism and Hospitality",
+    "description": "Travel, visitor services, and hospitality."
+  }
+]

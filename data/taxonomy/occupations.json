@@ -1,0 +1,63 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-111111111115",
+    "code": "2512",
+    "name": "Software Developers",
+    "sectorCode": "sp.sector.it-ites",
+    "description": "NCO-2015 unit group 2512. Research, analyse and develop software solutions."
+  },
+  {
+    "code": "2513",
+    "name": "Web and Multimedia Developers",
+    "sectorCode": "sp.sector.it-ites",
+    "description": "NCO-2015 unit group 2513. Design and develop websites and multimedia applications."
+  },
+  {
+    "code": "3512",
+    "name": "Information and Communications Technology User Support Technicians",
+    "sectorCode": "sp.sector.it-ites",
+    "description": "NCO-2015 unit group 3512. Provide technical assistance to ICT users."
+  },
+  {
+    "code": "2221",
+    "name": "Nursing Professionals",
+    "sectorCode": "sp.sector.healthcare",
+    "description": "NCO-2015 unit group 2221. Plan and provide nursing care."
+  },
+  {
+    "code": "3253",
+    "name": "Community Health Workers",
+    "sectorCode": "sp.sector.healthcare",
+    "description": "NCO-2015 unit group 3253. Provide basic health services in community settings."
+  },
+  {
+    "code": "3114",
+    "name": "Electronics Engineering Technicians",
+    "sectorCode": "sp.sector.electronics",
+    "description": "NCO-2015 unit group 3114. Support electronics engineering design, testing and maintenance."
+  },
+  {
+    "code": "4321",
+    "name": "Stock Clerks",
+    "sectorCode": "sp.sector.logistics",
+    "description": "NCO-2015 unit group 4321. Keep records of goods received, stored and issued."
+  },
+  {
+    "code": "2411",
+    "name": "Accountants",
+    "sectorCode": "sp.sector.bfsi",
+    "description": "NCO-2015 unit group 2411. Plan and administer accounting systems and prepare financial statements."
+  },
+  {
+    "code": "7112",
+    "name": "Bricklayers and Related Workers",
+    "sectorCode": "sp.sector.construction",
+    "description": "NCO-2015 unit group 7112. Lay bricks, blocks and related masonry."
+  },
+  {
+    "code": "5113",
+    "name": "Travel Guides",
+    "sectorCode": "sp.sector.tourism",
+    "description": "NCO-2015 unit group 5113. Escort and inform visitors on travel and tours."
+  }
+]

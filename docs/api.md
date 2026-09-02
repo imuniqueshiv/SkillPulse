@@ -58,3 +58,36 @@ Unauthenticated: HTTP 401.
 `GET /api/v1/auth/scope` returns the authorized organization. Supplying another organization's id is 403 unless the user is `PLATFORM_ADMIN` or `GOVERNMENT_MANAGER`.
 
 See [authentication.md](authentication.md).
+
+## Taxonomy
+
+All taxonomy routes require `Authorization: Bearer <Clerk session token>`.
+
+`GET /api/v1/skills`
+
+Query: `q`, `status` (default `ACTIVE`), `category`, `skillType`, `occupationId`, `limit` (max 50), `offset`.
+
+`GET /api/v1/skills/:id` — UUID or `code`. Includes aliases, occupation links and external mappings.
+
+`GET /api/v1/occupations` — `q`, `status`, `sectorId`, `code`, `limit`, `offset`.
+
+`GET /api/v1/occupations/:id` — UUID or NCO-2015 `code`.
+
+`GET /api/v1/sectors` and `GET /api/v1/sectors/:id`.
+
+`GET /api/v1/taxonomy/normalize?term=`
+
+```json
+{
+  "query": "JS",
+  "normalized": "js",
+  "status": "resolved",
+  "matchType": "alias",
+  "confidence": 0.95,
+  "skill": { "id": "...", "code": "sp.skill.javascript", "name": "JavaScript" }
+}
+```
+
+Unknown terms return `"status": "unresolved"` with no skill. The API does not guess.
+
+See [taxonomy.md](taxonomy.md).

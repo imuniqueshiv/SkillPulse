@@ -9,4 +9,4 @@ Users → Next.js (apps/web)
       → Python/FastAPI intelligence (services/intelligence)
 ```
 
-Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Domain intelligence modules are not implemented yet.
+Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy (skills, aliases, NCO occupations, sectors and external mappings). Job intelligence and NLP are not implemented yet.

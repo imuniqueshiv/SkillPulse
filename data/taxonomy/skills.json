@@ -1,0 +1,149 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-111111111116",
+    "code": "sp.skill.typescript",
+    "name": "TypeScript",
+    "canonicalName": "typescript",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "Typed language that compiles to JavaScript for application software."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111117",
+    "code": "sp.skill.react",
+    "name": "React",
+    "canonicalName": "react",
+    "category": "information-technology",
+    "skillType": "TOOL",
+    "description": "JavaScript library for building user interfaces. Distinct from React Native."
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111118",
+    "code": "sp.skill.sql",
+    "name": "SQL",
+    "canonicalName": "sql",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "Structured query language for relational data. Distinct from specific DBMS products."
+  },
+  {
+    "code": "sp.skill.javascript",
+    "name": "JavaScript",
+    "canonicalName": "javascript",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "ECMAScript programming language. Distinct from Java and from TypeScript."
+  },
+  {
+    "code": "sp.skill.java",
+    "name": "Java",
+    "canonicalName": "java",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "General-purpose programming language. Distinct from JavaScript."
+  },
+  {
+    "code": "sp.skill.python",
+    "name": "Python",
+    "canonicalName": "python",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "General-purpose programming language used in application and data work."
+  },
+  {
+    "code": "sp.skill.nodejs",
+    "name": "Node.js",
+    "canonicalName": "node.js",
+    "category": "information-technology",
+    "skillType": "TOOL",
+    "description": "JavaScript runtime for server-side applications. Distinct from the JavaScript language."
+  },
+  {
+    "code": "sp.skill.digital-literacy",
+    "name": "Digital Literacy",
+    "canonicalName": "digital literacy",
+    "category": "foundational",
+    "skillType": "TRANSVERSAL",
+    "description": "Use of computers, internet and common digital tools for work and civic life."
+  },
+  {
+    "code": "sp.skill.workplace-communication",
+    "name": "Workplace Communication",
+    "canonicalName": "workplace communication",
+    "category": "foundational",
+    "skillType": "TRANSVERSAL",
+    "description": "Oral and written communication in a work setting. Distinct from English as a language."
+  },
+  {
+    "code": "sp.skill.patient-care",
+    "name": "Patient Care",
+    "canonicalName": "patient care",
+    "category": "healthcare",
+    "skillType": "DOMAIN",
+    "description": "Direct care and support of patients in clinical or community health settings."
+  },
+  {
+    "code": "sp.skill.infection-prevention",
+    "name": "Infection Prevention and Control",
+    "canonicalName": "infection prevention and control",
+    "category": "healthcare",
+    "skillType": "PROCESS",
+    "description": "Practices that reduce healthcare-associated infection risk."
+  },
+  {
+    "code": "sp.skill.inventory-management",
+    "name": "Inventory Management",
+    "canonicalName": "inventory management",
+    "category": "logistics",
+    "skillType": "DOMAIN",
+    "description": "Tracking, storing and issuing goods. Distinct from general bookkeeping."
+  },
+  {
+    "code": "sp.skill.financial-accounting",
+    "name": "Financial Accounting",
+    "canonicalName": "financial accounting",
+    "category": "bfsi",
+    "skillType": "DOMAIN",
+    "description": "Recording and reporting financial transactions. Distinct from inventory management."
+  },
+  {
+    "code": "sp.skill.electrical-safety",
+    "name": "Electrical Safety",
+    "canonicalName": "electrical safety",
+    "category": "electronics",
+    "skillType": "PROCESS",
+    "description": "Safe working practices around electrical equipment and circuits."
+  },
+  {
+    "code": "sp.skill.pcb-assembly",
+    "name": "Printed Circuit Board Assembly",
+    "canonicalName": "printed circuit board assembly",
+    "category": "electronics",
+    "skillType": "TECHNICAL",
+    "description": "Assembly and inspection of printed circuit boards."
+  },
+  {
+    "code": "sp.skill.quality-inspection",
+    "name": "Quality Inspection",
+    "canonicalName": "quality inspection",
+    "category": "manufacturing",
+    "skillType": "PROCESS",
+    "description": "Checking products or processes against specified quality criteria."
+  },
+  {
+    "code": "sp.skill.masonry",
+    "name": "Masonry",
+    "canonicalName": "masonry",
+    "category": "construction",
+    "skillType": "TECHNICAL",
+    "description": "Laying bricks, blocks and related masonry units."
+  },
+  {
+    "code": "sp.skill.visitor-interpretation",
+    "name": "Visitor Interpretation",
+    "canonicalName": "visitor interpretation",
+    "category": "tourism",
+    "skillType": "DOMAIN",
+    "description": "Explaining places, routes and cultural context to visitors. Distinct from workplace communication."
+  }
+]

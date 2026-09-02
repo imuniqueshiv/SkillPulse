@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { config as loadDotenv } from "dotenv";
 import { resolve } from "node:path";
+import { seedTaxonomy } from "./seed-taxonomy";
 
 loadDotenv({ path: resolve(__dirname, "../../../.env") });
 loadDotenv();
@@ -69,68 +70,24 @@ async function main(): Promise<void> {
     },
   });
 
-  const sector = await prisma.sector.upsert({
-    where: { name: "Information Technology" },
-    update: {
-      description: "[DEMO] Sample sector for local development only.",
-    },
-    create: {
-      id: DEMO.sector,
-      name: "Information Technology",
-      description: "[DEMO] Sample sector for local development only.",
-    },
-  });
+  const { occupationByCode, skillByCode } = await seedTaxonomy(prisma);
+  const occupationId = occupationByCode.get("2512");
+  const typeScriptId = skillByCode.get("sp.skill.typescript");
+  const reactId = skillByCode.get("sp.skill.react");
+  const sqlId = skillByCode.get("sp.skill.sql");
 
-  const occupation = await prisma.occupation.upsert({
-    where: { id: DEMO.occupation },
-    update: {
-      name: "Software Developer",
-      description: "[DEMO] Sample occupation. Not an official taxonomy entry.",
-      sectorId: sector.id,
-    },
-    create: {
-      id: DEMO.occupation,
-      name: "Software Developer",
-      description: "[DEMO] Sample occupation. Not an official taxonomy entry.",
-      sectorId: sector.id,
-    },
-  });
+  if (!occupationId || !typeScriptId || !reactId || !sqlId) {
+    throw new Error("Taxonomy seed did not provision demo IT records");
+  }
 
-  const [typeScript, react, sql] = await Promise.all([
-    prisma.skill.upsert({
-      where: { canonicalName: "typescript" },
-      update: { name: "TypeScript", category: "software" },
-      create: {
-        id: DEMO.skillTypeScript,
-        name: "TypeScript",
-        canonicalName: "typescript",
-        category: "software",
-        description: "[DEMO] Sample skill.",
-      },
-    }),
-    prisma.skill.upsert({
-      where: { canonicalName: "react" },
-      update: { name: "React", category: "software" },
-      create: {
-        id: DEMO.skillReact,
-        name: "React",
-        canonicalName: "react",
-        category: "software",
-        description: "[DEMO] Sample skill.",
-      },
-    }),
-    prisma.skill.upsert({
-      where: { canonicalName: "sql" },
-      update: { name: "SQL", category: "software" },
-      create: {
-        id: DEMO.skillSql,
-        name: "SQL",
-        canonicalName: "sql",
-        category: "software",
-        description: "[DEMO] Sample skill.",
-      },
-    }),
-  ]);
+  const occupation = await prisma.occupation.findUniqueOrThrow({
+    where: { id: occupationId },
+    select: { sectorId: true },
+  });
+  const sectorId = occupation.sectorId;
+  if (!sectorId) {
+    throw new Error("Taxonomy seed did not provision demo IT records");
+  }
 
   const source = await prisma.dataSource.upsert({
     where: { name: "[DEMO] SkillPulse Seed" },
@@ -161,8 +118,8 @@ async function main(): Promise<void> {
       sourceId: source.id,
       externalId: "demo-job-software-developer",
       locationId: location.id,
-      occupationId: occupation.id,
-      sectorId: sector.id,
+      occupationId,
+      sectorId,
       isDemo: true,
     },
     create: {
@@ -173,39 +130,39 @@ async function main(): Promise<void> {
       sourceId: source.id,
       externalId: "demo-job-software-developer",
       locationId: location.id,
-      occupationId: occupation.id,
-      sectorId: sector.id,
+      occupationId,
+      sectorId,
       isDemo: true,
     },
   });
 
   await Promise.all([
     prisma.jobSkill.upsert({
-      where: { jobId_skillId: { jobId: job.id, skillId: typeScript.id } },
+      where: { jobId_skillId: { jobId: job.id, skillId: typeScriptId } },
       update: { importance: "REQUIRED", proficiency: "INTERMEDIATE" },
       create: {
         jobId: job.id,
-        skillId: typeScript.id,
+        skillId: typeScriptId,
         importance: "REQUIRED",
         proficiency: "INTERMEDIATE",
       },
     }),
     prisma.jobSkill.upsert({
-      where: { jobId_skillId: { jobId: job.id, skillId: react.id } },
+      where: { jobId_skillId: { jobId: job.id, skillId: reactId } },
       update: { importance: "REQUIRED", proficiency: "INTERMEDIATE" },
       create: {
         jobId: job.id,
-        skillId: react.id,
+        skillId: reactId,
         importance: "REQUIRED",
         proficiency: "INTERMEDIATE",
       },
     }),
     prisma.jobSkill.upsert({
-      where: { jobId_skillId: { jobId: job.id, skillId: sql.id } },
+      where: { jobId_skillId: { jobId: job.id, skillId: sqlId } },
       update: { importance: "PREFERRED", proficiency: "BASIC" },
       create: {
         jobId: job.id,
-        skillId: sql.id,
+        skillId: sqlId,
         importance: "PREFERRED",
         proficiency: "BASIC",
       },
@@ -218,8 +175,8 @@ async function main(): Promise<void> {
       name: "[DEMO] Full Stack Development",
       description: "Synthetic course for local development only.",
       organizationId: organization.id,
-      occupationId: occupation.id,
-      sectorId: sector.id,
+      occupationId,
+      sectorId,
       durationHours: 120,
       status: "ACTIVE",
       isDemo: true,
@@ -229,8 +186,8 @@ async function main(): Promise<void> {
       name: "[DEMO] Full Stack Development",
       description: "Synthetic course for local development only.",
       organizationId: organization.id,
-      occupationId: occupation.id,
-      sectorId: sector.id,
+      occupationId,
+      sectorId,
       durationHours: 120,
       status: "ACTIVE",
       isDemo: true,
@@ -257,13 +214,13 @@ async function main(): Promise<void> {
       where: {
         curriculumId_skillId: {
           curriculumId: curriculum.id,
-          skillId: typeScript.id,
+          skillId: typeScriptId,
         },
       },
       update: { importance: "REQUIRED", proficiency: "INTERMEDIATE" },
       create: {
         curriculumId: curriculum.id,
-        skillId: typeScript.id,
+        skillId: typeScriptId,
         importance: "REQUIRED",
         proficiency: "INTERMEDIATE",
       },
@@ -272,13 +229,13 @@ async function main(): Promise<void> {
       where: {
         curriculumId_skillId: {
           curriculumId: curriculum.id,
-          skillId: react.id,
+          skillId: reactId,
         },
       },
       update: { importance: "REQUIRED", proficiency: "BASIC" },
       create: {
         curriculumId: curriculum.id,
-        skillId: react.id,
+        skillId: reactId,
         importance: "REQUIRED",
         proficiency: "BASIC",
       },

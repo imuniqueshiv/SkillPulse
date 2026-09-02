@@ -1,0 +1,17 @@
+[
+  { "skillCode": "sp.skill.javascript", "rawTerm": "JS", "confidence": 0.95, "notes": "Common abbreviation. Not mapped to Java." },
+  { "skillCode": "sp.skill.javascript", "rawTerm": "Java Script", "confidence": 0.93, "notes": "Spelling variant of JavaScript." },
+  { "skillCode": "sp.skill.javascript", "rawTerm": "ECMAScript", "confidence": 0.9, "notes": "Language standard name." },
+  { "skillCode": "sp.skill.typescript", "rawTerm": "TS", "confidence": 0.9, "notes": "Common abbreviation." },
+  { "skillCode": "sp.skill.react", "rawTerm": "React.js", "confidence": 0.95, "notes": "Library name with .js suffix. Not React Native." },
+  { "skillCode": "sp.skill.react", "rawTerm": "ReactJS", "confidence": 0.95 },
+  { "skillCode": "sp.skill.sql", "rawTerm": "Structured Query Language", "confidence": 0.97 },
+  { "skillCode": "sp.skill.python", "rawTerm": "Python3", "confidence": 0.9, "notes": "Version-tagged surface form of Python." },
+  { "skillCode": "sp.skill.python", "rawTerm": "Python 3", "confidence": 0.9 },
+  { "skillCode": "sp.skill.nodejs", "rawTerm": "NodeJS", "confidence": 0.95 },
+  { "skillCode": "sp.skill.nodejs", "rawTerm": "Node js", "confidence": 0.93 },
+  { "skillCode": "sp.skill.pcb-assembly", "rawTerm": "PCB Assembly", "confidence": 0.96 },
+  { "skillCode": "sp.skill.pcb-assembly", "rawTerm": "PCBA", "confidence": 0.85, "notes": "Industry abbreviation." },
+  { "skillCode": "sp.skill.infection-prevention", "rawTerm": "IPC", "confidence": 0.8, "notes": "Healthcare abbreviation; kept only as an alias, not a separate skill." },
+  { "skillCode": "sp.skill.digital-literacy", "rawTerm": "Computer basics", "confidence": 0.8 }
+]

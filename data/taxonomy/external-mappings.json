@@ -1,0 +1,112 @@
+[
+  {
+    "sectorCode": "sp.sector.it-ites",
+    "authority": "NIC_2008",
+    "externalCode": "J",
+    "externalName": "Information and communication",
+    "url": "https://www.nso.gov.in/",
+    "confidence": 0.9,
+    "notes": "NIC-2008 section J is the closest official industry section. Not a 1:1 SSC match."
+  },
+  {
+    "sectorCode": "sp.sector.healthcare",
+    "authority": "NIC_2008",
+    "externalCode": "Q",
+    "externalName": "Human health and social work activities",
+    "confidence": 0.88
+  },
+  {
+    "sectorCode": "sp.sector.logistics",
+    "authority": "NIC_2008",
+    "externalCode": "H",
+    "externalName": "Transportation and storage",
+    "confidence": 0.85
+  },
+  {
+    "sectorCode": "sp.sector.bfsi",
+    "authority": "NIC_2008",
+    "externalCode": "K",
+    "externalName": "Financial and insurance activities",
+    "confidence": 0.9
+  },
+  {
+    "sectorCode": "sp.sector.manufacturing",
+    "authority": "NIC_2008",
+    "externalCode": "C",
+    "externalName": "Manufacturing",
+    "confidence": 0.9
+  },
+  {
+    "sectorCode": "sp.sector.construction",
+    "authority": "NIC_2008",
+    "externalCode": "F",
+    "externalName": "Construction",
+    "confidence": 0.95
+  },
+  {
+    "sectorCode": "sp.sector.tourism",
+    "authority": "NIC_2008",
+    "externalCode": "I",
+    "externalName": "Accommodation and food service activities",
+    "confidence": 0.7,
+    "notes": "NIC I covers hospitality; travel-guide work may also sit in other sections."
+  },
+  {
+    "sectorCode": "sp.sector.electronics",
+    "authority": "NIC_2008",
+    "externalCode": "C26",
+    "externalName": "Manufacture of computer, electronic and optical products",
+    "confidence": 0.75,
+    "notes": "Division-level NIC mapping; electronics services are broader than C26."
+  },
+  {
+    "occupationCode": "2512",
+    "authority": "NCO_2015",
+    "externalCode": "2512",
+    "externalName": "Software Developers",
+    "confidence": 1,
+    "notes": "Occupation.code is the NCO-2015 unit group. Mapping repeats that authority for provenance queries."
+  },
+  {
+    "occupationCode": "2512",
+    "authority": "ESCO",
+    "externalCode": "2512",
+    "externalName": "Software developers",
+    "url": "http://data.europa.eu/esco/isco/C2512",
+    "confidence": 0.95,
+    "notes": "NCO-2015 unit groups follow ISCO-08. ESCO is a reference mapping, not the SkillPulse primary key."
+  },
+  {
+    "occupationCode": "2512",
+    "authority": "ONET",
+    "externalCode": "15-1252.00",
+    "externalName": "Software Developers",
+    "url": "https://www.onetonline.org/link/summary/15-1252.00",
+    "confidence": 0.85,
+    "notes": "Closest O*NET-SOC occupation. Not an Indian classification."
+  },
+  {
+    "occupationCode": "2221",
+    "authority": "NCO_2015",
+    "externalCode": "2221",
+    "externalName": "Nursing Professionals",
+    "confidence": 1
+  },
+  {
+    "occupationCode": "2221",
+    "authority": "ESCO",
+    "externalCode": "2221",
+    "externalName": "Nursing professionals",
+    "url": "http://data.europa.eu/esco/isco/C2221",
+    "confidence": 0.95
+  },
+  {
+    "occupationCode": "2221",
+    "authority": "ONET",
+    "externalCode": "29-1141.00",
+    "externalName": "Registered Nurses",
+    "url": "https://www.onetonline.org/link/summary/29-1141.00",
+    "confidence": 0.8,
+    "notes": "US RN title is not identical to all Indian nursing roles."
+  }
+]
