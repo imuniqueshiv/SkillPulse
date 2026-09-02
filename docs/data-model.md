@@ -38,7 +38,7 @@ Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-
 
 ## Commands
 
-From the repo root (requires `DATABASE_URL` and `DIRECT_URL` in `.env`):
+From the repo root (Prisma uses `DATABASE_URL` from `.env`):
 
 ```bash
 pnpm db:generate

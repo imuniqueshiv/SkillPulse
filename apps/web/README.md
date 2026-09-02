@@ -1,20 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This Next.js app is the SkillPulse frontend (`apps/web`). For local development, use the **repository root** README: `pnpm dev:web` (port 3000) together with `pnpm dev:api` (port 4000).
+
+This package was bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+From the SkillPulse repo root:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm dev:web
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The API must be running separately (`pnpm dev:api`).
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
