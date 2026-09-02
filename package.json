@@ -9,7 +9,11 @@
     "dev:intelligence": "python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --app-dir services/intelligence",
     "build": "pnpm --filter web --filter api build",
     "lint": "pnpm --filter web lint",
-    "typecheck": "pnpm --filter web typecheck && pnpm --filter api typecheck"
+    "typecheck": "pnpm --filter web typecheck && pnpm --filter api typecheck",
+    "db:generate": "pnpm --filter api db:generate",
+    "db:migrate": "pnpm --filter api db:migrate",
+    "db:seed": "pnpm --filter api db:seed",
+    "db:studio": "pnpm --filter api db:studio"
   },
   "engines": {
     "node": ">=20"

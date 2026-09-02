@@ -1,4 +1,5 @@
 import { createApp } from "./app";
+import { disconnectPrisma } from "./config/database";
 import { env } from "./config/env";
 import { logger } from "./utils/logger";
 
@@ -15,7 +16,9 @@ const server = app.listen(env.API_PORT, () => {
 function shutdown(signal: string): void {
   logger.info("API shutting down", { signal });
   server.close(() => {
-    process.exit(0);
+    void disconnectPrisma().finally(() => {
+      process.exit(0);
+    });
   });
 }
 

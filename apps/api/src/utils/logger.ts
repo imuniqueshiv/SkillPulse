@@ -46,6 +46,10 @@ function sanitize(meta?: LogMeta): LogMeta {
     if (blocked.has(key.toLowerCase())) {
       continue;
     }
+    if (typeof value === "string") {
+      cleaned[key] = value.replace(/[a-z]+:\/\/\S+/gi, "[redacted]");
+      continue;
+    }
     cleaned[key] = value;
   }
 

@@ -11,10 +11,12 @@ Next.js (apps/web)              http://localhost:3000
         ↓
 TypeScript + Express (apps/api) http://localhost:4000
         ↓
+Prisma + Neon PostgreSQL
+        ↓
 Python + FastAPI intelligence   http://localhost:8000
 ```
 
-PostgreSQL/Prisma and Clerk are deferred to later phases.
+Clerk authentication is deferred to Phase 3.
 
 ## Prerequisites
 
@@ -44,7 +46,7 @@ Use a virtual environment so FastAPI dependencies stay project-local.
 cp .env.example .env
 ```
 
-Phase 1 defaults:
+Phase 1 defaults plus Neon (Phase 2):
 
 | Variable | Default | Used by |
 | --- | --- | --- |
@@ -53,8 +55,25 @@ Phase 1 defaults:
 | `NEXT_PUBLIC_API_URL` | `http://localhost:4000` | Web |
 | `INTELLIGENCE_SERVICE_URL` | `http://localhost:8000` | later API integration |
 | `INTELLIGENCE_PORT` | `8000` | Intelligence service |
+| `DATABASE_URL` | _(required for Prisma)_ | API — Neon pooled URL |
+| `DIRECT_URL` | _(required for migrations)_ | API — Neon unpooled URL |
 
-Do not put secrets in this file. Clerk and database credentials belong to later phases.
+Do not put real credentials in Git. Never set `NEXT_PUBLIC_DATABASE_URL`.
+
+### Neon setup
+
+1. Create a Neon project and database.
+2. Copy the **pooled** connection string into `DATABASE_URL`.
+3. Copy the **unpooled / direct** connection string into `DIRECT_URL`.
+4. If you only have one URL, set both variables to that value.
+5. Apply schema and demo seed:
+
+```bash
+pnpm db:migrate
+pnpm db:seed
+```
+
+Until those variables are set, `GET /health` still works and `GET /health/db` returns HTTP 503.
 
 ## Run web
 
@@ -71,6 +90,19 @@ pnpm dev:api
 ```
 
 Health: [http://localhost:4000/health](http://localhost:4000/health)
+
+Database health: [http://localhost:4000/health/db](http://localhost:4000/health/db) (requires Neon)
+
+## Database (Prisma + Neon)
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
+pnpm db:studio
+```
+
+See [docs/data-model.md](docs/data-model.md).
 
 ## Run intelligence service
 
@@ -102,6 +134,7 @@ Starts Next.js and the Express API. Start the intelligence service separately wi
 | --- | --- | --- |
 | Web | http://localhost:3000 | SkillPulse development page |
 | API | http://localhost:4000/health | `{ "status": "ok", "service": "skillpulse-api" }` |
+| API database | http://localhost:4000/health/db | `{ "status": "ok", "database": "connected" }` |
 | Intelligence | http://localhost:8000/health | `{ "status": "ok", "service": "skillpulse-intelligence" }` |
 
 ## Checks
