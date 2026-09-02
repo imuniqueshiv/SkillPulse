@@ -9,6 +9,6 @@
     "sourceMap": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/modules", "src/integrations"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": []
 }

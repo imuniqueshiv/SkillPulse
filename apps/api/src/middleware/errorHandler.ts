@@ -46,7 +46,10 @@ export function errorHandler(
     error: {
       message,
       statusCode,
-      ...(isProduction || !(err instanceof Error) || isPrismaError(err)
+      ...(isProduction ||
+      !(err instanceof Error) ||
+      isPrismaError(err) ||
+      isAppError
         ? {}
         : { stack: redact(err.stack ?? "") }),
     },

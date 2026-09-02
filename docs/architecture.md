@@ -9,4 +9,4 @@ Users → Next.js (apps/web)
       → Python/FastAPI intelligence (services/intelligence)
 ```
 
-Phase 1 provides runnable local processes and health checks only. Database, Clerk, and domain modules are not implemented.
+Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Domain intelligence modules are not implemented yet.

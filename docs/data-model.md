@@ -15,7 +15,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | Model | Purpose |
 | --- | --- |
 | Organization | Government, institutes, employers, industry bodies |
-| User | Profile linked to a future Clerk identity (`clerkUserId`). No passwords. |
+| User | Application profile linked to Clerk (`clerkUserId`). Role and organization live here. No passwords. |
 | Location | India-wide country / state / district / city |
 | Sector | Industry sector |
 | Occupation | Occupational role, optional external code |

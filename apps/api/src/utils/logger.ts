@@ -38,6 +38,9 @@ function sanitize(meta?: LogMeta): LogMeta {
     "cookie",
     "apiKey",
     "apikey",
+    "clerk_secret_key",
+    "session",
+    "bearer",
   ]);
 
   const cleaned: LogMeta = {};
@@ -47,7 +50,9 @@ function sanitize(meta?: LogMeta): LogMeta {
       continue;
     }
     if (typeof value === "string") {
-      cleaned[key] = value.replace(/[a-z]+:\/\/\S+/gi, "[redacted]");
+      cleaned[key] = value
+        .replace(/[a-z]+:\/\/\S+/gi, "[redacted]")
+        .replace(/Bearer\s+\S+/gi, "Bearer [redacted]");
       continue;
     }
     cleaned[key] = value;

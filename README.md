@@ -2,7 +2,7 @@
 
 India-wide skill-development and labour-market intelligence platform.
 
-Phase 1 establishes a working monorepo development foundation. Product features, database, and authentication are not included yet.
+Phase 3 is in place: Clerk authenticates identity, Express authorizes roles and organization scope, and Neon stores the application User. Domain intelligence features are not included yet.
 
 ## Architecture
 
@@ -16,7 +16,7 @@ Prisma + Neon PostgreSQL
 Python + FastAPI intelligence   http://localhost:8000
 ```
 
-Clerk authentication is deferred to Phase 3.
+Clerk authenticates users. Express authorizes application roles and organization scope. See [docs/authentication.md](docs/authentication.md).
 
 ## Prerequisites
 
@@ -57,8 +57,10 @@ Phase 1 defaults plus Neon (Phase 2):
 | `INTELLIGENCE_PORT` | `8000` | Intelligence service |
 | `DATABASE_URL` | _(required for Prisma)_ | API — Neon pooled URL |
 | `DIRECT_URL` | _(required for migrations)_ | API — Neon unpooled URL |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | _(required for web auth)_ | Next.js |
+| `CLERK_SECRET_KEY` | _(required for auth)_ | Next.js proxy + Express API |
 
-Do not put real credentials in Git. Never set `NEXT_PUBLIC_DATABASE_URL`.
+Do not put real credentials in Git. Never set `NEXT_PUBLIC_DATABASE_URL` or `NEXT_PUBLIC_CLERK_SECRET_KEY`.
 
 ### Neon setup
 
@@ -74,6 +76,14 @@ pnpm db:seed
 ```
 
 Until those variables are set, `GET /health` still works and `GET /health/db` returns HTTP 503.
+
+### Clerk setup
+
+1. Create a Clerk application.
+2. Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` to root `.env` (Next.js also reads this file via `next.config.ts`).
+3. Restart the web and API processes.
+
+New users are provisioned as `LEARNER`. See [docs/authentication.md](docs/authentication.md).
 
 ## Run web
 
@@ -132,7 +142,7 @@ Starts Next.js and the Express API. Start the intelligence service separately wi
 
 | Service | URL | Expected |
 | --- | --- | --- |
-| Web | http://localhost:3000 | SkillPulse development page |
+| Web | http://localhost:3000 | SkillPulse landing (sign in / dashboard) |
 | API | http://localhost:4000/health | `{ "status": "ok", "service": "skillpulse-api" }` |
 | API database | http://localhost:4000/health/db | `{ "status": "ok", "database": "connected" }` |
 | Intelligence | http://localhost:8000/health | `{ "status": "ok", "service": "skillpulse-intelligence" }` |

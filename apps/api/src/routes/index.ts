@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getPrisma } from "../config/database";
 import { env } from "../config/env";
+import { authRouter } from "../modules/auth/auth.routes";
 import { logger } from "../utils/logger";
 
 export const router = Router();
@@ -39,3 +40,7 @@ router.get("/health/db", async (_req, res) => {
     });
   }
 });
+
+const v1 = Router();
+v1.use("/auth", authRouter);
+router.use("/api/v1", v1);

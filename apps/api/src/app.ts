@@ -18,6 +18,7 @@ export function createApp() {
   app.use(
     cors({
       origin: ["http://localhost:3000"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     }),
   );
   app.use(express.json());
