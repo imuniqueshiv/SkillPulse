@@ -28,7 +28,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | Course | Training course |
 | Curriculum | Versioned course curriculum |
 | CurriculumSkill | Curriculum ↔ Skill |
-| DataSource | Provenance of ingested data |
+| DataSource | Registry of external/internal sources (not ingestion). Jobs and Evidence point here |
 | Evidence | Observation provenance and optional metadata |
 | DemandObservation | Stored demand signal (not the scoring engine) |
 | SkillGap | Stored gap result (not the gap engine) |

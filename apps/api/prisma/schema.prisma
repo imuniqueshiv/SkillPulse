@@ -40,6 +40,29 @@ enum DataSourceType {
   OTHER
 }
 
+enum DataSourceAccessMethod {
+  WEB_REFERENCE
+  API
+  FILE
+  MANUAL_IMPORT
+  PARTNER_FEED
+}
+
+enum DataSourceDomain {
+  JOBS
+  TRAINING
+  QUALIFICATIONS
+  EMPLOYMENT
+  LABOUR_MARKET
+  OTHER
+}
+
+enum DataSourceGeographicScope {
+  INDIA
+  STATE
+  GLOBAL
+}
+
 enum EvidenceType {
   JOB_POSTING
   DATASET
@@ -393,19 +416,27 @@ model CurriculumSkill {
 }
 
 model DataSource {
-  id          String         @id @default(uuid())
-  name        String         @unique
-  type        DataSourceType
-  url         String?
-  description String?
-  reliability Float?
-  active      Boolean        @default(true)
-  isDemo      Boolean        @default(false)
-  createdAt   DateTime       @default(now()) @db.Timestamptz
-  updatedAt   DateTime       @updatedAt @db.Timestamptz
+  id               String                     @id @default(uuid())
+  code             String                     @unique
+  name             String                     @unique
+  type             DataSourceType
+  url              String?
+  description      String?
+  reliability      Float?
+  accessMethod     DataSourceAccessMethod     @default(WEB_REFERENCE)
+  domain           DataSourceDomain           @default(OTHER)
+  geographicScope  DataSourceGeographicScope  @default(INDIA)
+  active           Boolean                    @default(true)
+  isDemo           Boolean                    @default(false)
+  createdAt        DateTime                   @default(now()) @db.Timestamptz
+  updatedAt        DateTime                   @updatedAt @db.Timestamptz
 
   jobs     Job[]
   evidence Evidence[]
+
+  @@index([type])
+  @@index([active])
+  @@index([domain])
 }
 
 model Evidence {

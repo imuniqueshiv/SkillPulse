@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { config as loadDotenv } from "dotenv";
 import { resolve } from "node:path";
+import { seedDataSources } from "./seed-data-sources";
 import { seedTaxonomy } from "./seed-taxonomy";
 
 loadDotenv({ path: resolve(__dirname, "../../../.env") });
@@ -71,6 +72,7 @@ async function main(): Promise<void> {
   });
 
   const { occupationByCode, skillByCode } = await seedTaxonomy(prisma);
+  await seedDataSources(prisma);
   const occupationId = occupationByCode.get("2512");
   const typeScriptId = skillByCode.get("sp.skill.typescript");
   const reactId = skillByCode.get("sp.skill.react");
@@ -92,18 +94,26 @@ async function main(): Promise<void> {
   const source = await prisma.dataSource.upsert({
     where: { name: "[DEMO] SkillPulse Seed" },
     update: {
+      code: "sp.source.demo-seed",
       type: "OTHER",
       description: "Synthetic seed data. Not labour-market evidence.",
       reliability: 0,
+      accessMethod: "MANUAL_IMPORT",
+      domain: "OTHER",
+      geographicScope: "INDIA",
       active: false,
       isDemo: true,
     },
     create: {
       id: DEMO.source,
+      code: "sp.source.demo-seed",
       name: "[DEMO] SkillPulse Seed",
       type: "OTHER",
       description: "Synthetic seed data. Not labour-market evidence.",
       reliability: 0,
+      accessMethod: "MANUAL_IMPORT",
+      domain: "OTHER",
+      geographicScope: "INDIA",
       active: false,
       isDemo: true,
     },

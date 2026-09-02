@@ -2,6 +2,7 @@ import { Router } from "express";
 import { getPrisma } from "../config/database";
 import { env } from "../config/env";
 import { authRouter } from "../modules/auth/auth.routes";
+import { dataSourceRouter } from "../modules/data-sources/data-source.routes";
 import { taxonomyRouter } from "../modules/taxonomy/taxonomy.routes";
 import { logger } from "../utils/logger";
 
@@ -44,5 +45,6 @@ router.get("/health/db", async (_req, res) => {
 
 const v1 = Router();
 v1.use("/auth", authRouter);
+v1.use("/data-sources", dataSourceRouter);
 v1.use(taxonomyRouter);
 router.use("/api/v1", v1);

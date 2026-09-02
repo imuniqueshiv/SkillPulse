@@ -1,0 +1,68 @@
+[
+  {
+    "code": "sp.source.ncs",
+    "name": "National Career Service",
+    "type": "GOVERNMENT",
+    "url": "https://www.ncs.gov.in/",
+    "description": "Ministry of Labour and Employment portal for jobseekers, employers and career services. Homepage verified. Public machine-readable API, bulk file dump, license and update frequency were not verified. Access method is a homepage reference only.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "JOBS",
+    "geographicScope": "INDIA",
+    "active": true
+  },
+  {
+    "code": "sp.source.data-gov-in",
+    "name": "Open Government Data Platform India",
+    "type": "PUBLIC_DATASET",
+    "url": "https://www.data.gov.in/",
+    "description": "data.gov.in, hosted by NIC under MeitY. Official about page verified. The platform states shareable government data in human- and machine-readable forms. No specific dataset, API endpoint, license or refresh cadence is registered here.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "LABOUR_MARKET",
+    "geographicScope": "INDIA",
+    "active": true
+  },
+  {
+    "code": "sp.source.ncvet",
+    "name": "National Council for Vocational Education and Training",
+    "type": "GOVERNMENT",
+    "url": "https://ncvet.gov.in/",
+    "description": "NCVET is the national TVET regulator (notified 2018). Official organisation homepage used as the reference URL. No NCVET API, file feed or scraping permission is registered.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "TRAINING",
+    "geographicScope": "INDIA",
+    "active": true
+  },
+  {
+    "code": "sp.source.nqr",
+    "name": "National Qualifications Register",
+    "type": "GOVERNMENT",
+    "url": "https://nqr.gov.in/",
+    "description": "NQR homepage verified as the qualifications register site. The site has stated a migration toward KaushalVerse; that destination is not registered as a SkillPulse access method. No API or bulk download is registered.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "QUALIFICATIONS",
+    "geographicScope": "INDIA",
+    "active": true
+  },
+  {
+    "code": "sp.source.dgt",
+    "name": "Directorate General of Training",
+    "type": "TRAINING",
+    "url": "https://dgt.gov.in/en",
+    "description": "DGT, Ministry of Skill Development and Entrepreneurship — national vocational training coordination (CTS/ITI and related schemes). Official homepage verified. No DGT job-feed API or bulk file source is registered.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "TRAINING",
+    "geographicScope": "INDIA",
+    "active": true
+  },
+  {
+    "code": "sp.source.mahaswayam-rojgar",
+    "name": "Mahaswayam Rojgar",
+    "type": "GOVERNMENT",
+    "url": "https://rojgar.mahaswayam.gov.in/",
+    "description": "Government of Maharashtra employment portal (Commissionerate of Skill Development, Employment and Entrepreneurship). Reference URL is the published official portal. Automated HTTP retrieval of the homepage was not confirmed (403 at documentation time). No public API, file dump or scraping permission is registered. Geographic scope is STATE; the state name is not stored as a schema field.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "EMPLOYMENT",
+    "geographicScope": "STATE",
+    "active": true
+  }
+]

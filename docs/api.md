@@ -91,3 +91,19 @@ Query: `q`, `status` (default `ACTIVE`), `category`, `skillType`, `occupationId`
 Unknown terms return `"status": "unresolved"` with no skill. The API does not guess.
 
 See [taxonomy.md](taxonomy.md).
+
+## Data-source registry
+
+**DataSource Registry ≠ Data Ingestion.** Authenticated users may read the registry. Writes require `PLATFORM_ADMIN`. Sources are not deleted (use `active`).
+
+`GET /api/v1/data-sources`
+
+Query: `q`, `type`, `domain`, `accessMethod`, `geographicScope`, `active`, `isDemo`, `limit`, `offset`.
+
+`GET /api/v1/data-sources/:id` — UUID or `code`.
+
+`POST /api/v1/data-sources` — `PLATFORM_ADMIN`. Body includes `code`, `name`, `type`; optional `url`, `description`, `reliability` (0–1), `accessMethod`, `domain`, `geographicScope`, `active`. Duplicate `code`/`name` → 409.
+
+`PATCH /api/v1/data-sources/:id` — `PLATFORM_ADMIN`.
+
+See [data-sources.md](data-sources.md).
