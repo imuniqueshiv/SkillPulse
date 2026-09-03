@@ -40,7 +40,9 @@ external source format
         ↓
  canonical Job persistence (5.10)
         ↓
- later integration              ← not implemented
+ end-to-end pipeline (5.11)
+        ↓
+ live source ingest              ← not implemented
 ```
 
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
@@ -263,9 +265,32 @@ Lookup order (Phase 4):
 
 **Not written:** Evidence, raw observations, Skill, SkillAlias, TaxonomyMapping.
 
+## End-to-end job ingestion pipeline (Phase 5.11)
+
+**Phase 5.11 is a thin orchestrator.** It does not reimplement 5.3–5.10. Call `ingestJobObservation`.
+
+Order:
+
+1. Optional in-process adapter (`adapter.parse`) → Phase 5.2 contract
+2. Raw storage (`storeRawObservation`) — payload is `rawPayload` / `sourceRecord` / contract. Observation id = `RawIngestionRecord.id`
+3. Validation (`validateJobIngestion`) once
+4. Deduplication (`deduplicateJobObservation`) against caller-supplied `relatedObservations`
+5. Freshness (`evaluateJobFreshness`) with explicit `referenceTime` (never `Date.now()`)
+6. Provenance (`recordJobPostingEvidence`) — idempotent per observation id
+7. Skill normalization (`normalizeJobObservationSkills`) — supplied terms only
+8. Canonical persistence (`persistCanonicalJob`) — Job + JobSkill transaction
+
+**REJECTED:** raw row is kept. No Evidence, no Job, no JobSkill. Later stages are not run.
+
+POSSIBLE_DUPLICATE is not coerced to DUPLICATE. Phase 5.6 only emits it on the fingerprint path (typically no `externalId`); Phase 5.10 still requires `externalId` to persist a Job, so that combination stores raw/Evidence and then fails persistence.
+
+**Retry:** raw storage always inserts a new row (not idempotent). Evidence and Job reuse their existing identity rules. Repeating the same source + `externalId` does not create a second Job.
+
+No HTTP ingestion API. No live NCS/Mahaswayam/data.gov.in fetch.
+
 ## Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, full ingestion orchestration (5.11), Maharashtra dataset ingest (5.12), NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, Maharashtra dataset ingest (5.12), NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 
