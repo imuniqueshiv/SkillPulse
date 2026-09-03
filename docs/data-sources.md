@@ -30,7 +30,9 @@ external source format
         ↓
  validation (5.5)
         ↓
- dedup / freshness / evidence / taxonomy  ← not implemented
+ deduplication (5.6)
+        ↓
+ freshness / evidence / taxonomy  ← not implemented
         ↓
  canonical Job persistence       ← not implemented
 ```
@@ -38,7 +40,7 @@ external source format
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
 
 ```text
-RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
 ```
 
 ### Envelope
@@ -132,9 +134,37 @@ If any reason is `REJECTED`, status is `REJECTED` even when review reasons are a
 
 This phase does **not** classify freshness (`expiresAt < observedAt` is not stale-here), deduplicate, normalize skills, or query the source registry. Source identity is format-checked only.
 
+## Job deduplication (Phase 5.6)
+
+`deduplicateJobObservation(candidate, priors)` classifies whether a **validated** observation is the same underlying source job as a prior observation.
+
+It is a pure function. It does not persist, delete, overwrite, or merge `RawIngestionRecord` rows. Checksum equality is recorded but never used as job identity.
+
+**Input:** `JobDedupObservation` values. Each must include a Phase 5.5 `JobValidationResult` with status `VALID` or `REVIEW` and a caller-supplied `observationId` (typically a raw-record id). `REJECTED` results are not classified (`AppError` 400). This module does not call `validateJobIngestion`.
+
+**Output:** `{ status, strategy, reason, matchedObservationId, fingerprint, sameContentChecksumObservationIds }`.
+
+| Status | Meaning |
+| --- | --- |
+| `UNIQUE` | No deterministic duplicate of this source job |
+| `DUPLICATE` | Strong identity match; both observations remain |
+| `POSSIBLE_DUPLICATE` | Weak/incomplete evidence; do not merge |
+
+### Matching hierarchy
+
+**Level 1 — observation identity (source-scoped `externalId`).** Same source scope (`sourceId` if present, else `sourceCode`) and same `externalId` → `DUPLICATE` / `SOURCE_EXTERNAL_ID`. Different sources with the same `externalId` are not duplicates. Different `externalId` values on the same source are not duplicates, even if title/employer/location/description match. When `externalId` is present, Level 2 is not used.
+
+**Level 2 — content fingerprint, only when `externalId` is absent.** SHA-256 of version `1`, source scope, normalized title, employer, and location key, joined with U+001F. Normalization: NFKC, trim, collapse whitespace, lowercase. Punctuation is kept. Missing employer/location become empty slots. Location key is `country|state|district|city|raw` using only present parts.
+
+`DUPLICATE` via fingerprint requires title, employer, and location all present on **both** sides and equal after normalize. Same title + employer + different location → `POSSIBLE_DUPLICATE`. Same title + different employer → `UNIQUE`. Missing `externalId` without a complete fingerprint → `POSSIBLE_DUPLICATE` / `INSUFFICIENT_IDENTITY` (not automatically `UNIQUE`).
+
+**Checksum** (Phase 5.3) means identical stored payload bytes. It is listed in `sameContentChecksumObservationIds` and does not produce `DUPLICATE`.
+
+Tie-break among matches: lexicographically smallest `observationId`. Priors with the candidate’s own id are ignored.
+
 ### Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, job deduplication, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 

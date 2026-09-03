@@ -37,7 +37,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
-A validated ingestion contract record is not written to `Job` in Phases 5.2–5.5. Raw storage, adapters, and validation do not create canonical Jobs. See [data-sources.md](data-sources.md).
+A validated ingestion contract record is not written to `Job` in Phases 5.2–5.6. Deduplication classifies observations; it does not create or merge canonical Jobs. See [data-sources.md](data-sources.md).
 
 ## Commands
 
