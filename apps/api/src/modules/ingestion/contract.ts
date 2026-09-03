@@ -71,9 +71,9 @@ export type JobIngestionRecord = {
 };
 
 /**
- * Future adapters implement this. `toContract` returns an unvalidated object;
- * callers run `parseJobIngestionRecord`. No HTTP, filesystem, or source-specific
- * parsing belongs in the contract layer.
+ * Future contract-layer mapping. Executable adapters (name, version,
+ * sourceCode, map, parse) live in `adapter.ts` and must call
+ * `parseJobIngestionRecord`. This type does not persist Jobs or fetch sources.
  */
 export type SourceAdapter<TSource = unknown> = {
   readonly name: string;

@@ -28,7 +28,8 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | Course | Training course |
 | Curriculum | Versioned course curriculum |
 | CurriculumSkill | Curriculum ↔ Skill |
-| DataSource | Registry of external/internal sources (not ingestion). Jobs and Evidence point here. The ingestion contract references `DataSource.id` / `DataSource.code`; it is not a table |
+| DataSource | Registry of external/internal sources (not ingestion). Jobs, Evidence and RawIngestionRecord point here |
+| RawIngestionRecord | Preserved source observation (payload as received). Not a Job, not an adapter, not intelligence |
 | Evidence | Observation provenance and optional metadata |
 | DemandObservation | Stored demand signal (not the scoring engine) |
 | SkillGap | Stored gap result (not the gap engine) |
@@ -36,7 +37,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
-A validated ingestion contract record is not written to `Job` in Phase 5.2. See [data-sources.md](data-sources.md#ingestion-contract-phase-52).
+A validated ingestion contract record is not written to `Job` in Phases 5.2–5.4. Raw storage and adapters do not create canonical Jobs. See [data-sources.md](data-sources.md).
 
 ## Commands
 

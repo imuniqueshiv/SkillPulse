@@ -22,16 +22,22 @@ The contract is a source-agnostic observation entering SkillPulse. It is not a P
 ```text
 external source format
         ↓
-   source adapter
+   raw storage                 ← Phase 5.3
         ↓
- SkillPulse ingestion contract   ← Phase 5.2 (this layer)
+   source adapter              ← Phase 5.4
+        ↓
+ SkillPulse ingestion contract ← Phase 5.2
         ↓
  validation / dedup / freshness  ← not implemented
         ↓
  canonical Job persistence       ← not implemented
 ```
 
-Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no connector.
+Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
+
+```text
+RAW DATA  ≠  INGESTION CONTRACT  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+```
 
 ### Envelope
 
@@ -64,11 +70,41 @@ Raw values are not normalized (e.g. `"React.js / React JS"` stays that string). 
 
 ### Adapter boundary
 
-A future adapter receives a source-specific record, maps fields into this contract, and returns an object that `parseJobIngestionRecord` validates. Adapters do not live in the contract module. No NCS, data.gov.in, or Mahaswayam client is implemented. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
+A source adapter maps a source-specific record into this contract and calls `parseJobIngestionRecord`. Adapters are in-process code (`adapter.ts` registry, keyed by DataSource `code`). They do **not** persist `Job` rows and do **not** replace the DataSource registry.
+
+The only implemented adapter is the test-only fixture `skillpulse-test-fixture` (`sp.source.demo-seed`). No NCS, data.gov.in, Mahaswayam, NCVET, or DGT adapter exists. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
+
+## Raw storage (Phase 5.3)
+
+`RawIngestionRecord` preserves what the source provided before mapping. `storeRawObservation` requires a registered DataSource (`sourceId` and/or `sourceCode`). It does not create canonical Jobs, extract skills, or perform business-level job deduplication.
+
+Two observations of the same posting may both be stored. A checksum match means the **payload bytes** are identical, not that two records are the same job.
+
+| Field | Meaning |
+| --- | --- |
+| `sourceId` | FK to DataSource (required) |
+| `kind` | Record kind. Only `JOB` is implemented |
+| `externalId` | Optional source-provided id |
+| `payload` | Inline original representation (JSONB). Not normalized |
+| `payloadRef` | Optional pointer to an external raw object. No object-storage integration |
+| `payloadFormat` | `JSON`, `TEXT`, or `EXTERNAL_REF` |
+| `checksum` | SHA-256 hex of canonical JSON of the inline payload (object keys sorted recursively; array order kept). If there is no inline payload: SHA-256 of `payloadRef:` + the reference string. UTF-8. Not a semantic duplicate detector |
+| `observedAt` | When SkillPulse observed the source record |
+| `receivedAt` | When SkillPulse persisted the raw row |
+| `status` | Raw processing state: `RECEIVED`, `PROCESSED`, `REJECTED`, `FAILED`. Initial value is `RECEIVED`. Not job validity or demand confidence |
+| `adapterName` / `adapterVersion` | Optional, if an adapter was already known |
+
+Credentials must not appear in payloads. Raw storage does not log payload bodies.
+
+## Job source adapters (Phase 5.4)
+
+In-process registry: `registerJobSourceAdapter`, `getJobSourceAdapter`, `listJobSourceAdapters`. Duplicate `sourceCode` registration is rejected. Unknown codes (including registered DataSources that have no executable adapter) return “Unknown source adapter”.
+
+Flow: source record → `adapter.map()` → `parseJobIngestionRecord()` → validated `JobIngestionRecord`. The adapter does not call `prisma.job.create()`.
 
 ### Intentionally not implemented
 
-Connectors, scraping, CSV/file ingest, raw-data storage, deduplication, freshness, skill extraction, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, validation pipeline, job deduplication, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 

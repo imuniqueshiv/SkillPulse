@@ -20,4 +20,11 @@ The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://loca
 
 A FastAPI service exists at `services/intelligence` (`:8000`). It is optional for local web + API development and is not called by Express today.
 
-Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy (skills, aliases, NCO occupations, sectors and external mappings). Phase 5.1 registers data sources; Phase 5.2 defines a validated job ingestion contract. Source connectors, persistence of ingested jobs, job intelligence and NLP are not implemented yet.
+Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phase 5.1 registers data sources; Phase 5.2 defines the job ingestion contract; Phase 5.3 stores raw observations; Phase 5.4 maps a test-only fixture through that contract. No external source connector, ingested-job persistence, job intelligence, or NLP is implemented yet.
+
+```text
+DataSource registry (5.1)
+        │
+        ▼
+raw observation (5.3) → adapter (5.4) → contract (5.2) → later pipeline
+```

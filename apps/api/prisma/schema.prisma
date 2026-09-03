@@ -63,6 +63,23 @@ enum DataSourceGeographicScope {
   GLOBAL
 }
 
+enum RawIngestionRecordKind {
+  JOB
+}
+
+enum RawIngestionPayloadFormat {
+  JSON
+  TEXT
+  EXTERNAL_REF
+}
+
+enum RawIngestionStatus {
+  RECEIVED
+  PROCESSED
+  REJECTED
+  FAILED
+}
+
 enum EvidenceType {
   JOB_POSTING
   DATASET
@@ -431,12 +448,40 @@ model DataSource {
   createdAt        DateTime                   @default(now()) @db.Timestamptz
   updatedAt        DateTime                   @updatedAt @db.Timestamptz
 
-  jobs     Job[]
-  evidence Evidence[]
+  jobs                Job[]
+  evidence            Evidence[]
+  rawIngestionRecords RawIngestionRecord[]
 
   @@index([type])
   @@index([active])
   @@index([domain])
+}
+
+model RawIngestionRecord {
+  id             String                    @id @default(uuid())
+  sourceId       String
+  kind           RawIngestionRecordKind
+  externalId     String?
+  payload        Json?
+  payloadFormat  RawIngestionPayloadFormat
+  payloadRef     String?
+  checksum       String
+  observedAt     DateTime                  @db.Timestamptz
+  receivedAt     DateTime                  @db.Timestamptz
+  status         RawIngestionStatus        @default(RECEIVED)
+  adapterName    String?
+  adapterVersion String?
+  createdAt      DateTime                  @default(now()) @db.Timestamptz
+  updatedAt      DateTime                  @updatedAt @db.Timestamptz
+
+  source DataSource @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+
+  @@index([sourceId])
+  @@index([sourceId, externalId])
+  @@index([checksum])
+  @@index([status])
+  @@index([observedAt])
+  @@index([kind])
 }
 
 model Evidence {

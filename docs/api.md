@@ -108,4 +108,4 @@ Query: `q`, `type`, `domain`, `accessMethod`, `geographicScope`, `active`, `isDe
 
 See [data-sources.md](data-sources.md).
 
-There is no ingestion HTTP API. The Phase 5.2 job ingestion contract is an internal TypeScript/Zod boundary (`apps/api/src/modules/ingestion/`). It does not fetch, persist, or expose source data.
+There is no ingestion HTTP API. Phases 5.2–5.4 are internal: job ingestion contract, `storeRawObservation`, and an in-process adapter registry. They do not fetch, scrape, or write canonical Jobs.
