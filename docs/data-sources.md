@@ -28,7 +28,9 @@ external source format
         ↓
  SkillPulse ingestion contract ← Phase 5.2
         ↓
- validation / dedup / freshness  ← not implemented
+ validation (5.5)
+        ↓
+ dedup / freshness / evidence / taxonomy  ← not implemented
         ↓
  canonical Job persistence       ← not implemented
 ```
@@ -36,7 +38,7 @@ external source format
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
 
 ```text
-RAW DATA  ≠  INGESTION CONTRACT  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
 ```
 
 ### Envelope
@@ -100,11 +102,39 @@ Credentials must not appear in payloads. Raw storage does not log payload bodies
 
 In-process registry: `registerJobSourceAdapter`, `getJobSourceAdapter`, `listJobSourceAdapters`. Duplicate `sourceCode` registration is rejected. Unknown codes (including registered DataSources that have no executable adapter) return “Unknown source adapter”.
 
-Flow: source record → `adapter.map()` → `parseJobIngestionRecord()` → validated `JobIngestionRecord`. The adapter does not call `prisma.job.create()`.
+Flow: source record → `adapter.map()` → `parseJobIngestionRecord()` → `validateJobIngestion()` → later pipeline. The adapter does not call `prisma.job.create()`.
+
+## Job ingestion validation (Phase 5.5)
+
+`validateJobIngestion(input)` is a pure function. It does not persist, mutate raw observations, look up DataSource rows, or create Jobs.
+
+**Input:** a Phase 5.2 job ingestion object (`unknown`). Structural parsing reuses the existing Zod contract. Missing optional fields (`description`, `employerName`, `qualification`, `salary`, `location`) are allowed.
+
+**Output:** `{ status, reasons, record }`.
+
+| Status | When |
+| --- | --- |
+| `VALID` | Contract-valid and no review signals |
+| `REJECTED` | Required contract/integrity rule failed. `record` is null when the object cannot be parsed |
+| `REVIEW` | Parsed successfully but ambiguous/suspicious in a documented way |
+
+Integrity failures (`REJECTED`) include: `TITLE_MISSING`, `TITLE_INVALID_TYPE`, `SOURCE_IDENTITY_MISSING`, `INVALID_SOURCE_ID`, `INVALID_SOURCE_CODE`, `INVALID_SOURCE_URL`, `INVALID_POSTED_AT`, `INVALID_EXPIRES_AT`, `INVALID_OBSERVED_AT`, `INVALID_INGESTED_AT`, `IMPOSSIBLE_TIMESTAMP_RANGE` (`expiresAt < postedAt` or `ingestedAt < observedAt`), `INVALID_SALARY_RANGE`.
+
+Review signals (do not reject by themselves):
+
+| Code | Rule |
+| --- | --- |
+| `TITLE_TOO_SHORT` | Parsed title length ≤ 2 |
+| `TITLE_PLACEHOLDER` | Exact title, case-insensitive, in `{n/a, na, n.a., none, unknown, untitled, null, undefined, tbd}` |
+| `POSTED_AFTER_OBSERVED` | `postedAt` is later than `observedAt` |
+
+If any reason is `REJECTED`, status is `REJECTED` even when review reasons are also present. Reasons are sorted and deduplicated by `severity + code + path`.
+
+This phase does **not** classify freshness (`expiresAt < observedAt` is not stale-here), deduplicate, normalize skills, or query the source registry. Source identity is format-checked only.
 
 ### Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, validation pipeline, job deduplication, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, job deduplication, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 
