@@ -42,7 +42,7 @@ external source format
         ↓
  end-to-end pipeline (5.11)
         ↓
- live source ingest              ← not implemented
+ source dataset ingest (5.12)     ← adapters + fixtures; no live fetch
 ```
 
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
@@ -84,7 +84,7 @@ Raw values are not normalized (e.g. `"React.js / React JS"` stays that string). 
 
 A source adapter maps a source-specific record into this contract and calls `parseJobIngestionRecord`. Adapters are in-process code (`adapter.ts` registry, keyed by DataSource `code`). They do **not** persist `Job` rows and do **not** replace the DataSource registry.
 
-The only implemented adapter is the test-only fixture `skillpulse-test-fixture` (`sp.source.demo-seed`). No NCS, data.gov.in, Mahaswayam, NCVET, or DGT adapter exists. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
+Executable adapters live under `apps/api/src/modules/ingestion/`. The test-only fixture `skillpulse-test-fixture` (`sp.source.demo-seed`) remains for Phase 5.4–5.11 tests. Phase 5.12 adds the first state source adapter: Mahaswayam Rojgar (`sp.source.mahaswayam-rojgar`). No NCS, data.gov.in, NCVET, or DGT job adapter exists. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
 
 ## Raw storage (Phase 5.3)
 
@@ -288,9 +288,84 @@ POSSIBLE_DUPLICATE is not coerced to DUPLICATE. Phase 5.6 only emits it on the f
 
 No HTTP ingestion API. No live NCS/Mahaswayam/data.gov.in fetch.
 
+## State-agnostic source ingestion (Phase 5.12)
+
+**Maharashtra is the first implementation, not a Maharashtra-specific core architecture.**
+
+A state is a geographic scope. A data source is a provider/dataset. One state may have many sources later. SkillPulse does not add a State table; `DataSource.geographicScope` (`STATE` / `INDIA` / `GLOBAL`) plus observation `location` fields are enough.
+
+```text
+External state/source
+        ↓
+Source-specific adapter          ← only place source field names live
+        ↓
+Common Job ingestion contract    ← Phase 5.2
+        ↓
+ingestJobObservation()           ← Phase 5.11, state-agnostic
+        ↓
+Canonical Job                    ← existing Job / JobSkill
+```
+
+`ingestSourceDataset` in `ingest-dataset.ts` iterates records, calls `adapter.map`, then `ingestJobObservation`. It does not reimplement validation, dedup, freshness, provenance, skill matching, or persistence.
+
+Adapters register by DataSource `code` (`registerJobSourceAdapter` / `BUILTIN_JOB_SOURCE_ADAPTERS`). Adding another state must not edit `job-ingestion-pipeline.ts` or Phases 5.5–5.10.
+
+### Maharashtra (first source)
+
+| | |
+| --- | --- |
+| DataSource | `sp.source.mahaswayam-rojgar` (already registered, `geographicScope=STATE`) |
+| Adapter | `skillpulse-mahaswayam-rojgar` (`sources/mahaswayam-rojgar.ts`) |
+| Live access | **Not implemented.** Portal homepage `https://rojgar.mahaswayam.gov.in/` is a WEB_REFERENCE. Live fetch returned 403 earlier. No API/file/scraping permission is registered. |
+| What tests ingest | Synthetic fixture `data/sample/ingestion/mahaswayam-rojgar.sample.json` (`acquisition: synthetic-fixture`). These are **not** live portal records. |
+
+Field mapping (fixture / documented export shape — not an official portal API schema):
+
+| Source field | Common contract |
+| --- | --- |
+| `vacancy_id` | `payload.externalId` |
+| `post_name` | `payload.title` |
+| `employer_name` | `payload.employerName` |
+| `job_description` | `payload.description` |
+| `city` / `district` / `state` | `payload.location.city` / `.district` / `.state` and `.raw` |
+| `posted_on` | `payload.postedAt` |
+| `valid_upto` | `payload.expiresAt` |
+| `notice_url` | `payload.sourceUrl` |
+| `skills` (`string[]` only) | `payload.sourceMetadata.skills` → Phase 5.9 |
+| (caller) `observedAt` / `ingestedAt` | `payload.observedAt` / `ingestedAt` |
+
+Missing source fields stay omitted/null. Skills are never extracted from title or description. Location strings are not parsed into `Location` rows (`locationId` stays null).
+
+### How to add another state/source
+
+1. Register a DataSource (`registry.json` + seed, or admin API). Do not create rows during ingest.
+2. Add `apps/api/src/modules/ingestion/sources/<source>.ts` that maps source fields → Phase 5.2 contract.
+3. Append the adapter to `BUILTIN_JOB_SOURCE_ADAPTERS` in `ingest-dataset.ts` (or pass it into `ingestSourceDataset({ adapter })`).
+4. Add source-specific tests. A second-state **test fixture** (Gujarat employment adapter) already proves the pipeline accepts another mapping without core edits.
+5. Call `ingestSourceDataset` / `ingestJobObservation`. Do not add `if (state === ...)` to the pipeline.
+
+Gujarat, Karnataka, and other states listed below do **not** have live ingestion. Gujarat appears only as a test fixture adapter.
+
+### Future geographic expansion (not implemented)
+
+The architecture is meant to support additional Indian states/UTs as **future sources**, each with their own adapter(s). Naming them here does not mean data is ingested:
+
+Maharashtra (first implementation), Gujarat, Karnataka, Tamil Nadu, Telangana, Andhra Pradesh, Kerala, Rajasthan, Madhya Pradesh, Uttar Pradesh, West Bengal, Odisha, Bihar, Punjab, Delhi.
+
+### Batch / partial failure
+
+| Failure | Behaviour |
+| --- | --- |
+| Unknown adapter, unknown DataSource, unreadable dataset input | Abort. Source-level. |
+| One record missing title / invalid contract | `REJECTED`. Raw row kept. Continue. |
+| One record missing `externalId` after validation | Persist throws. Counted `FAILED`. Continue. |
+| Same dataset ingested again | New raw rows; canonical Job reused (`sourceId` + `externalId`). |
+
+No all-or-nothing batch transaction. No cron, queues, or workers.
+
 ## Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, Maharashtra dataset ingest (5.12), NLP, demand/supply intelligence, queues, and scheduled jobs.
+Live portal/API fetch, scraping, scheduled ingestion, NLP/skill extraction, demand/supply intelligence, curriculum, and additional state sources beyond the Maharashtra fixture adapter.
 
 ## What a DataSource is
 

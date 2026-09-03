@@ -59,7 +59,7 @@
     "name": "Mahaswayam Rojgar",
     "type": "GOVERNMENT",
     "url": "https://rojgar.mahaswayam.gov.in/",
-    "description": "Government of Maharashtra employment portal (Commissionerate of Skill Development, Employment and Entrepreneurship). Reference URL is the published official portal. Automated HTTP retrieval of the homepage was not confirmed (403 at documentation time). No public API, file dump or scraping permission is registered. Geographic scope is STATE; the state name is not stored as a schema field.",
+    "description": "Government of Maharashtra employment portal (Commissionerate of Skill Development, Employment and Entrepreneurship). Reference URL is the published official portal. Automated HTTP retrieval of the homepage was not confirmed (403 at documentation time). No public API, file dump or scraping permission is registered. Phase 5.12 ingests a synthetic sample fixture (data/sample/ingestion/mahaswayam-rojgar.sample.json), not a live portal dump. Geographic scope is STATE; the state name is not stored as a schema field.",
     "accessMethod": "WEB_REFERENCE",
     "domain": "EMPLOYMENT",
     "geographicScope": "STATE",

@@ -37,7 +37,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
-A validated ingestion contract record is written to `Job` in Phase 5.10. Phase 5.11 (`ingestJobObservation`) stores a raw observation first, then may persist that Job. See [data-sources.md](data-sources.md).
+A validated ingestion contract record is written to `Job` in Phase 5.10. Phase 5.11 (`ingestJobObservation`) stores a raw observation first, then may persist that Job. Phase 5.12 (`ingestSourceDataset`) maps a source dataset through a source adapter into that same pipeline. There is no State table and no Maharashtra-specific Job model: geographic scope stays on `DataSource.geographicScope` and optional observation `location` fields. See [data-sources.md](data-sources.md).
 
 ## Commands
 

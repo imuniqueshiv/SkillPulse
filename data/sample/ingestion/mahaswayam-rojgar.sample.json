@@ -1,0 +1,113 @@
+{
+  "sourceCode": "sp.source.mahaswayam-rojgar",
+  "format": "skillpulse-sample-v1",
+  "acquisition": "synthetic-fixture",
+  "note": "SYNTHETIC FIXTURE. Not a live Mahaswayam Rojgar dump. Portal API/file access is unverified; these records exist only to exercise the Maharashtra adapter.",
+  "records": [
+    {
+      "vacancy_id": "MH-ROJ-1001",
+      "post_name": "Machine Operator",
+      "employer_name": "Pune Industrial Works",
+      "job_description": "CNC machine operation on the shop floor.",
+      "city": "Pune",
+      "district": "Pune",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-01T00:00:00.000Z",
+      "valid_upto": "2026-11-01T00:00:00.000Z",
+      "notice_url": "https://rojgar.mahaswayam.gov.in/notices/MH-ROJ-1001",
+      "skills": ["Python", "SQL"]
+    },
+    {
+      "vacancy_id": "MH-ROJ-1002",
+      "post_name": "Staff Nurse",
+      "employer_name": "Nagpur Civil Hospital",
+      "job_description": "Inpatient nursing care.",
+      "city": "Nagpur",
+      "district": "Nagpur",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-15T00:00:00.000Z",
+      "notice_url": "https://rojgar.mahaswayam.gov.in/notices/MH-ROJ-1002"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1003",
+      "post_name": "Software Developer",
+      "employer_name": "Mumbai IT Services",
+      "city": "Mumbai",
+      "district": "Mumbai Suburban",
+      "state": "Maharashtra",
+      "posted_on": "2026-09-01T00:00:00.000Z",
+      "skills": ["React.js", "java scriptt"]
+    },
+    {
+      "vacancy_id": "MH-ROJ-1004",
+      "post_name": "Electrician",
+      "employer_name": "Nashik Power Coop",
+      "city": "Nashik",
+      "state": "Maharashtra",
+      "posted_on": "2026-07-20T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1005",
+      "post_name": "Accountant",
+      "employer_name": "Chhatrapati Sambhajinagar Traders",
+      "city": "Chhatrapati Sambhajinagar",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-20T00:00:00.000Z",
+      "skills": ["SQL"]
+    },
+    {
+      "vacancy_id": "MH-ROJ-1006",
+      "post_name": "Data Entry Operator",
+      "employer_name": "Thane Municipal Office",
+      "city": "Thane",
+      "state": "Maharashtra",
+      "posted_on": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1007",
+      "post_name": "Welder",
+      "employer_name": "Kolhapur Fabrication",
+      "city": "Kolhapur",
+      "state": "Maharashtra",
+      "posted_on": "2026-06-01T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1008",
+      "post_name": "Lab Technician",
+      "employer_name": "Solapur Diagnostics",
+      "city": "Solapur",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-10T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1009",
+      "post_name": "Store Keeper",
+      "employer_name": "Amravati Warehouse",
+      "city": "Amravati",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-25T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1010",
+      "post_name": "HR Executive",
+      "employer_name": "Navi Mumbai Services",
+      "city": "Navi Mumbai",
+      "state": "Maharashtra",
+      "posted_on": "2026-09-08T00:00:00.000Z"
+    },
+    {
+      "vacancy_id": "MH-ROJ-1011",
+      "employer_name": "Incomplete Listing Co",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "post_name": "Quality Inspector",
+      "employer_name": "Pimpri Plant",
+      "city": "Pimpri-Chinchwad",
+      "state": "Maharashtra",
+      "posted_on": "2026-08-12T00:00:00.000Z"
+    }
+  ]
+}
