@@ -32,7 +32,9 @@ external source format
         ↓
  deduplication (5.6)
         ↓
- freshness / evidence / taxonomy  ← not implemented
+ freshness (5.7)
+        ↓
+ evidence / taxonomy  ← not implemented
         ↓
  canonical Job persistence       ← not implemented
 ```
@@ -40,7 +42,7 @@ external source format
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
 
 ```text
-RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  FRESHNESS  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
 ```
 
 ### Envelope
@@ -162,9 +164,38 @@ It is a pure function. It does not persist, delete, overwrite, or merge `RawInge
 
 Tie-break among matches: lexicographically smallest `observationId`. Priors with the candidate’s own id are ignored.
 
+## Job freshness (Phase 5.7)
+
+`evaluateJobFreshness` classifies how temporally current a **validated** observation is. It is a pure function. The caller supplies `referenceTime` and an optional policy. The module does not call `Date.now()`, persist data, or mutate raw observations.
+
+**Input:** Phase 5.5 `JobValidationResult` (`VALID` or `REVIEW`). `REJECTED` is not evaluated (`AppError` 400). Optional `relatedObservations` / `lastSeenAt` / `dedupStatus`.
+
+Timestamp meanings:
+
+| Field | Meaning |
+| --- | --- |
+| `postedAt` | Source-claimed listing event time. Used for age. Never replaced by `observedAt` |
+| `expiresAt` | Source-claimed listing expiry. Optional |
+| `observedAt` | When SkillPulse observed the source record |
+| `ingestedAt` | When SkillPulse accepted the record into the pipeline (contract). Raw storage uses `receivedAt` for persist time |
+| `lastSeenAt` | Derived: explicit value, else max `ingestedAt` of the candidate and related sightings. Not a Prisma column |
+
+| Status | When |
+| --- | --- |
+| `STALE` | `expiresAt <= referenceTime`, or `postedAt` age `>= staleAfterMs` |
+| `AGING` | not expired, and `agingAfterMs <= age < staleAfterMs` |
+| `FRESH` | not expired, and age `< agingAfterMs`, or `expiresAt` still in the future with no `postedAt` |
+| `UNKNOWN` | no `postedAt` and no `expiresAt`; or `postedAt` after reference time; or `observedAt` after reference time (unless already `STALE`) |
+
+Default policy: `agingAfterMs` = 14 days, `staleAfterMs` = 45 days. Bounds are inclusive at the threshold. Age is `referenceTime - postedAt`. Comparisons use UTC milliseconds (`Date#getTime`). `expiresAt === referenceTime` is `STALE`.
+
+`ingestedAt < observedAt` remains a Phase 5.5 rejection. Freshness does not re-check it.
+
+Deduplication status may be echoed on the result. `DUPLICATE` is not stale. `UNIQUE` is not fresh.
+
 ### Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, freshness, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 
