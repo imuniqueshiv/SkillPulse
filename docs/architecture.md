@@ -20,11 +20,11 @@ The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://loca
 
 A FastAPI service exists at `services/intelligence` (`:8000`). It is optional for local web + API development and is not called by Express today.
 
-Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phase 5.1 registers data sources; Phase 5.2 defines the job ingestion contract; Phase 5.3 stores raw observations; Phase 5.4 maps a test-only fixture through that contract; Phase 5.5 validates contract records; Phase 5.6 classifies duplicate observations; Phase 5.7 classifies freshness; Phase 5.8 records job-posting Evidence against DataSource; Phase 5.9 resolves supplied skill terms through the existing taxonomy `resolveTerm`. No external source connector, ingested-job persistence, job intelligence, or NLP is implemented yet.
+Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phase 5.1 registers data sources; Phase 5.2 defines the job ingestion contract; Phase 5.3 stores raw observations; Phase 5.4 maps a test-only fixture through that contract; Phase 5.5 validates contract records; Phase 5.6 classifies duplicate observations; Phase 5.7 classifies freshness; Phase 5.8 records job-posting Evidence against DataSource; Phase 5.9 resolves supplied skill terms through the existing taxonomy `resolveTerm`; Phase 5.10 persists canonical Job and JobSkill rows. No external source connector, job intelligence, or NLP is implemented yet.
 
 ```text
 DataSource registry (5.1)
         │
         ▼
-raw observation (5.3) → adapter (5.4) → contract (5.2) → validation (5.5) → deduplication (5.6) → freshness (5.7) → provenance / evidence (5.8) → skill normalization (5.9) → later pipeline
+raw observation (5.3) → adapter (5.4) → contract (5.2) → validation (5.5) → deduplication (5.6) → freshness (5.7) → provenance / evidence (5.8) → skill normalization (5.9) → canonical Job persistence (5.10) → later pipeline
 ```

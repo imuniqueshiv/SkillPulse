@@ -65,7 +65,6 @@ test("raw observation storage, provenance, checksum and no Job writes", async (t
 
   const prisma = getPrisma();
   const source = await createTestSource();
-  const jobsBefore = await prisma.job.count();
   const payload = {
     heading: "Machine Operator",
     skills: "React.js / React JS",
@@ -128,8 +127,7 @@ test("raw observation storage, provenance, checksum and no Job writes", async (t
   assert.equal(repeat.externalId, null);
   assert.equal(repeat.status, "RECEIVED");
 
-  const jobsAfter = await prisma.job.count();
-  assert.equal(jobsAfter, jobsBefore);
+  assert.equal(await prisma.job.count({ where: { sourceId: source.id } }), 0);
 
   await assert.rejects(
     () =>

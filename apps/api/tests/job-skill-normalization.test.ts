@@ -52,15 +52,6 @@ function validated(payload: Record<string, unknown> = {}) {
   );
 }
 
-async function jobWrites() {
-  const prisma = getPrisma();
-  const [job, jobSkill] = await Promise.all([
-    prisma.job.count(),
-    prisma.jobSkill.count(),
-  ]);
-  return { job, jobSkill };
-}
-
 async function assertTermNotMaterialized(term: string) {
   const normalized = normalizeTerm(term);
   if (!normalized) {
@@ -81,7 +72,6 @@ test("canonical, alias, case, whitespace, and unresolved terms", async (t) => {
   }
 
   const validation = validated();
-  const jobsBefore = await jobWrites();
   const result = await normalizeJobObservationSkills({
     observationId: "obs-skills-1",
     validation,
@@ -137,7 +127,6 @@ test("canonical, alias, case, whitespace, and unresolved terms", async (t) => {
   assert.equal(result.observationId, "obs-skills-1");
   await assertTermNotMaterialized("java scriptt");
   await assertTermNotMaterialized("SomeObscureToolXYZ");
-  assert.deepEqual(await jobWrites(), jobsBefore);
 });
 
 test("repeated terms collapse to one canonical Skill; inputs are not mutated", async (t) => {
@@ -315,7 +304,6 @@ test("DRAFT and ARCHIVED taxonomy entries do not resolve; DEPRECATED does", asyn
     },
   });
 
-  const jobsBefore = await jobWrites();
   const result = await normalizeJobObservationSkills({
     observationId: "obs-status",
     validation: validated(),
@@ -342,5 +330,4 @@ test("DRAFT and ARCHIVED taxonomy entries do not resolve; DEPRECATED does", asyn
   });
   assert.equal(stillArchived.status, "ARCHIVED");
   assert.equal(stillDraft.status, "DRAFT");
-  assert.deepEqual(await jobWrites(), jobsBefore);
 });

@@ -38,7 +38,9 @@ external source format
         ↓
  skill normalization (5.9)
         ↓
- canonical Job persistence       ← not implemented
+ canonical Job persistence (5.10)
+        ↓
+ later integration              ← not implemented
 ```
 
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
@@ -243,9 +245,27 @@ Lookup order (Phase 4):
 
 `AMBIGUOUS` is not emitted: `Skill.canonicalName` and `SkillAlias.normalizedTerm` are unique, and `resolveTerm` never picks a candidate.
 
+## Canonical Job persistence (Phase 5.10)
+
+**Skill normalization resolves taxonomy. Persistence writes canonical `Job` / `JobSkill`.** This is the first phase allowed to create those rows.
+
+**Input:** `observationId`, Phase 5.5 `JobValidationResult`, optional Phase 5.9 `JobSkillNormalizationResult`. This module does not call `validateJobIngestion`, `deduplicateJobObservation`, `evaluateJobFreshness`, `recordJobPostingEvidence`, or `resolveTerm`.
+
+**Eligibility:** `VALID` and `REVIEW` may persist. `REJECTED` is refused (`AppError` 400). `Job` has no review/pending column; REVIEW vs VALID remains on the validation result and on Phase 5.8 Evidence metadata.
+
+**Canonical identity:** resolved `DataSource.id` + required `externalId` (source-scoped). Missing `externalId` is refused; one is never invented. Same source + `externalId` reuses the existing Job (first write wins for Job fields). The same `externalId` under a different source is a different Job. Dedup/freshness statuses are not stored and do not skip persistence: `DUPLICATE` reuses the Job row when that identity already exists; `STALE` still persists.
+
+**Mapping:** `title`, `description` (contract field, not the raw payload JSON), `companyName` ← `employerName`, `sourceId`, `externalId`, `postedAt`, `expiresAt`, `sourceUrl`, `isDemo` ← DataSource. `locationId` / `occupationId` / `sectorId` stay null unless a later phase supplies canonical IDs. Unnormalized location strings are not turned into `Location` rows.
+
+**JobSkill:** only `resolvedSkills[].skillId`. Unresolved terms are not materialized. `importance` / `proficiency` stay null. Unique `(jobId, skillId)`; `createMany({ skipDuplicates: true })`. Deprecated skills persist as resolved by Phase 4/5.9. Taxonomy rows are not created or updated.
+
+**Transaction:** Job create + JobSkill writes run in `prisma.$transaction`. Concurrent creates rely on `@@unique([sourceId, externalId])` (P2002 → load existing).
+
+**Not written:** Evidence, raw observations, Skill, SkillAlias, TaxonomyMapping.
+
 ## Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, canonical Job / JobSkill persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, full ingestion orchestration (5.11), Maharashtra dataset ingest (5.12), NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 

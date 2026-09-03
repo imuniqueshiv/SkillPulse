@@ -234,9 +234,6 @@ test("persisted Evidence links DataSource, is idempotent, and does not create Jo
   });
   createdRawIds.push(raw.record.id);
 
-  const jobsBefore = await prisma.job.count();
-  const skillsBefore = await prisma.jobSkill.count();
-  const evidenceBefore = await prisma.evidence.count();
   const validation = validated(
     basePayload({
       sourceId: source.id,
@@ -300,9 +297,12 @@ test("persisted Evidence links DataSource, is idempotent, and does not create Jo
   assert.equal(metadata.payload, undefined);
   assert.equal(metadata.description, undefined);
   assert.deepEqual(unchangedRaw.payload, rawPayload);
-  assert.equal(await prisma.job.count(), jobsBefore);
-  assert.equal(await prisma.jobSkill.count(), skillsBefore);
-  assert.equal(await prisma.evidence.count(), evidenceBefore + 2);
+  assert.equal(await prisma.job.count({ where: { sourceId: source.id } }), 0);
+  assert.equal(
+    await prisma.jobSkill.count({ where: { job: { sourceId: source.id } } }),
+    0,
+  );
+  assert.equal(await prisma.evidence.count({ where: { sourceId: source.id } }), 2);
 
   await assert.rejects(
     () =>
@@ -319,7 +319,7 @@ test("persisted Evidence links DataSource, is idempotent, and does not create Jo
       error.statusCode === 400 &&
       error.message === "Job observation is not eligible for provenance",
   );
-  assert.equal(await prisma.evidence.count(), evidenceBefore + 2);
+  assert.equal(await prisma.evidence.count({ where: { sourceId: source.id } }), 2);
 
   await assert.rejects(
     () =>

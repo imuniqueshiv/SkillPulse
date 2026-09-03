@@ -108,4 +108,4 @@ Query: `q`, `type`, `domain`, `accessMethod`, `geographicScope`, `active`, `isDe
 
 See [data-sources.md](data-sources.md).
 
-There is no ingestion HTTP API. Phases 5.2–5.9 are internal: job ingestion contract, `storeRawObservation`, an in-process adapter registry, `validateJobIngestion`, `deduplicateJobObservation`, `evaluateJobFreshness`, `buildJobPostingProvenance`, `recordJobPostingEvidence`, and `normalizeJobObservationSkills`. They do not fetch, scrape, or write canonical Jobs.
+There is no ingestion HTTP API. Phases 5.2–5.10 are internal: job ingestion contract, `storeRawObservation`, an in-process adapter registry, `validateJobIngestion`, `deduplicateJobObservation`, `evaluateJobFreshness`, `buildJobPostingProvenance`, `recordJobPostingEvidence`, `normalizeJobObservationSkills`, and `persistCanonicalJob`. They do not fetch or scrape.

@@ -37,7 +37,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
-A validated ingestion contract record is not written to `Job` in Phases 5.2–5.9. Phase 5.9 resolves supplied skill terms against canonical `Skill` / `SkillAlias` via existing `resolveTerm`; it does not create JobSkill rows. See [data-sources.md](data-sources.md).
+A validated ingestion contract record is written to `Job` in Phase 5.10 (`persistCanonicalJob`), source-scoped by `sourceId` + `externalId`. Unresolved skill terms are not stored as `JobSkill`. See [data-sources.md](data-sources.md).
 
 ## Commands
 
