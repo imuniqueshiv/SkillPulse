@@ -30,14 +30,14 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | CurriculumSkill | Curriculum ↔ Skill |
 | DataSource | Registry of external/internal sources (not ingestion). Jobs, Evidence and RawIngestionRecord point here |
 | RawIngestionRecord | Preserved source observation (payload as received). Not a Job, not an adapter, not intelligence |
-| Evidence | Observation provenance and optional metadata |
+| Evidence | Observation provenance: `sourceId` → DataSource, optional `reference` / `observedAt` / `metadata`. Job-ingestion provenance uses `type=JOB_POSTING` and `reference=raw-ingestion:<observationId>` (not a foreign key) |
 | DemandObservation | Stored demand signal (not the scoring engine) |
 | SkillGap | Stored gap result (not the gap engine) |
 | Recommendation | Stored recommendation (not the recommendation engine) |
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
-A validated ingestion contract record is not written to `Job` in Phases 5.2–5.7. Freshness is a derived classification; it does not create, merge, or delete Jobs or raw observations. See [data-sources.md](data-sources.md).
+A validated ingestion contract record is not written to `Job` in Phases 5.2–5.8. Freshness is a derived classification; Evidence is provenance for a source observation. Neither creates, merges, or deletes Jobs or raw observations. See [data-sources.md](data-sources.md).
 
 ## Commands
 

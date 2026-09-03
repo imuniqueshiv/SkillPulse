@@ -34,7 +34,9 @@ external source format
         ↓
  freshness (5.7)
         ↓
- evidence / taxonomy  ← not implemented
+ provenance / evidence (5.8)
+        ↓
+ taxonomy  ← not implemented
         ↓
  canonical Job persistence       ← not implemented
 ```
@@ -42,7 +44,7 @@ external source format
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
 
 ```text
-RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  FRESHNESS  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  FRESHNESS  ≠  EVIDENCE  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
 ```
 
 ### Envelope
@@ -193,9 +195,35 @@ Default policy: `agingAfterMs` = 14 days, `staleAfterMs` = 45 days. Bounds are i
 
 Deduplication status may be echoed on the result. `DUPLICATE` is not stale. `UNIQUE` is not fresh.
 
-### Intentionally not implemented
+## Job posting provenance / Evidence (Phase 5.8)
 
-External connectors, scraping, CSV/file ingest, Evidence processing, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+**Freshness classifies temporal status. Evidence records where an observation came from.** They are not the same thing.
+
+Phase 5.8 reuses the existing `Evidence` and `DataSource` models. It does not add a Prisma relation to `RawIngestionRecord` or `Job`.
+
+| Question | Where it lives |
+| --- | --- |
+| Which source produced this? | `Evidence.sourceId` → `DataSource.id` |
+| What kind of evidence? | `Evidence.type` = existing `JOB_POSTING` |
+| What source/raw reference? | `Evidence.reference` = `raw-ingestion:<observationId>` |
+| When was it observed? | `Evidence.observedAt` = contract `payload.observedAt` |
+| Extra provenance? | `Evidence.metadata` (small JSON; not a second raw store) |
+
+**Input:** `observationId` (caller-supplied; typically `RawIngestionRecord.id`), Phase 5.5 `JobValidationResult` (`VALID` or `REVIEW`), optional `dedupStatus` / `freshnessStatus`. `REJECTED` is not accepted ingestion evidence (`AppError` 400). This module does not call `validateJobIngestion`.
+
+**Builder** (`buildJobPostingProvenance`): pure, no I/O, no `Date.now()`. Copies `observedAt` from the contract payload. Records `ingestedAt` only inside metadata so it cannot be confused with `observedAt`. Does not copy title, description, salary, or the raw payload.
+
+**Persist** (`recordJobPostingEvidence`): resolves `DataSource` by `sourceId` (UUID) or `sourceCode` the same way raw storage does. Idempotent lookup on `(sourceId, type=JOB_POSTING, reference)`. If a row exists, it is returned unchanged (first write wins). Historical Evidence is not updated. No unique constraint was added.
+
+`sourceUrl` is recorded as the source supplied it. It is not fetched and not independently verified.
+
+`DUPLICATE` (5.6) and `STALE` (5.7) still produce Evidence. Duplicate does not delete the raw observation. Each distinct `observationId` gets its own reference and can persist as a separate Evidence row.
+
+`confidence` is left null. Canonical `Job` / `JobSkill` are not written.
+
+## Intentionally not implemented
+
+External connectors, scraping, CSV/file ingest, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 
