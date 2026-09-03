@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "tsx --test tests/health.test.ts tests/auth.test.ts tests/normalize.test.ts tests/taxonomy.test.ts tests/data-source.test.ts tests/ingestion-contract.test.ts tests/raw-ingestion.test.ts tests/job-adapter.test.ts tests/job-validation.test.ts tests/job-deduplication.test.ts tests/job-freshness.test.ts tests/job-provenance.test.ts tests/job-skill-normalization.test.ts tests/job-persistence.test.ts tests/job-ingestion-pipeline.test.ts tests/state-source-ingestion.test.ts",
+    "test": "tsx --test --test-concurrency=1 tests/health.test.ts tests/auth.test.ts tests/normalize.test.ts tests/taxonomy.test.ts tests/data-source.test.ts tests/ingestion-contract.test.ts tests/raw-ingestion.test.ts tests/job-adapter.test.ts tests/job-validation.test.ts tests/job-deduplication.test.ts tests/job-freshness.test.ts tests/job-provenance.test.ts tests/job-skill-normalization.test.ts tests/job-persistence.test.ts tests/job-ingestion-pipeline.test.ts tests/state-source-ingestion.test.ts tests/job-text.test.ts tests/skill-extraction.test.ts tests/experience-qualification.test.ts tests/occupation-sector.test.ts tests/job-intelligence.test.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "prisma db seed",

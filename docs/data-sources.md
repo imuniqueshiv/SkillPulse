@@ -365,7 +365,7 @@ No all-or-nothing batch transaction. No cron, queues, or workers.
 
 ## Intentionally not implemented
 
-Live portal/API fetch, scraping, scheduled ingestion, NLP/skill extraction, demand/supply intelligence, curriculum, and additional state sources beyond the Maharashtra fixture adapter.
+Live portal/API fetch, scraping, scheduled ingestion, LLM/NLP APIs, demand/supply intelligence, curriculum, and additional state sources beyond the Maharashtra fixture adapter. Deterministic per-job skill extraction in Phase 6 is not an ingestion connector.
 
 ## What a DataSource is
 

@@ -62,7 +62,7 @@ Lookup order for `GET /api/v1/taxonomy/normalize?term=`:
 
 Typos, fuzzy matches and embeddings are out of scope.
 
-Phase 5.9 job ingestion calls this same `resolveTerm`. Phase 5.10 persists `JobSkill` only for already-resolved skill IDs. See [data-sources.md](data-sources.md).
+Phase 5.9 job ingestion calls this same `resolveTerm`. Phase 5.10 persists `JobSkill` only for already-resolved skill IDs. Phase 6 skill extraction finds candidate terms in job text, then calls the same `resolveTerm` — it does not add a second matcher. See [data-sources.md](data-sources.md) and [data-model.md](data-model.md).
 
 ### Examples
 

@@ -20,7 +20,23 @@ The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://loca
 
 A FastAPI service exists at `services/intelligence` (`:8000`). It is optional for local web + API development and is not called by Express today.
 
-Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phases 5.1–5.10 provide source registry through canonical Job persistence. Phase 5.11 orchestrates those stages via `ingestJobObservation`. Phase 5.12 adds a state-agnostic source-adapter layer; Maharashtra is the first implementation, not a Maharashtra-only core. No live external fetch, job intelligence, or NLP is implemented.
+Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phases 5.1–5.12 provide source registry through state-agnostic job ingestion. Phase 6 derives **per-job** intelligence from a canonical Job. It does not score market demand, forecast, recommend, or aggregate across jobs.
+
+```text
+canonical Job (observed)
+        ↓
+prepare text → extract skill terms → resolveTerm (Phase 5.9 / 4)
+        ↓
+classify occupation → derive sector
+        ↓
+parse experience / qualification if caller supplies text
+        ↓
+JobIntelligenceResult  (optional JobIntelligence row)
+```
+
+Phase 6 is state-agnostic and source-agnostic. It does not read `RawIngestionRecord.payload`. Canonical Job has no experience or qualification columns; those parsers accept optional caller-supplied strings and otherwise return UNKNOWN.
+
+See [data-model.md](data-model.md).
 
 ```text
 DataSource registry (5.1)

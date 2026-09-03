@@ -154,6 +154,11 @@ enum SkillOccupationRelation {
   OPTIONAL
 }
 
+enum JobIntelligenceStatus {
+  PROCESSED
+  FAILED
+}
+
 model Organization {
   id        String           @id @default(uuid())
   name      String
@@ -344,11 +349,12 @@ model Job {
   createdAt    DateTime  @default(now()) @db.Timestamptz
   updatedAt    DateTime  @updatedAt @db.Timestamptz
 
-  source     DataSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
-  location   Location?   @relation(fields: [locationId], references: [id], onDelete: SetNull)
-  occupation Occupation? @relation(fields: [occupationId], references: [id], onDelete: SetNull)
-  sector     Sector?     @relation(fields: [sectorId], references: [id], onDelete: SetNull)
-  skills     JobSkill[]
+  source              DataSource?        @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  location            Location?          @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  occupation          Occupation?        @relation(fields: [occupationId], references: [id], onDelete: SetNull)
+  sector              Sector?            @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  skills              JobSkill[]
+  intelligenceRecords JobIntelligence[]
 
   @@unique([sourceId, externalId])
   @@index([sourceId])
@@ -371,6 +377,22 @@ model JobSkill {
 
   @@unique([jobId, skillId])
   @@index([skillId])
+}
+
+model JobIntelligence {
+  id               String                @id @default(uuid())
+  jobId            String
+  processorVersion String
+  status           JobIntelligenceStatus
+  result           Json
+  createdAt        DateTime              @default(now()) @db.Timestamptz
+  updatedAt        DateTime              @updatedAt @db.Timestamptz
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, processorVersion])
+  @@index([jobId])
+  @@index([status])
 }
 
 model Course {

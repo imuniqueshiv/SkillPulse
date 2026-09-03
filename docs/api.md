@@ -109,3 +109,5 @@ Query: `q`, `type`, `domain`, `accessMethod`, `geographicScope`, `active`, `isDe
 See [data-sources.md](data-sources.md).
 
 There is no ingestion HTTP API. Phases 5.2–5.12 are internal. `ingestJobObservation` runs one observation through adapter → raw storage → validation → dedup → freshness → provenance → skill normalization → canonical Job persistence. `ingestSourceDataset` iterates a source dataset through a registered adapter into that same function. Neither fetches nor scrapes.
+
+Phase 6 (`processJobIntelligence`) is also internal. It does not add HTTP routes, demand scores, or dashboards.

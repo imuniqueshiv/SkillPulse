@@ -34,10 +34,21 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | DemandObservation | Stored demand signal (not the scoring engine) |
 | SkillGap | Stored gap result (not the gap engine) |
 | Recommendation | Stored recommendation (not the recommendation engine) |
+| JobIntelligence | Derived Phase 6 analysis of one Job (`processorVersion` + result JSON). Not a Job, not demand scoring |
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
 A validated ingestion contract record is written to `Job` in Phase 5.10. Phase 5.11 (`ingestJobObservation`) stores a raw observation first, then may persist that Job. Phase 5.12 (`ingestSourceDataset`) maps a source dataset through a source adapter into that same pipeline. There is no State table and no Maharashtra-specific Job model: geographic scope stays on `DataSource.geographicScope` and optional observation `location` fields. See [data-sources.md](data-sources.md).
+
+## Job intelligence (Phase 6)
+
+`processJobIntelligence` reads a canonical Job (`title`, `description`, `JobSkill`) and writes optional `JobIntelligence` keyed by `(jobId, processorVersion)` currently `phase6-v1`. Re-running the same pair upserts one row.
+
+It does **not** set `Job.occupationId` / `Job.sectorId`. Extraction vs normalization: extractors emit raw terms; `resolveTerm` decides RESOLVED / UNRESOLVED. Occupation classification is conservative (ties and weak CORE-skill votes stay UNCLASSIFIED). Sector is derived only from a classified occupation’s existing `Occupation.sector` relation.
+
+Experience and qualification live on the Phase 5.2 contract but are **not** persisted on `Job`. Phase 6 parsers run only if the caller passes `experienceText` / `qualificationText`.
+
+Phase 6 does not implement demand analytics, skill-gap analysis, forecasting, recommendations, curriculum intelligence, dashboards, or scheduled workers.
 
 ## Commands
 
