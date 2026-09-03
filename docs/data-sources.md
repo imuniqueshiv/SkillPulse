@@ -36,7 +36,7 @@ external source format
         ↓
  provenance / evidence (5.8)
         ↓
- taxonomy  ← not implemented
+ skill normalization (5.9)
         ↓
  canonical Job persistence       ← not implemented
 ```
@@ -44,7 +44,7 @@ external source format
 Code: `apps/api/src/modules/ingestion/`. Runtime validation is Zod (`parseJobIngestionRecord`). There is no ingestion HTTP API and no external connector.
 
 ```text
-RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  FRESHNESS  ≠  EVIDENCE  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
+RAW DATA  ≠  INGESTION CONTRACT  ≠  VALIDATION  ≠  DEDUPLICATION  ≠  FRESHNESS  ≠  EVIDENCE  ≠  SKILL NORMALIZATION  ≠  CANONICAL JOB  ≠  BUSINESS INTELLIGENCE
 ```
 
 ### Envelope
@@ -221,9 +221,31 @@ Phase 5.8 reuses the existing `Evidence` and `DataSource` models. It does not ad
 
 `confidence` is left null. Canonical `Job` / `JobSkill` are not written.
 
+## Job skill normalization (Phase 5.9)
+
+**Evidence records where an observation came from. Skill normalization interprets supplied skill terms against the Phase 4 taxonomy.** They are not the same thing.
+
+`JobObservation` has no skills field. The test fixture may store an unparsed `sourceMetadata.skillsText` blob; Phase 5.9 does **not** extract skills from title, description, or that blob.
+
+**Input:** `observationId`, Phase 5.5 `JobValidationResult` (`VALID` or `REVIEW`), and skill terms. Terms come from explicit `skills` (`string` or `{ term }`), or, if that array is omitted, from `sourceMetadata.skills` when it is already a `string[]`. `REJECTED` is not normalized (`AppError` 400). This module does not call `validateJobIngestion`.
+
+**Resolver:** each term is passed to existing `resolveTerm` in `taxonomy.service.ts` (which uses `normalizeTerm`). There is no second matcher, no NLP, no fuzzy/embedding search.
+
+Lookup order (Phase 4):
+
+1. Exact `Skill.canonicalName` (`ACTIVE` or `DEPRECATED`)
+2. Exact `SkillAlias.normalizedTerm` (skill must be `ACTIVE` or `DEPRECATED`)
+3. `UNRESOLVED`
+
+`DRAFT` and `ARCHIVED` skills do not resolve. Original `inputTerm` is preserved separately from `canonicalName`. Repeated terms that resolve to the same Skill are collapsed in `resolvedSkills` (still not persisted as `JobSkill`).
+
+`DUPLICATE` (5.6) and `STALE` (5.7) do not change matching. Evidence rows are not created or updated.
+
+`AMBIGUOUS` is not emitted: `Skill.canonicalName` and `SkillAlias.normalizedTerm` are unique, and `resolveTerm` never picks a candidate.
+
 ## Intentionally not implemented
 
-External connectors, scraping, CSV/file ingest, taxonomy normalization of ingested jobs, canonical Job persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
+External connectors, scraping, CSV/file ingest, canonical Job / JobSkill persistence from this pipeline, NLP, demand/supply intelligence, queues, and scheduled jobs.
 
 ## What a DataSource is
 

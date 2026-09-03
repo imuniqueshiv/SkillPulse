@@ -62,6 +62,8 @@ Lookup order for `GET /api/v1/taxonomy/normalize?term=`:
 
 Typos, fuzzy matches and embeddings are out of scope.
 
+Phase 5.9 job ingestion calls this same `resolveTerm`. It does not add a second matcher and does not persist `JobSkill`. See [data-sources.md](data-sources.md).
+
 ### Examples
 
 | Input | Normalized | Result |
