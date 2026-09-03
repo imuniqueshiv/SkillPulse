@@ -119,7 +119,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
       {/* Mobile Backdrop */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden transition-all duration-150 ease-out"
+          className="fixed inset-0 bg-black/30 z-30 lg:hidden transition-all duration-150 ease-out"
           onClick={onMobileClose}
         />
       )}

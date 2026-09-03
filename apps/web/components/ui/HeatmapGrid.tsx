@@ -16,14 +16,20 @@ export function HeatmapGrid({
   className = '',
 }: HeatmapGridProps) {
   const getCellColor = (val: number) => {
-    const opacity = Math.max(0.15, val / 100);
+    const opacity = Math.max(0.2, val / 100);
     if (val < 40) {
-      return `hsla(0, 75%, 60%, ${opacity})`; // Danger / High gap
+      return `hsla(0, 65%, 45%, ${opacity})`; // Danger / High gap — darker for light bg
     }
     if (val < 70) {
-      return `hsla(38, 92%, 55%, ${opacity})`; // Warning / Mid gap
+      return `hsla(30, 80%, 40%, ${opacity})`; // Warning / Mid gap
     }
-    return `hsla(145, 65%, 50%, ${opacity})`; // Success / Low gap
+    return `hsla(142, 55%, 35%, ${opacity})`; // Success / Low gap
+  };
+
+  const getCellTextColor = (val: number) => {
+    // Use white text on dark/saturated cells, dark text on light cells
+    const opacity = Math.max(0.2, val / 100);
+    return opacity > 0.5 ? '#FFFFFF' : '#1F2937';
   };
 
   return (
@@ -55,8 +61,11 @@ export function HeatmapGrid({
               {(data[rIdx] || []).map((val, cIdx) => (
                 <div
                   key={cIdx}
-                  className="sp-heatmap-cell h-8 w-8 rounded-[var(--sp-radius-sm)] flex items-center justify-center text-[0.6875rem] font-mono font-semibold text-[var(--sp-text-primary)] transition-all duration-150"
-                  style={{ backgroundColor: getCellColor(val) }}
+                  className="sp-heatmap-cell h-8 w-8 rounded-[var(--sp-radius-sm)] flex items-center justify-center text-[0.6875rem] font-mono font-semibold transition-all duration-150"
+                  style={{
+                    backgroundColor: getCellColor(val),
+                    color: getCellTextColor(val),
+                  }}
                   data-tooltip={`${yLabels[rIdx]} - ${xLabels[cIdx]}: ${val}%`}
                   title={`${yLabels[rIdx]} - ${xLabels[cIdx]}: ${val}%`}
                 >

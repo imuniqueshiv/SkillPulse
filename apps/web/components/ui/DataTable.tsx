@@ -35,11 +35,11 @@ export function DataTable({
     >
       <table className="w-full border-collapse text-left">
         <thead>
-          <tr className="bg-[var(--sp-bg-surface)] border-b border-[var(--sp-border)]">
+          <tr style={{ background: '#003B73' }}>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-4 py-2.5 text-[0.75rem] font-medium text-[var(--sp-text-tertiary)] uppercase tracking-wider ${getAlignClass(col.align)}`}
+                className={`px-4 py-2.5 text-[0.75rem] font-medium text-white uppercase tracking-wider ${getAlignClass(col.align)}`}
               >
                 {col.label}
               </th>
@@ -51,6 +51,7 @@ export function DataTable({
             <tr
               key={idx}
               className="transition-colors duration-150 ease-out hover:bg-[var(--sp-bg-hover)]"
+              style={{ background: idx % 2 === 1 ? '#F8FAFC' : undefined }}
             >
               {columns.map((col) => (
                 <td
