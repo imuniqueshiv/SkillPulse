@@ -10,3 +10,4 @@ export * from './ChartBar';
 export * from './EmptyState';
 export * from './Sidebar';
 export * from './TopBar';
+export * from '../Navbar';
