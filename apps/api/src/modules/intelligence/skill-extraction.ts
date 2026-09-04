@@ -58,7 +58,7 @@ export function isBoundarySafeMatch(
   return beforeOk && afterOk;
 }
 
-function findSurfaceStarts(text: string, surface: string): number[] {
+export function findBoundaryStarts(text: string, surface: string): number[] {
   if (!surface) {
     return [];
   }
@@ -125,7 +125,7 @@ function collectFromField(
   });
 
   for (const entry of sorted) {
-    for (const start of findSurfaceStarts(text, entry.surface)) {
+    for (const start of findBoundaryStarts(text, entry.surface)) {
       const end = start + entry.surface.length;
       if (overlaps({ start, end }, occupied)) {
         continue;

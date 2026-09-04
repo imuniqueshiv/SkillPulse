@@ -3,6 +3,8 @@ import {
   INTELLIGENCE_CONFIDENCE_TIER,
   SKILL_EXTRACTION_METHOD,
   SKILL_INTELLIGENCE_STATUS,
+  SKILL_REQUIREMENT_LEVEL,
+  SKILL_REQUIREMENT_METHOD,
   type ExtractedSkillCandidate,
   type IntelligenceConfidenceTier,
   type JobIntelligenceSkill,
@@ -58,6 +60,9 @@ export async function normalizeExtractedSkills(
           evidence: candidate.evidence,
           evidenceStart: candidate.evidenceStart,
           evidenceEnd: candidate.evidenceEnd,
+          requirementLevel: SKILL_REQUIREMENT_LEVEL.MENTIONED,
+          requirementMethod: SKILL_REQUIREMENT_METHOD.DEFAULT_MENTIONED,
+          requirementConfidenceTier: INTELLIGENCE_CONFIDENCE_TIER.LOW,
         });
         continue;
       }
@@ -81,10 +86,13 @@ export async function normalizeExtractedSkills(
         sourceField: candidate.sourceField,
         extractionMethod: candidate.extractionMethod,
         extractionMethods: [candidate.extractionMethod],
-        confidenceTier: confidenceFor([candidate.extractionMethod]),
+        confidenceTier: INTELLIGENCE_CONFIDENCE_TIER.LOW,
         evidence: candidate.evidence,
         evidenceStart: candidate.evidenceStart,
         evidenceEnd: candidate.evidenceEnd,
+        requirementLevel: SKILL_REQUIREMENT_LEVEL.MENTIONED,
+        requirementMethod: SKILL_REQUIREMENT_METHOD.DEFAULT_MENTIONED,
+        requirementConfidenceTier: INTELLIGENCE_CONFIDENCE_TIER.LOW,
       });
     } else {
       const existing = unresolved.get(key);

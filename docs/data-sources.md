@@ -367,6 +367,8 @@ No all-or-nothing batch transaction. No cron, queues, or workers.
 
 Live portal/API fetch, scraping, scheduled ingestion, LLM/NLP APIs, demand/supply intelligence, curriculum, and additional state sources beyond the Maharashtra fixture adapter. Deterministic per-job skill extraction in Phase 6 is not an ingestion connector.
 
+Phase 6.12 validation uses the same **synthetic** Mahaswayam fixture as Phase 5.12. It is EVALUATION/FIXTURE input into the state-agnostic intelligence pipeline, not real Maharashtra labour-market evidence, and it does not add Maharashtra-specific intelligence rules.
+
 ## What a DataSource is
 
 A registry row is a named, stable source identity. It is not a credential store and not a live feed.

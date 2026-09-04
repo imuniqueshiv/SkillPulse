@@ -42,11 +42,19 @@ A validated ingestion contract record is written to `Job` in Phase 5.10. Phase 5
 
 ## Job intelligence (Phase 6)
 
-`processJobIntelligence` reads a canonical Job (`title`, `description`, `JobSkill`) and writes optional `JobIntelligence` keyed by `(jobId, processorVersion)` currently `phase6-v1`. Re-running the same pair upserts one row.
+`processJobIntelligence` reads a canonical Job (`title`, `description`, `JobSkill`) and writes optional `JobIntelligence` keyed by `(jobId, processorVersion)` currently `phase6-v1`. Re-running the same pair upserts one PROCESSED row. Canonical Job and `JobSkill` are not used as a substitute for derived intelligence and are not rewritten by Phase 6.
+
+A FAILED persist **does not overwrite** an existing PROCESSED result for that `(jobId, processorVersion)`. A different `processorVersion` may store a separate row so later algorithms can coexist.
 
 It does **not** set `Job.occupationId` / `Job.sectorId`. Extraction vs normalization: extractors emit raw terms; `resolveTerm` decides RESOLVED / UNRESOLVED. Occupation classification is conservative (ties and weak CORE-skill votes stay UNCLASSIFIED). Sector is derived only from a classified occupation’s existing `Occupation.sector` relation.
 
+Skill requirement levels (REQUIRED / PREFERRED / OPTIONAL / MENTIONED) are derived from local clause evidence around each skill, not from mention frequency. Missing requirement evidence stays MENTIONED.
+
 Experience and qualification live on the Phase 5.2 contract but are **not** persisted on `Job`. Phase 6 parsers run only if the caller passes `experienceText` / `qualificationText`.
+
+`JobIntelligence.result` stores derived fields and evidence only. It must not copy `RawIngestionRecord.payload`, credentials, headers, or network responses.
+
+**EVALUATION DATA** (`data/sample/evaluation/`) is a manual benchmark for this pipeline. It is not observed data and not labour-market evidence. The Maharashtra sample under `data/sample/ingestion/` remains **SYNTHETIC FIXTURE DATA**.
 
 Phase 6 does not implement demand analytics, skill-gap analysis, forecasting, recommendations, curriculum intelligence, dashboards, or scheduled workers.
 

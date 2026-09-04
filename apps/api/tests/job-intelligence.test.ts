@@ -143,9 +143,16 @@ test("end-to-end job intelligence uses taxonomy, is idempotent, and does not mut
   assert.ok(react);
   assert.ok(react.contributingTerms.includes("React.js"));
   assert.ok(react.contributingTerms.includes("ReactJS"));
+  assert.equal(react.requirementLevel, "MENTIONED");
+  assert.ok(["HIGH", "MEDIUM", "LOW"].includes(react.confidenceTier));
   assert.ok(
     first.intelligence.skills.some(
       (row) => row.rawTerm === "PostgreSQL" && row.status === SKILL_INTELLIGENCE_STATUS.UNRESOLVED,
+    ),
+  );
+  assert.ok(
+    first.intelligence.skills.every((row) =>
+      ["REQUIRED", "PREFERRED", "OPTIONAL", "MENTIONED"].includes(row.requirementLevel),
     ),
   );
   assert.equal(first.intelligence.occupation.status, "CLASSIFIED");
@@ -192,7 +199,33 @@ test("end-to-end job intelligence uses taxonomy, is idempotent, and does not mut
     false,
   );
   assert.equal(ambiguous.intelligence.experience.status, "UNPARSED");
+  assert.equal(ambiguous.intelligence.experience.extractionMethod, "CALLER_TEXT");
   assert.equal(ambiguous.intelligence.qualifications[0]?.status, "UNPARSED");
+
+  const missingOptional = await processJobIntelligence({
+    job: { id: complete.id, title: "Clerk", description: "Office work" },
+  });
+  assert.equal(missingOptional.intelligence.experience.status, "UNKNOWN");
+  assert.equal(missingOptional.intelligence.qualifications[0]?.status, "UNKNOWN");
+  assert.equal(missingOptional.intelligence.occupation.status, "UNCLASSIFIED");
+
+  const requiredPython = await processJobIntelligence({
+    job: {
+      id: complete.id,
+      title: "Role",
+      description: "Python is required. React.js would be preferred.",
+    },
+  });
+  assert.equal(
+    requiredPython.intelligence.skills.find((row) => row.canonicalName === "python")
+      ?.requirementLevel,
+    "REQUIRED",
+  );
+  assert.equal(
+    requiredPython.intelligence.skills.find((row) => row.canonicalName === "react")
+      ?.requirementLevel,
+    "PREFERRED",
+  );
 
   const draft = await prisma.skill.create({
     data: {
