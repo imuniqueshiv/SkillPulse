@@ -65,6 +65,9 @@ function resolved(skillId: string, name: string): JobIntelligenceSkill {
     extractionMethod: "CANONICAL_NAME_MATCH",
     extractionMethods: ["CANONICAL_NAME_MATCH"],
     confidenceTier: "HIGH",
+    requirementLevel: "MENTIONED",
+    requirementMethod: "DEFAULT_MENTIONED",
+    requirementConfidenceTier: "LOW",
   };
 }
 

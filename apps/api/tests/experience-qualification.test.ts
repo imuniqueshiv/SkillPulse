@@ -7,6 +7,10 @@ test("experience ranges, freshers, malformed, and missing", () => {
   assert.deepEqual(extractExperience("2-4 years").minYears, 2);
   assert.equal(extractExperience("2-4 years").maxYears, 4);
   assert.equal(extractExperience("2-4 years").status, "PARSED");
+  assert.equal(extractExperience("2-4 years").extractionMethod, "CALLER_TEXT");
+  assert.equal(extractExperience("2-4 years").confidenceTier, "HIGH");
+  assert.equal(extractExperience(null).extractionMethod, "UNAVAILABLE");
+  assert.equal(extractExperience("5-2 years").confidenceTier, "LOW");
 
   const plus = extractExperience("3+ years");
   assert.equal(plus.minYears, 3);
@@ -49,6 +53,9 @@ test("qualification tokens preserve raw text", () => {
   assert.ok(iti.some((row) => row.normalized === "Diploma"));
 
   assert.equal(extractQualifications("xyz credential")[0]?.status, "UNPARSED");
+  assert.equal(extractQualifications("xyz credential")[0]?.extractionMethod, "CALLER_TEXT");
   assert.equal(extractQualifications(null)[0]?.status, "UNKNOWN");
+  assert.equal(extractQualifications(null)[0]?.extractionMethod, "UNAVAILABLE");
   assert.equal(extractQualifications("")[0]?.status, "UNKNOWN");
+  assert.equal(mixed[0]?.confidenceTier, "HIGH");
 });

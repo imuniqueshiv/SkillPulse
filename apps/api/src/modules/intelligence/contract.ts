@@ -109,6 +109,40 @@ export type ExtractedSkillCandidate = {
   evidenceEnd?: number;
 };
 
+export const SKILL_REQUIREMENT_LEVEL = {
+  REQUIRED: "REQUIRED",
+  PREFERRED: "PREFERRED",
+  OPTIONAL: "OPTIONAL",
+  MENTIONED: "MENTIONED",
+} as const;
+
+export type SkillRequirementLevel =
+  (typeof SKILL_REQUIREMENT_LEVEL)[keyof typeof SKILL_REQUIREMENT_LEVEL];
+
+export const SKILL_REQUIREMENT_METHOD = {
+  LOCAL_SIGNAL: "LOCAL_SIGNAL",
+  DEFAULT_MENTIONED: "DEFAULT_MENTIONED",
+} as const;
+
+export type SkillRequirementMethod =
+  (typeof SKILL_REQUIREMENT_METHOD)[keyof typeof SKILL_REQUIREMENT_METHOD];
+
+export const EXPERIENCE_EXTRACTION_METHOD = {
+  CALLER_TEXT: "CALLER_TEXT",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+
+export type ExperienceExtractionMethod =
+  (typeof EXPERIENCE_EXTRACTION_METHOD)[keyof typeof EXPERIENCE_EXTRACTION_METHOD];
+
+export const QUALIFICATION_EXTRACTION_METHOD = {
+  CALLER_TEXT: "CALLER_TEXT",
+  UNAVAILABLE: "UNAVAILABLE",
+} as const;
+
+export type QualificationExtractionMethod =
+  (typeof QUALIFICATION_EXTRACTION_METHOD)[keyof typeof QUALIFICATION_EXTRACTION_METHOD];
+
 export type JobIntelligenceSkill = {
   rawTerm: string;
   contributingTerms: string[];
@@ -123,6 +157,10 @@ export type JobIntelligenceSkill = {
   evidence?: string;
   evidenceStart?: number;
   evidenceEnd?: number;
+  requirementLevel: SkillRequirementLevel;
+  requirementMethod: SkillRequirementMethod;
+  requirementEvidence?: string;
+  requirementConfidenceTier: IntelligenceConfidenceTier;
 };
 
 export type JobIntelligenceOccupation = {
@@ -151,6 +189,8 @@ export type JobIntelligenceExperience = {
   maxYears?: number | null;
   freshersAccepted?: boolean;
   rawText?: string | null;
+  extractionMethod: ExperienceExtractionMethod;
+  confidenceTier: IntelligenceConfidenceTier;
 };
 
 export type JobIntelligenceQualification = {
@@ -158,6 +198,8 @@ export type JobIntelligenceQualification = {
   normalized?: string;
   type?: string;
   status: QualificationIntelligenceStatus;
+  extractionMethod: QualificationExtractionMethod;
+  confidenceTier: IntelligenceConfidenceTier;
 };
 
 export type JobIntelligenceResult = {

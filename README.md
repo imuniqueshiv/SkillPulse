@@ -253,6 +253,7 @@ From the repo root: `pnpm install`. Python packages are not part of the pnpm wor
 ### Checks
 
 ```bash
+pnpm test
 pnpm lint
 pnpm typecheck
 pnpm build

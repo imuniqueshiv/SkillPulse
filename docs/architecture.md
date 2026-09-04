@@ -27,6 +27,8 @@ canonical Job (observed)
         ↓
 prepare text → extract skill terms → resolveTerm (Phase 5.9 / 4)
         ↓
+requirement signals (REQUIRED / PREFERRED / OPTIONAL / MENTIONED)
+        ↓
 classify occupation → derive sector
         ↓
 parse experience / qualification if caller supplies text
@@ -35,6 +37,27 @@ JobIntelligenceResult  (optional JobIntelligence row)
 ```
 
 Phase 6 is state-agnostic and source-agnostic. It does not read `RawIngestionRecord.payload`. Canonical Job has no experience or qualification columns; those parsers accept optional caller-supplied strings and otherwise return UNKNOWN.
+
+### Observed vs derived vs evaluation vs synthetic
+
+| Kind | Meaning |
+| --- | --- |
+| OBSERVED DATA | Source observation and canonical Job fields |
+| DERIVED INTELLIGENCE | Deterministic Phase 6 `JobIntelligence` / `JobIntelligenceResult` |
+| EVALUATION DATA | Manually annotated benchmark under `data/sample/evaluation/` — **not** labour-market evidence |
+| SYNTHETIC FIXTURE DATA | Development/test fixtures such as `data/sample/ingestion/mahaswayam-rojgar.sample.json` — **not** real Maharashtra labour-market evidence |
+
+Phase 6.7 classifies requirement level from the **clause that contains the skill**. Unrelated sentences do not change another skill. Ambiguous wording (`familiarity`, `exposure`, `knowledge of`, bare `Python experience`) stays `MENTIONED`. Stronger local signals win (REQUIRED > PREFERRED > OPTIONAL > MENTIONED).
+
+Phase 6.8 keeps confidence as HIGH / MEDIUM / LOW with evidence (raw term, span, method, source field). Unresolved skills are LOW. Raw ingestion payloads are not copied into intelligence.
+
+Phase 6.9 identity remains `(jobId, processorVersion)` with `JOB_INTELLIGENCE_PROCESSOR_VERSION = "phase6-v1"`. Re-running the same pair upserts one row. A FAILED write never overwrites a PROCESSED result. A new processor version may store a second row.
+
+Phase 6.10 orchestrator is `processJobIntelligence` in `apps/api/src/modules/intelligence/pipeline.ts`. Stage algorithms stay in sibling modules.
+
+Phase 6.11 evaluation dataset and `evaluate.ts` compare expected annotations to derived output. Metrics describe that small EVALUATION DATA set only.
+
+Phase 6.12 runs the Maharashtra **synthetic** fixture through the same state-agnostic pipeline. There is no Maharashtra branch in intelligence modules.
 
 See [data-model.md](data-model.md).
 

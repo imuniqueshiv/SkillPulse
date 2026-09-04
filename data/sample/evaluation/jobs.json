@@ -1,0 +1,301 @@
+{
+  "classification": "EVALUATION DATA",
+  "note": "NOT LABOUR-MARKET EVIDENCE. Manually annotated benchmark for SkillPulse Phase 6 intelligence only. Not observed market data. Not a labour-market sample.",
+  "jobs": [
+    {
+      "id": "eval-01",
+      "category": "IT",
+      "title": "Software Developer",
+      "description": "Python experience required. Go would be preferred. PostgreSQL is a plus.",
+      "experienceText": "2-4 years",
+      "qualificationText": "B.Tech in Computer Science",
+      "expected": {
+        "skills": ["python"],
+        "unresolved": ["Go", "PostgreSQL"],
+        "occupationCode": "2512",
+        "occupationStatus": "CLASSIFIED",
+        "sectorCode": "sp.sector.it-ites",
+        "sectorStatus": "CLASSIFIED",
+        "experience": { "status": "PARSED", "minYears": 2, "maxYears": 4 },
+        "qualifications": ["B.Tech", "Computer Science"],
+        "requirements": { "python": "REQUIRED", "Go": "PREFERRED", "PostgreSQL": "OPTIONAL" }
+      }
+    },
+    {
+      "id": "eval-02",
+      "category": "IT",
+      "title": "JavaScript engineer",
+      "description": "JavaScript is mandatory. Hire for Java alone as a separate role.",
+      "expected": {
+        "skills": ["javascript", "java"],
+        "occupationStatus": "UNCLASSIFIED",
+        "sectorStatus": "UNCLASSIFIED",
+        "experience": { "status": "UNKNOWN" },
+        "qualifications": [],
+        "requirements": { "javascript": "REQUIRED", "java": "MENTIONED" }
+      }
+    },
+    {
+      "id": "eval-03",
+      "category": "IT",
+      "title": "Engineer",
+      "description": "Need C++ and C#. Not C alone here.",
+      "expected": {
+        "unresolved": ["C++", "C#"],
+        "occupationStatus": "UNCLASSIFIED",
+        "sectorStatus": "UNCLASSIFIED"
+      }
+    },
+    {
+      "id": "eval-04",
+      "category": "IT",
+      "title": "Hire Go developers",
+      "description": "Not Google Cloud. Go is required.",
+      "expected": {
+        "unresolved": ["Go"],
+        "occupationStatus": "UNCLASSIFIED",
+        "requirements": { "Go": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-05",
+      "category": "IT",
+      "title": "Web developer",
+      "description": "React.js is essential. Node.js experience preferred.",
+      "expected": {
+        "skills": ["react", "node.js"],
+        "occupationStatus": "UNCLASSIFIED",
+        "sectorStatus": "UNCLASSIFIED",
+        "requirements": { "react": "REQUIRED", "node.js": "PREFERRED" }
+      }
+    },
+    {
+      "id": "eval-06",
+      "category": "IT",
+      "title": "Developer",
+      "description": "Python experience required; Python knowledge is a plus.",
+      "expected": {
+        "skills": ["python"],
+        "occupationStatus": "UNCLASSIFIED",
+        "requirements": { "python": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-07",
+      "category": "IT",
+      "title": "Analyst",
+      "description": "Familiarity with Python. Node.js is required.",
+      "expected": {
+        "skills": ["python", "node.js"],
+        "requirements": { "python": "MENTIONED", "node.js": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-08",
+      "category": "Healthcare",
+      "title": "Nursing Professionals",
+      "description": "Patient care is required. Infection prevention and control preferred.",
+      "expected": {
+        "skills": ["patient care", "infection prevention and control"],
+        "occupationCode": "2221",
+        "sectorCode": "sp.sector.healthcare",
+        "requirements": {
+          "patient care": "REQUIRED",
+          "infection prevention and control": "PREFERRED"
+        }
+      }
+    },
+    {
+      "id": "eval-09",
+      "category": "Healthcare",
+      "title": "Health worker",
+      "description": "Patient care.",
+      "expected": {
+        "skills": ["patient care"],
+        "occupationStatus": "UNCLASSIFIED",
+        "sectorStatus": "UNCLASSIFIED",
+        "requirements": { "patient care": "MENTIONED" }
+      }
+    },
+    {
+      "id": "eval-10",
+      "category": "Finance",
+      "title": "Accountant",
+      "description": "Financial accounting is mandatory.",
+      "qualificationText": "Bachelor's degree",
+      "expected": {
+        "skills": ["financial accounting"],
+        "occupationCode": "2411",
+        "sectorCode": "sp.sector.bfsi",
+        "qualifications": ["Bachelor's Degree"],
+        "requirements": { "financial accounting": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-11",
+      "category": "Logistics",
+      "title": "Stock Clerk",
+      "description": "Inventory management experience preferred.",
+      "expected": {
+        "skills": ["inventory management"],
+        "occupationCode": "4321",
+        "sectorCode": "sp.sector.logistics",
+        "requirements": { "inventory management": "PREFERRED" }
+      }
+    },
+    {
+      "id": "eval-12",
+      "category": "Construction",
+      "title": "Bricklayers and Related Workers",
+      "description": "Masonry is required.",
+      "expected": {
+        "skills": ["masonry"],
+        "occupationCode": "7112",
+        "sectorCode": "sp.sector.construction",
+        "requirements": { "masonry": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-13",
+      "category": "Electronics",
+      "title": "Electronics Engineering Technicians",
+      "description": "Electrical safety is essential. PCB Assembly is a plus.",
+      "expected": {
+        "skills": ["electrical safety", "printed circuit board assembly"],
+        "occupationCode": "3114",
+        "sectorCode": "sp.sector.electronics",
+        "requirements": {
+          "electrical safety": "REQUIRED",
+          "printed circuit board assembly": "OPTIONAL"
+        }
+      }
+    },
+    {
+      "id": "eval-14",
+      "category": "Manufacturing",
+      "title": "Quality inspector",
+      "description": "Quality inspection is required.",
+      "expected": {
+        "skills": ["quality inspection"],
+        "occupationStatus": "UNCLASSIFIED",
+        "requirements": { "quality inspection": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-15",
+      "category": "Education",
+      "title": "School administrator",
+      "description": "Workplace communication preferred. Digital literacy is a plus.",
+      "expected": {
+        "skills": ["workplace communication", "digital literacy"],
+        "occupationStatus": "UNCLASSIFIED",
+        "requirements": {
+          "workplace communication": "PREFERRED",
+          "digital literacy": "OPTIONAL"
+        }
+      }
+    },
+    {
+      "id": "eval-16",
+      "category": "Retail",
+      "title": "Store associate",
+      "description": "Customer facing role with no listed technical skills.",
+      "expected": {
+        "skills": [],
+        "occupationStatus": "UNCLASSIFIED",
+        "sectorStatus": "UNCLASSIFIED"
+      }
+    },
+    {
+      "id": "eval-17",
+      "category": "Automotive",
+      "title": "Workshop supervisor",
+      "description": "Exposure to Python. Unrelated PostgreSQL is required in another team.",
+      "expected": {
+        "skills": ["python"],
+        "unresolved": ["PostgreSQL"],
+        "occupationStatus": "UNCLASSIFIED",
+        "requirements": { "python": "MENTIONED", "PostgreSQL": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-18",
+      "category": "IT",
+      "title": "Machine Operator",
+      "description": "Shop floor role. quantum blockchain ninja.",
+      "expected": {
+        "skills": [],
+        "occupationStatus": "UNCLASSIFIED"
+      }
+    },
+    {
+      "id": "eval-19",
+      "category": "IT",
+      "title": "Engineer",
+      "description": "Needs java scriptt and SQL. SQL is required.",
+      "explicitSkills": ["java scriptt"],
+      "expected": {
+        "skills": ["java", "sql"],
+        "unresolved": ["java scriptt"],
+        "requirements": { "sql": "REQUIRED", "java scriptt": "MENTIONED", "java": "MENTIONED" }
+      }
+    },
+    {
+      "id": "eval-20",
+      "category": "IT",
+      "title": "Clerk",
+      "description": "Office work",
+      "experienceText": "5-2 years",
+      "qualificationText": "xyz credential",
+      "expected": {
+        "occupationStatus": "UNCLASSIFIED",
+        "experience": { "status": "UNPARSED" },
+        "qualificationStatus": "UNPARSED"
+      }
+    },
+    {
+      "id": "eval-21",
+      "category": "IT",
+      "title": "Intern",
+      "description": "Digital literacy.",
+      "experienceText": "freshers can apply",
+      "expected": {
+        "skills": ["digital literacy"],
+        "experience": { "status": "PARSED", "freshersAccepted": true }
+      }
+    },
+    {
+      "id": "eval-22",
+      "category": "Tourism",
+      "title": "Travel Guides",
+      "description": "Visitor interpretation is required.",
+      "expected": {
+        "skills": ["visitor interpretation"],
+        "occupationCode": "5113",
+        "sectorCode": "sp.sector.tourism",
+        "requirements": { "visitor interpretation": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-23",
+      "category": "IT",
+      "title": "Support technician",
+      "description": "Knowledge of Python. Digital literacy is mandatory.",
+      "expected": {
+        "skills": ["python", "digital literacy"],
+        "requirements": { "python": "MENTIONED", "digital literacy": "REQUIRED" }
+      }
+    },
+    {
+      "id": "eval-24",
+      "category": "IT",
+      "title": "Use R for statistics",
+      "description": "React.js is separate. R is preferred.",
+      "expected": {
+        "skills": ["react"],
+        "unresolved": ["R"],
+        "requirements": { "react": "MENTIONED", "R": "PREFERRED" }
+      }
+    }
+  ]
+}

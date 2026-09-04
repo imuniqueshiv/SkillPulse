@@ -12,12 +12,31 @@ export type PersistedJobIntelligence = {
   processorVersion: string;
   status: "PROCESSED" | "FAILED";
   created: boolean;
+  preserved: boolean;
   result: JobIntelligenceResult;
 };
 
+function asRow(row: {
+  id: string;
+  jobId: string;
+  processorVersion: string;
+  status: "PROCESSED" | "FAILED";
+  result: unknown;
+}, created: boolean, preserved: boolean): PersistedJobIntelligence {
+  return {
+    id: row.id,
+    jobId: row.jobId,
+    processorVersion: row.processorVersion,
+    status: row.status,
+    created,
+    preserved,
+    result: row.result as JobIntelligenceResult,
+  };
+}
+
 /**
- * Idempotent upsert of derived Job Intelligence for (jobId, processorVersion).
- * Does not mutate Job, JobSkill, or taxonomy.
+ * Idempotent write of derived Job Intelligence for (jobId, processorVersion).
+ * A FAILED write never overwrites a PROCESSED result.
  */
 export async function persistJobIntelligence(
   result: JobIntelligenceResult,
@@ -46,23 +65,19 @@ export async function persistJobIntelligence(
     where: {
       jobId_processorVersion: { jobId, processorVersion },
     },
-    select: { id: true },
+    select: { id: true, jobId: true, processorVersion: true, status: true, result: true },
   });
 
   if (existing) {
+    if (status === "FAILED" && existing.status === "PROCESSED") {
+      return asRow(existing, false, true);
+    }
     const updated = await prisma.jobIntelligence.update({
       where: { id: existing.id },
       data: { status, result: payload },
       select: { id: true, jobId: true, processorVersion: true, status: true, result: true },
     });
-    return {
-      id: updated.id,
-      jobId: updated.jobId,
-      processorVersion: updated.processorVersion,
-      status: updated.status,
-      created: false,
-      result: updated.result as unknown as JobIntelligenceResult,
-    };
+    return asRow(updated, false, false);
   }
 
   try {
@@ -75,14 +90,7 @@ export async function persistJobIntelligence(
       },
       select: { id: true, jobId: true, processorVersion: true, status: true, result: true },
     });
-    return {
-      id: created.id,
-      jobId: created.jobId,
-      processorVersion: created.processorVersion,
-      status: created.status,
-      created: true,
-      result: created.result as unknown as JobIntelligenceResult,
-    };
+    return asRow(created, true, false);
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -97,14 +105,10 @@ export async function persistJobIntelligence(
       if (!raced) {
         throw error;
       }
-      return {
-        id: raced.id,
-        jobId: raced.jobId,
-        processorVersion: raced.processorVersion,
-        status: raced.status,
-        created: false,
-        result: raced.result as unknown as JobIntelligenceResult,
-      };
+      if (status === "FAILED" && raced.status === "PROCESSED") {
+        return asRow(raced, false, true);
+      }
+      return asRow(raced, false, false);
     }
     throw error;
   }

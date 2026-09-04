@@ -2,6 +2,7 @@ import { getPrisma } from "../../config/database";
 import { AppError } from "../../utils/errors";
 import {
   JOB_INTELLIGENCE_PROCESSOR_VERSION,
+  SKILL_EXTRACTION_METHOD,
   type JobIntelligenceJobInput,
   type JobIntelligenceResult,
 } from "./contract";
@@ -13,12 +14,12 @@ import {
 } from "./occupation-classification";
 import { persistJobIntelligence, type PersistedJobIntelligence } from "./persistence";
 import { extractQualifications } from "./qualification-extraction";
+import { applyRequirementSignals } from "./requirement-signals";
 import { classifySector } from "./sector-classification";
 import {
   extractSkillCandidates,
   type SkillMatchSurface,
 } from "./skill-extraction";
-import { SKILL_EXTRACTION_METHOD } from "./contract";
 import { normalizeExtractedSkills } from "./skill-normalization";
 
 export type ProcessJobIntelligenceInput = {
@@ -114,7 +115,8 @@ export async function processJobIntelligence(
     jobSkillNames: (input.job.skills ?? []).map((row) => row.name),
     surfaces,
   });
-  const skills = await normalizeExtractedSkills(candidates);
+  const normalized = await normalizeExtractedSkills(candidates);
+  const skills = applyRequirementSignals(normalized, text);
   const occupation = classifyOccupation({
     title: text.titlePrepared || input.job.title,
     skills,
@@ -146,8 +148,13 @@ export async function processJobIntelligence(
     return { intelligence, persistence: null };
   }
 
-  const persistence = await persistJobIntelligence(intelligence, "PROCESSED");
-  return { intelligence, persistence };
+  try {
+    const persistence = await persistJobIntelligence(intelligence, "PROCESSED");
+    return { intelligence, persistence };
+  } catch (error) {
+    await persistJobIntelligence(intelligence, "FAILED").catch(() => undefined);
+    throw error;
+  }
 }
 
 export async function processJobIntelligenceById(
