@@ -10,6 +10,7 @@ import {
   DEFAULT_INTELLIGENCE_PROCESSOR_VERSION,
   JOB_QUALITY_ASSESSMENT_VERSION,
   type JobQualityAssessmentResult,
+  type QualityChangeDetection,
   type QualityJobInput,
   type QualityProvenanceInput,
   type QualitySourceInput,
@@ -33,9 +34,15 @@ export type AssessJobQualityInput = {
 export type AssessJobQualityResult = {
   assessment: JobQualityAssessmentResult;
   persistence: PersistedJobQualityAssessment | null;
+  changeDetection: QualityChangeDetection | null;
 };
 
-function asProvenance(metadata: unknown, observedAt: Date | null): QualityProvenanceInput {
+function asProvenance(
+  metadata: unknown,
+  observedAt: Date | null,
+  evidenceId?: string | null,
+  observationId?: string | null,
+): QualityProvenanceInput {
   const meta =
     metadata && typeof metadata === "object"
       ? (metadata as Record<string, unknown>)
@@ -58,6 +65,8 @@ function asProvenance(metadata: unknown, observedAt: Date | null): QualityProven
       ? meta.freshnessStatus
       : null;
   const ingestedAt = typeof meta.ingestedAt === "string" ? meta.ingestedAt : null;
+  const metaObservationId =
+    typeof meta.observationId === "string" ? meta.observationId : null;
 
   return {
     observedAt,
@@ -65,6 +74,8 @@ function asProvenance(metadata: unknown, observedAt: Date | null): QualityProven
     dedupStatus,
     freshnessStatus,
     ingestedAt,
+    evidenceId: evidenceId ?? null,
+    observationId: observationId ?? metaObservationId,
   };
 }
 
@@ -89,10 +100,15 @@ async function loadProvenanceForJob(
           reference: `${RAW_INGESTION_REFERENCE_PREFIX}${raw.id}`,
         },
         orderBy: { createdAt: "desc" },
-        select: { observedAt: true, metadata: true },
+        select: { id: true, observedAt: true, metadata: true },
       });
       if (evidence) {
-        return asProvenance(evidence.metadata, evidence.observedAt ?? raw.observedAt);
+        return asProvenance(
+          evidence.metadata,
+          evidence.observedAt ?? raw.observedAt,
+          evidence.id,
+          raw.id,
+        );
       }
       return {
         observedAt: raw.observedAt,
@@ -100,6 +116,8 @@ async function loadProvenanceForJob(
         dedupStatus: null,
         freshnessStatus: null,
         ingestedAt: null,
+        evidenceId: null,
+        observationId: raw.id,
       };
     }
   }
@@ -108,7 +126,7 @@ async function loadProvenanceForJob(
     const evidence = await prisma.evidence.findFirst({
       where: { type: "JOB_POSTING", sourceId },
       orderBy: { createdAt: "desc" },
-      select: { observedAt: true, metadata: true },
+      select: { id: true, observedAt: true, metadata: true },
     });
     if (evidence) {
       const meta = evidence.metadata as Record<string, unknown> | null;
@@ -120,7 +138,9 @@ async function loadProvenanceForJob(
       ) {
         return null;
       }
-      return asProvenance(evidence.metadata, evidence.observedAt);
+      const observationId =
+        meta && typeof meta.observationId === "string" ? meta.observationId : null;
+      return asProvenance(evidence.metadata, evidence.observedAt, evidence.id, observationId);
     }
   }
 
@@ -237,12 +257,16 @@ export async function assessJobQuality(
   });
 
   if (!input.persist) {
-    return { assessment, persistence: null };
+    return { assessment, persistence: null, changeDetection: null };
   }
 
   try {
     const persistence = await persistJobQualityAssessment(assessment, "PROCESSED");
-    return { assessment, persistence };
+    return {
+      assessment: persistence.result,
+      persistence,
+      changeDetection: persistence.changeDetection,
+    };
   } catch (error) {
     await persistJobQualityAssessment(assessment, "FAILED").catch(() => undefined);
     throw error;

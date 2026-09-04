@@ -10,6 +10,7 @@ import {
 } from "./contract";
 import { assessDuplication, assessValidationSignal } from "./duplication";
 import { decideEligibility } from "./eligibility";
+import { computeQualityFingerprint } from "./fingerprint";
 import { assessFreshness } from "./freshness";
 import { assessIntelligenceConfidence } from "./intelligence-confidence";
 import { assessSourceTrust } from "./source-trust";
@@ -82,7 +83,7 @@ export function buildJobQualityAssessment(
     ...intelligenceConfidence.checks,
   ].sort((a, b) => a.rule.localeCompare(b.rule));
 
-  return {
+  const withoutFingerprint = {
     jobId: input.job.id,
     assessmentVersion,
     assessedAt: assessedAt.toISOString(),
@@ -97,5 +98,14 @@ export function buildJobQualityAssessment(
     intelligenceConfidence: intelligenceConfidence.assessment,
     eligibility: eligibility.eligibility,
     reasons: eligibility.reasons,
+    evidence: {
+      evidenceId: input.provenance?.evidenceId ?? null,
+      observationId: input.provenance?.observationId ?? null,
+    },
+  };
+
+  return {
+    ...withoutFingerprint,
+    fingerprint: computeQualityFingerprint(withoutFingerprint),
   };
 }

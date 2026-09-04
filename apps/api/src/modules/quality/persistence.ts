@@ -4,8 +4,14 @@ import { AppError } from "../../utils/errors";
 import {
   JOB_QUALITY_ASSESSMENT_VERSION,
   type JobQualityAssessmentResult,
+  type QualityChangeDetection,
   type QualityEligibility,
 } from "./contract";
+import {
+  detectQualityChange,
+  stripNestedHistory,
+  toHistorySnapshot,
+} from "./fingerprint";
 
 export type PersistedJobQualityAssessment = {
   id: string;
@@ -15,6 +21,9 @@ export type PersistedJobQualityAssessment = {
   eligibility: QualityEligibility;
   created: boolean;
   preserved: boolean;
+  /** True when fingerprint matched existing PROCESSED row and no write occurred. */
+  unchanged: boolean;
+  changeDetection: QualityChangeDetection | null;
   result: JobQualityAssessmentResult;
 };
 
@@ -27,8 +36,12 @@ function asRow(
     eligibility: QualityEligibility;
     result: unknown;
   },
-  created: boolean,
-  preserved: boolean,
+  flags: {
+    created: boolean;
+    preserved: boolean;
+    unchanged: boolean;
+    changeDetection: QualityChangeDetection | null;
+  },
 ): PersistedJobQualityAssessment {
   return {
     id: row.id,
@@ -36,15 +49,19 @@ function asRow(
     assessmentVersion: row.assessmentVersion,
     status: row.status,
     eligibility: row.eligibility,
-    created,
-    preserved,
+    created: flags.created,
+    preserved: flags.preserved,
+    unchanged: flags.unchanged,
+    changeDetection: flags.changeDetection,
     result: row.result as JobQualityAssessmentResult,
   };
 }
 
 /**
  * Idempotent write for (jobId, assessmentVersion).
- * FAILED never overwrites PROCESSED.
+ * - Identical fingerprint → no unnecessary update (unchanged).
+ * - Changed fingerprint → nest prior success in previousAssessment, then update.
+ * - FAILED never overwrites PROCESSED.
  */
 export async function persistJobQualityAssessment(
   result: JobQualityAssessmentResult,
@@ -58,6 +75,9 @@ export async function persistJobQualityAssessment(
   if (!assessmentVersion) {
     throw new AppError(400, "assessmentVersion is required");
   }
+  if (!result.fingerprint?.trim()) {
+    throw new AppError(400, "fingerprint is required");
+  }
 
   const prisma = getPrisma();
   const job = await prisma.job.findUnique({
@@ -68,7 +88,6 @@ export async function persistJobQualityAssessment(
     throw new AppError(404, "Job not found");
   }
 
-  const payload = result as unknown as Prisma.InputJsonValue;
   const assessedAt = new Date(result.assessedAt);
   if (Number.isNaN(assessedAt.getTime())) {
     throw new AppError(400, "assessedAt must be a valid instant");
@@ -90,14 +109,51 @@ export async function persistJobQualityAssessment(
 
   if (existing) {
     if (status === "FAILED" && existing.status === "PROCESSED") {
-      return asRow(existing, false, true);
+      return asRow(existing, {
+        created: false,
+        preserved: true,
+        unchanged: false,
+        changeDetection: null,
+      });
     }
+
+    const previous = existing.result as JobQualityAssessmentResult;
+    const changeDetection = detectQualityChange({
+      previous: existing.status === "PROCESSED" ? previous : null,
+      current: result,
+    });
+
+    if (
+      status === "PROCESSED" &&
+      existing.status === "PROCESSED" &&
+      !changeDetection.changed
+    ) {
+      return asRow(existing, {
+        created: false,
+        preserved: false,
+        unchanged: true,
+        changeDetection,
+      });
+    }
+
+    let toPersist = stripNestedHistory(result);
+    if (
+      status === "PROCESSED" &&
+      existing.status === "PROCESSED" &&
+      changeDetection.changed
+    ) {
+      toPersist = {
+        ...toPersist,
+        previousAssessment: toHistorySnapshot(previous),
+      };
+    }
+
     const updated = await prisma.jobQualityAssessment.update({
       where: { id: existing.id },
       data: {
         status,
-        eligibility: result.eligibility,
-        result: payload,
+        eligibility: toPersist.eligibility,
+        result: toPersist as unknown as Prisma.InputJsonValue,
         assessedAt,
       },
       select: {
@@ -109,17 +165,23 @@ export async function persistJobQualityAssessment(
         result: true,
       },
     });
-    return asRow(updated, false, false);
+    return asRow(updated, {
+      created: false,
+      preserved: false,
+      unchanged: false,
+      changeDetection,
+    });
   }
 
+  const createdPayload = stripNestedHistory(result);
   try {
     const created = await prisma.jobQualityAssessment.create({
       data: {
         jobId,
         assessmentVersion,
         status,
-        eligibility: result.eligibility,
-        result: payload,
+        eligibility: createdPayload.eligibility,
+        result: createdPayload as unknown as Prisma.InputJsonValue,
         assessedAt,
       },
       select: {
@@ -131,7 +193,12 @@ export async function persistJobQualityAssessment(
         result: true,
       },
     });
-    return asRow(created, true, false);
+    return asRow(created, {
+      created: true,
+      preserved: false,
+      unchanged: false,
+      changeDetection: detectQualityChange({ previous: null, current: createdPayload }),
+    });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -154,9 +221,24 @@ export async function persistJobQualityAssessment(
         throw error;
       }
       if (status === "FAILED" && raced.status === "PROCESSED") {
-        return asRow(raced, false, true);
+        return asRow(raced, {
+          created: false,
+          preserved: true,
+          unchanged: false,
+          changeDetection: null,
+        });
       }
-      return asRow(raced, false, false);
+      const racedResult = raced.result as JobQualityAssessmentResult;
+      const changeDetection = detectQualityChange({
+        previous: raced.status === "PROCESSED" ? racedResult : null,
+        current: result,
+      });
+      return asRow(raced, {
+        created: false,
+        preserved: false,
+        unchanged: !changeDetection.changed && raced.status === "PROCESSED",
+        changeDetection,
+      });
     }
     throw error;
   }

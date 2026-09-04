@@ -75,6 +75,8 @@ JobQualityAssessment (quality-v1)
 
 Phase 7 evaluates data for analytical eligibility. It does **not** aggregate market demand. Freshness and deduplication semantics remain owned by Phase 5. Source trust is registry-based and conservative (`STANDARD` for active registered sources; `UNVERIFIED` when missing/inactive/unresolved). `VERIFIED`/`TRUSTED` are reserved until explicit verification metadata exists.
 
+Reassessment (7.7–7.9) keeps `(jobId, assessmentVersion)` uniqueness: identical fingerprints skip writes; changed inputs nest the prior successful snapshot in `result.previousAssessment`; `quality-v2` coexists as a separate row. Bulk assessment (7.10) is synchronous and bounded. Summary (7.11) counts PROCESSED rows only.
+
 See [data-model.md](data-model.md).
 
 ```text

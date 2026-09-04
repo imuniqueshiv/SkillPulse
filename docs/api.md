@@ -112,4 +112,4 @@ There is no ingestion HTTP API. Phases 5.2–5.12 are internal. `ingestJobObserv
 
 Phase 6 (`processJobIntelligence`) is also internal. It does not add HTTP routes, demand scores, or dashboards. Remaining Phase 6 work (requirement signals, confidence/evidence, persistence preservation, evaluation dataset, Maharashtra synthetic validation) stays on that internal module.
 
-Phase 7 (`assessJobQuality`) is internal. It produces analytical eligibility (`INCLUDE` / `INCLUDE_WITH_CAUTION` / `EXCLUDE`) and does not add HTTP routes or market demand APIs.
+Phase 7 (`assessJobQuality`) is internal. It produces analytical eligibility (`INCLUDE` / `INCLUDE_WITH_CAUTION` / `EXCLUDE`) and does not add HTTP routes or market demand APIs. Related internal services: `reassessJobQuality`, `assessJobsQuality`, `summarizeQualityAssessments`.

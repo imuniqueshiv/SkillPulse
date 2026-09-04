@@ -191,6 +191,52 @@ export type JobQualityAssessmentResult = {
   intelligenceConfidence: IntelligenceConfidenceAssessment;
   eligibility: QualityEligibility;
   reasons: QualityReason[];
+  /** Stable evidence identifiers included in the fingerprint (not raw payloads). */
+  evidence: {
+    evidenceId: string | null;
+    observationId: string | null;
+  };
+  /** Deterministic fingerprint of stable quality components (Phase 7.8). */
+  fingerprint: string;
+  /**
+   * One-level prior successful assessment snapshot when inputs changed
+   * for the same assessmentVersion (Phase 7.7). Not a second counted row.
+   */
+  previousAssessment?: QualityHistorySnapshot;
+};
+
+/** Slim historical snapshot nested in result when quality inputs change. */
+export type QualityHistorySnapshot = {
+  fingerprint: string;
+  assessedAt: string;
+  eligibility: QualityEligibility;
+  completenessScore: number;
+  freshnessStatus: FreshnessAssessment["status"];
+  duplicationStatus: DuplicationAssessment["status"];
+  sourceTrustLevel: SourceTrustLevel;
+  intelligenceOverall: OverallIntelligenceConfidence;
+  reasons: QualityReason[];
+};
+
+export const QUALITY_CHANGE_COMPONENT = {
+  VALIDATION: "validation",
+  COMPLETENESS: "completeness",
+  SOURCE_TRUST: "sourceTrust",
+  FRESHNESS: "freshness",
+  DUPLICATION: "duplication",
+  INTELLIGENCE_CONFIDENCE: "intelligenceConfidence",
+  ELIGIBILITY: "eligibility",
+  EVIDENCE: "evidence",
+} as const;
+
+export type QualityChangeComponent =
+  (typeof QUALITY_CHANGE_COMPONENT)[keyof typeof QUALITY_CHANGE_COMPONENT];
+
+export type QualityChangeDetection = {
+  changed: boolean;
+  previousFingerprint?: string;
+  currentFingerprint: string;
+  changedComponents: QualityChangeComponent[];
 };
 
 export type QualityJobInput = {
@@ -223,6 +269,10 @@ export type QualityProvenanceInput = {
   dedupStatus?: "UNIQUE" | "POSSIBLE_DUPLICATE" | "DUPLICATE" | null;
   freshnessStatus?: "FRESH" | "AGING" | "STALE" | "UNKNOWN" | null;
   ingestedAt?: string | null;
+  /** Stable Evidence.id when available — fingerprint evidence only. */
+  evidenceId?: string | null;
+  /** Stable RawIngestionRecord.id / observation id when available. */
+  observationId?: string | null;
 };
 
 export const DEFAULT_INTELLIGENCE_PROCESSOR_VERSION =

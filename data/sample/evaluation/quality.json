@@ -1,6 +1,7 @@
 {
   "classification": "EVALUATION DATA",
   "note": "NOT LABOUR-MARKET EVIDENCE. Manually annotated Phase 7 quality benchmark only. Not observed market data.",
+  "phase77_to_711_note": "EVALUATION DATA — NOT LABOUR-MARKET EVIDENCE. Cases below remain eligibility benchmarks. History/versioning, fingerprints, reassessment, bulk, and summary are covered by API unit/integration tests (quality-fingerprint, quality-reassessment, quality-bulk-summary), not market observations.",
   "cases": [
     {
       "id": "q-01",

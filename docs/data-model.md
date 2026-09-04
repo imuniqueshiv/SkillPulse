@@ -73,6 +73,8 @@ Phase 7 **consumes** Phase 5 freshness/dedup/validation when recoverable (Eviden
 
 Phase 7 does **not** calculate market demand. It does not mutate Job, JobSkill, JobIntelligence, or taxonomy. A FAILED assessment never overwrites a PROCESSED assessment for the same version.
 
+Phase 7.7–7.11 add assessment history via one-level `previousAssessment` nested in `result` JSON (no new history table), deterministic fingerprints (`fingerprint` / change detection), safe reassessment (`reassessJobQuality`), bounded bulk assessment (`assessJobsQuality`, limit ≤ 100), and PROCESSED-only summaries (`summarizeQualityAssessments`) filtered by `assessmentVersion` without double-counting nested history.
+
 **EVALUATION DATA** for Phase 7 lives at `data/sample/evaluation/quality.json` and is not labour-market evidence.
 
 ## Commands

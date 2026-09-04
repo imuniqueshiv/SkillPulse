@@ -159,6 +159,8 @@ test("quality persistence is idempotent, versioned, preserves PROCESSED, and doe
 
   assert.equal(first.persistence?.created, true);
   assert.equal(second.persistence?.created, false);
+  assert.equal(second.persistence?.unchanged, true);
+  assert.equal(first.assessment.fingerprint, second.assessment.fingerprint);
   assert.deepEqual(first.assessment, second.assessment);
   assert.equal(
     await prisma.jobQualityAssessment.count({
