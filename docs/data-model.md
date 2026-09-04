@@ -35,6 +35,7 @@ The Next.js app and FastAPI intelligence service do not connect to the database.
 | SkillGap | Stored gap result (not the gap engine) |
 | Recommendation | Stored recommendation (not the recommendation engine) |
 | JobIntelligence | Derived Phase 6 analysis of one Job (`processorVersion` + result JSON). Not a Job, not demand scoring |
+| JobQualityAssessment | Phase 7 analytical eligibility assessment (`assessmentVersion` + result JSON). Does not mutate Job / JobSkill / JobIntelligence |
 
 Demo seed rows are labeled `[DEMO]` and/or `isDemo = true`. They are not labour-market evidence.
 
@@ -57,6 +58,22 @@ Experience and qualification live on the Phase 5.2 contract but are **not** pers
 **EVALUATION DATA** (`data/sample/evaluation/`) is a manual benchmark for this pipeline. It is not observed data and not labour-market evidence. The Maharashtra sample under `data/sample/ingestion/` remains **SYNTHETIC FIXTURE DATA**.
 
 Phase 6 does not implement demand analytics, skill-gap analysis, forecasting, recommendations, curriculum intelligence, dashboards, or scheduled workers.
+
+## Job quality assessment (Phase 7)
+
+`assessJobQuality` evaluates whether an existing canonical Job (plus available Phase 5 provenance signals and Phase 6 `JobIntelligence`) is trustworthy enough for downstream analytics. It writes optional `JobQualityAssessment` keyed by `(jobId, assessmentVersion)` currently `quality-v1`.
+
+Primary output is analytical eligibility:
+
+- `INCLUDE`
+- `INCLUDE_WITH_CAUTION`
+- `EXCLUDE`
+
+Phase 7 **consumes** Phase 5 freshness/dedup/validation when recoverable (Evidence metadata and/or recomputation via `evaluateJobFreshness` with the Phase 5 policy). It does **not** invent competing freshness or identity algorithms. Missing historical signals stay `UNKNOWN`.
+
+Phase 7 does **not** calculate market demand. It does not mutate Job, JobSkill, JobIntelligence, or taxonomy. A FAILED assessment never overwrites a PROCESSED assessment for the same version.
+
+**EVALUATION DATA** for Phase 7 lives at `data/sample/evaluation/quality.json` and is not labour-market evidence.
 
 ## Commands
 

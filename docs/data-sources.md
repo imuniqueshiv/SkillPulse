@@ -369,6 +369,8 @@ Live portal/API fetch, scraping, scheduled ingestion, LLM/NLP APIs, demand/suppl
 
 Phase 6.12 validation uses the same **synthetic** Mahaswayam fixture as Phase 5.12. It is EVALUATION/FIXTURE input into the state-agnostic intelligence pipeline, not real Maharashtra labour-market evidence, and it does not add Maharashtra-specific intelligence rules.
 
+Phase 7 quality assessment is also state-agnostic. It may validate Maharashtra synthetic fixture Jobs through Job → Phase 6 → Phase 7, but must not add Mahaswayam-specific quality branches.
+
 ## What a DataSource is
 
 A registry row is a named, stable source identity. It is not a credential store and not a live feed.

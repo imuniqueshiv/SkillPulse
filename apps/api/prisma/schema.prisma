@@ -159,6 +159,17 @@ enum JobIntelligenceStatus {
   FAILED
 }
 
+enum QualityEligibility {
+  INCLUDE
+  INCLUDE_WITH_CAUTION
+  EXCLUDE
+}
+
+enum QualityAssessmentStatus {
+  PROCESSED
+  FAILED
+}
+
 model Organization {
   id        String           @id @default(uuid())
   name      String
@@ -355,6 +366,7 @@ model Job {
   sector              Sector?            @relation(fields: [sectorId], references: [id], onDelete: SetNull)
   skills              JobSkill[]
   intelligenceRecords JobIntelligence[]
+  qualityAssessments  JobQualityAssessment[]
 
   @@unique([sourceId, externalId])
   @@index([sourceId])
@@ -393,6 +405,26 @@ model JobIntelligence {
   @@unique([jobId, processorVersion])
   @@index([jobId])
   @@index([status])
+}
+
+/// Phase 7 quality assessment. Does not mutate Job / JobSkill / JobIntelligence.
+model JobQualityAssessment {
+  id                String                   @id @default(uuid())
+  jobId             String
+  assessmentVersion String
+  status            QualityAssessmentStatus
+  eligibility       QualityEligibility
+  result            Json
+  assessedAt        DateTime                 @db.Timestamptz
+  createdAt         DateTime                 @default(now()) @db.Timestamptz
+  updatedAt         DateTime                 @updatedAt @db.Timestamptz
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, assessmentVersion])
+  @@index([jobId])
+  @@index([status])
+  @@index([eligibility])
 }
 
 model Course {

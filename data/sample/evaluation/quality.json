@@ -1,0 +1,1079 @@
+{
+  "classification": "EVALUATION DATA",
+  "note": "NOT LABOUR-MARKET EVIDENCE. Manually annotated Phase 7 quality benchmark only. Not observed market data.",
+  "cases": [
+    {
+      "id": "q-01",
+      "label": "complete high-quality record",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q01",
+          "title": "Software Developer",
+          "description": "Build services",
+          "companyName": "Acme",
+          "sourceId": "src-1",
+          "externalId": "E1",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-25T00:00:00.000Z",
+          "expiresAt": "2026-10-01T00:00:00.000Z",
+          "sourceUrl": "https://example.test/1",
+          "skillCount": 2
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-25T00:00:00.000Z",
+          "ingestedAt": "2026-08-25T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE",
+          "freshnessStatus": "FRESH"
+        },
+        "intelligence": {
+          "jobId": "job-q01",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Software Developer", "analysisText": "Software Developer" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "skillId": "s1",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "normalizationMethod": "canonical",
+              "confidenceTier": "HIGH",
+              "requirementLevel": "REQUIRED",
+              "requirementMethod": "LOCAL_SIGNAL",
+              "requirementConfidenceTier": "HIGH"
+            }
+          ],
+          "occupation": {
+            "status": "CLASSIFIED",
+            "code": "2512",
+            "name": "Software Developers",
+            "method": "TITLE_EXACT",
+            "confidenceTier": "HIGH",
+            "evidence": "title"
+          },
+          "sector": {
+            "status": "CLASSIFIED",
+            "code": "sp.sector.it-ites",
+            "name": "IT",
+            "method": "OCCUPATION_SECTOR",
+            "confidenceTier": "HIGH",
+            "evidence": "occ"
+          },
+          "experience": {
+            "status": "PARSED",
+            "minYears": 2,
+            "maxYears": 4,
+            "rawText": "2-4 years",
+            "extractionMethod": "CALLER_TEXT",
+            "confidenceTier": "HIGH"
+          },
+          "qualifications": [
+            {
+              "rawText": "B.Tech",
+              "normalized": "B.Tech",
+              "type": "DEGREE",
+              "status": "PARSED",
+              "extractionMethod": "CALLER_TEXT",
+              "confidenceTier": "HIGH"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE",
+        "reasonCodes": [],
+        "freshnessStatus": "FRESH",
+        "duplicationStatus": "UNIQUE",
+        "sourceTrustLevel": "STANDARD",
+        "intelligenceOverall": "HIGH"
+      }
+    },
+    {
+      "id": "q-02",
+      "label": "missing description",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q02",
+          "title": "Clerk",
+          "description": null,
+          "companyName": "Acme",
+          "sourceId": "src-1",
+          "externalId": "E2",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q02",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Clerk", "analysisText": "Clerk" },
+          "skills": [
+            {
+              "rawTerm": "SQL",
+              "contributingTerms": ["SQL"],
+              "canonicalName": "sql",
+              "status": "RESOLVED",
+              "extractionMethod": "EXPLICIT_SKILL_FIELD",
+              "extractionMethods": ["EXPLICIT_SKILL_FIELD"],
+              "normalizationMethod": "canonical",
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["MISSING_DESCRIPTION"],
+        "freshnessStatus": "FRESH",
+        "intelligenceOverall": "HIGH"
+      }
+    },
+    {
+      "id": "q-03",
+      "label": "missing location",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q03",
+          "title": "Nurse",
+          "description": "Ward care",
+          "companyName": "Hospital",
+          "sourceId": "src-1",
+          "externalId": "E3",
+          "locationId": null,
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q03",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Nurse", "analysisText": "Nurse" },
+          "skills": [
+            {
+              "rawTerm": "Patient Care",
+              "contributingTerms": ["Patient Care"],
+              "canonicalName": "patient care",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "normalizationMethod": "canonical",
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": {
+            "status": "CLASSIFIED",
+            "code": "2221",
+            "method": "TITLE_KEYWORD",
+            "confidenceTier": "MEDIUM",
+            "evidence": "keyword"
+          },
+          "sector": {
+            "status": "CLASSIFIED",
+            "code": "sp.sector.healthcare",
+            "method": "OCCUPATION_SECTOR",
+            "confidenceTier": "MEDIUM",
+            "evidence": "occ"
+          },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["MEDIUM_INTELLIGENCE_CONFIDENCE", "MISSING_LOCATION"],
+        "freshnessStatus": "FRESH"
+      }
+    },
+    {
+      "id": "q-04",
+      "label": "stale record",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q04",
+          "title": "Operator",
+          "description": "Shop floor",
+          "companyName": "Plant",
+          "sourceId": "src-1",
+          "externalId": "E4",
+          "locationId": "loc-1",
+          "postedAt": "2026-06-01T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-06-01T00:00:00.000Z",
+          "ingestedAt": "2026-06-01T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": null
+      },
+      "expected": {
+        "eligibility": "EXCLUDE",
+        "reasonCodes": ["STALE_DATA"],
+        "freshnessStatus": "STALE"
+      }
+    },
+    {
+      "id": "q-05",
+      "label": "duplicate",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q05",
+          "title": "Developer",
+          "description": "Apps",
+          "companyName": "Co",
+          "sourceId": "src-1",
+          "externalId": "E5",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "DUPLICATE"
+        },
+        "intelligence": null
+      },
+      "expected": {
+        "eligibility": "EXCLUDE",
+        "reasonCodes": ["DUPLICATE"],
+        "duplicationStatus": "DUPLICATE"
+      }
+    },
+    {
+      "id": "q-06",
+      "label": "possible duplicate",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q06",
+          "title": "Developer",
+          "description": "Apps",
+          "companyName": "Co",
+          "sourceId": "src-1",
+          "externalId": "E6",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "POSSIBLE_DUPLICATE"
+        },
+        "intelligence": {
+          "jobId": "job-q06",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Developer", "analysisText": "Developer" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["POSSIBLE_DUPLICATE"],
+        "duplicationStatus": "POSSIBLE_DUPLICATE"
+      }
+    },
+    {
+      "id": "q-07",
+      "label": "unverified source",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q07",
+          "title": "Analyst",
+          "description": "Reports",
+          "companyName": "Co",
+          "sourceId": "src-missing",
+          "externalId": "E7",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": null,
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q07",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Analyst", "analysisText": "Analyst" },
+          "skills": [
+            {
+              "rawTerm": "SQL",
+              "contributingTerms": ["SQL"],
+              "canonicalName": "sql",
+              "status": "RESOLVED",
+              "extractionMethod": "EXPLICIT_SKILL_FIELD",
+              "extractionMethods": ["EXPLICIT_SKILL_FIELD"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["LOW_SOURCE_TRUST"],
+        "sourceTrustLevel": "UNVERIFIED"
+      }
+    },
+    {
+      "id": "q-08",
+      "label": "low intelligence confidence",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q08",
+          "title": "Engineer",
+          "description": "Needs quantum tooling",
+          "companyName": "Co",
+          "sourceId": "src-1",
+          "externalId": "E8",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 0
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q08",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Engineer", "analysisText": "Engineer" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "status": "RESOLVED",
+              "extractionMethod": "TEXT_MATCH",
+              "extractionMethods": ["TEXT_MATCH"],
+              "normalizationMethod": "canonical",
+              "confidenceTier": "LOW",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["LOW_INTELLIGENCE_CONFIDENCE"],
+        "intelligenceOverall": "LOW"
+      }
+    },
+    {
+      "id": "q-09",
+      "label": "multiple missing fields",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q09",
+          "title": "Role",
+          "description": null,
+          "companyName": null,
+          "sourceId": "src-1",
+          "externalId": "E9",
+          "locationId": null,
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 0
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": null
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": [
+          "LOW_COMPLETENESS",
+          "MISSING_DESCRIPTION",
+          "MISSING_LOCATION",
+          "UNKNOWN_INTELLIGENCE"
+        ]
+      }
+    },
+    {
+      "id": "q-10",
+      "label": "historically valid but stale for current analysis",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q10",
+          "title": "Accountant",
+          "description": "Books",
+          "companyName": "Firm",
+          "sourceId": "src-1",
+          "externalId": "E10",
+          "locationId": "loc-1",
+          "postedAt": "2026-05-01T00:00:00.000Z",
+          "expiresAt": "2026-06-01T00:00:00.000Z",
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-05-01T00:00:00.000Z",
+          "ingestedAt": "2026-05-01T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": null
+      },
+      "expected": {
+        "eligibility": "EXCLUDE",
+        "reasonCodes": ["STALE_DATA"],
+        "freshnessStatus": "STALE"
+      }
+    },
+    {
+      "id": "q-11",
+      "label": "medium-confidence intelligence",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q11",
+          "title": "Web developer",
+          "description": "React.js apps",
+          "companyName": "Studio",
+          "sourceId": "src-1",
+          "externalId": "E11",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q11",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Web developer", "analysisText": "Web developer" },
+          "skills": [
+            {
+              "rawTerm": "React.js",
+              "contributingTerms": ["React.js"],
+              "canonicalName": "react",
+              "status": "RESOLVED",
+              "extractionMethod": "ALIAS_MATCH",
+              "extractionMethods": ["ALIAS_MATCH"],
+              "normalizationMethod": "alias",
+              "confidenceTier": "MEDIUM",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": {
+            "status": "CLASSIFIED",
+            "code": "2513",
+            "method": "TITLE_KEYWORD",
+            "confidenceTier": "MEDIUM",
+            "evidence": "keyword"
+          },
+          "sector": {
+            "status": "CLASSIFIED",
+            "code": "sp.sector.it-ites",
+            "method": "OCCUPATION_SECTOR",
+            "confidenceTier": "MEDIUM",
+            "evidence": "occ"
+          },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["MEDIUM_INTELLIGENCE_CONFIDENCE"],
+        "intelligenceOverall": "MEDIUM"
+      }
+    },
+    {
+      "id": "q-12",
+      "label": "unknown freshness",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q12",
+          "title": "Guide",
+          "description": "Tours",
+          "companyName": "Travel",
+          "sourceId": "src-1",
+          "externalId": "E12",
+          "locationId": "loc-1",
+          "postedAt": null,
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q12",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Guide", "analysisText": "Guide" },
+          "skills": [
+            {
+              "rawTerm": "Visitor Interpretation",
+              "contributingTerms": ["Visitor Interpretation"],
+              "canonicalName": "visitor interpretation",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE_WITH_CAUTION",
+        "reasonCodes": ["UNKNOWN_FRESHNESS"],
+        "freshnessStatus": "UNKNOWN"
+      }
+    },
+    {
+      "id": "q-13",
+      "label": "unknown occupation but otherwise strong",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q13",
+          "title": "Specialist",
+          "description": "Python is required",
+          "companyName": "Lab",
+          "sourceId": "src-1",
+          "externalId": "E13",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q13",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Specialist", "analysisText": "Specialist" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "REQUIRED",
+              "requirementMethod": "LOCAL_SIGNAL",
+              "requirementConfidenceTier": "HIGH"
+            }
+          ],
+          "occupation": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "weak" },
+          "sector": { "status": "UNCLASSIFIED", "method": "UNCLASSIFIED", "evidence": "none" },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE",
+        "reasonCodes": [],
+        "intelligenceOverall": "HIGH"
+      }
+    },
+    {
+      "id": "q-14",
+      "label": "unknown qualification but otherwise strong",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q14",
+          "title": "Software Developers",
+          "description": "Python required",
+          "companyName": "Co",
+          "sourceId": "src-1",
+          "externalId": "E14",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q14",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Software Developers", "analysisText": "Software Developers" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "REQUIRED",
+              "requirementMethod": "LOCAL_SIGNAL",
+              "requirementConfidenceTier": "HIGH"
+            }
+          ],
+          "occupation": {
+            "status": "CLASSIFIED",
+            "code": "2512",
+            "method": "TITLE_EXACT",
+            "confidenceTier": "HIGH",
+            "evidence": "exact"
+          },
+          "sector": {
+            "status": "CLASSIFIED",
+            "code": "sp.sector.it-ites",
+            "method": "OCCUPATION_SECTOR",
+            "confidenceTier": "HIGH",
+            "evidence": "occ"
+          },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE",
+        "reasonCodes": [],
+        "intelligenceOverall": "HIGH"
+      }
+    },
+    {
+      "id": "q-15",
+      "label": "unresolved skill but otherwise usable",
+      "input": {
+        "referenceTime": "2026-09-01T00:00:00.000Z",
+        "job": {
+          "id": "job-q15",
+          "title": "Software Developers",
+          "description": "Python and java scriptt",
+          "companyName": "Co",
+          "sourceId": "src-1",
+          "externalId": "E15",
+          "locationId": "loc-1",
+          "postedAt": "2026-08-20T00:00:00.000Z",
+          "expiresAt": null,
+          "sourceUrl": null,
+          "skillCount": 1
+        },
+        "source": {
+          "id": "src-1",
+          "code": "sp.source.demo",
+          "name": "Demo Source",
+          "active": true,
+          "reliability": null,
+          "type": "OTHER",
+          "geographicScope": "INDIA"
+        },
+        "provenance": {
+          "observedAt": "2026-08-20T00:00:00.000Z",
+          "ingestedAt": "2026-08-20T01:00:00.000Z",
+          "validationStatus": "VALID",
+          "dedupStatus": "UNIQUE"
+        },
+        "intelligence": {
+          "jobId": "job-q15",
+          "processorVersion": "phase6-v1",
+          "text": { "title": "Software Developers", "analysisText": "Software Developers" },
+          "skills": [
+            {
+              "rawTerm": "Python",
+              "contributingTerms": ["Python"],
+              "canonicalName": "python",
+              "status": "RESOLVED",
+              "extractionMethod": "CANONICAL_NAME_MATCH",
+              "extractionMethods": ["CANONICAL_NAME_MATCH"],
+              "confidenceTier": "HIGH",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            },
+            {
+              "rawTerm": "java scriptt",
+              "contributingTerms": ["java scriptt"],
+              "status": "UNRESOLVED",
+              "extractionMethod": "EXPLICIT_SKILL_FIELD",
+              "extractionMethods": ["EXPLICIT_SKILL_FIELD"],
+              "confidenceTier": "LOW",
+              "requirementLevel": "MENTIONED",
+              "requirementMethod": "DEFAULT_MENTIONED",
+              "requirementConfidenceTier": "LOW"
+            }
+          ],
+          "occupation": {
+            "status": "CLASSIFIED",
+            "code": "2512",
+            "method": "TITLE_EXACT",
+            "confidenceTier": "HIGH",
+            "evidence": "exact"
+          },
+          "sector": {
+            "status": "CLASSIFIED",
+            "code": "sp.sector.it-ites",
+            "method": "OCCUPATION_SECTOR",
+            "confidenceTier": "HIGH",
+            "evidence": "occ"
+          },
+          "experience": {
+            "status": "UNKNOWN",
+            "rawText": null,
+            "extractionMethod": "UNAVAILABLE",
+            "confidenceTier": "LOW"
+          },
+          "qualifications": [
+            {
+              "rawText": "",
+              "status": "UNKNOWN",
+              "extractionMethod": "UNAVAILABLE",
+              "confidenceTier": "LOW"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "eligibility": "INCLUDE",
+        "reasonCodes": [],
+        "intelligenceOverall": "HIGH"
+      }
+    }
+  ]
+}

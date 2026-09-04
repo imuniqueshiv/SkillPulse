@@ -45,6 +45,7 @@ Phase 6 is state-agnostic and source-agnostic. It does not read `RawIngestionRec
 | OBSERVED DATA | Source observation and canonical Job fields |
 | DERIVED INTELLIGENCE | Deterministic Phase 6 `JobIntelligence` / `JobIntelligenceResult` |
 | EVALUATION DATA | Manually annotated benchmark under `data/sample/evaluation/` — **not** labour-market evidence |
+| QUALITY ASSESSMENT | Deterministic Phase 7 `JobQualityAssessment` / analytical eligibility |
 | SYNTHETIC FIXTURE DATA | Development/test fixtures such as `data/sample/ingestion/mahaswayam-rojgar.sample.json` — **not** real Maharashtra labour-market evidence |
 
 Phase 6.7 classifies requirement level from the **clause that contains the skill**. Unrelated sentences do not change another skill. Ambiguous wording (`familiarity`, `exposure`, `knowledge of`, bare `Python experience`) stays `MENTIONED`. Stronger local signals win (REQUIRED > PREFERRED > OPTIONAL > MENTIONED).
@@ -58,6 +59,21 @@ Phase 6.10 orchestrator is `processJobIntelligence` in `apps/api/src/modules/int
 Phase 6.11 evaluation dataset and `evaluate.ts` compare expected annotations to derived output. Metrics describe that small EVALUATION DATA set only.
 
 Phase 6.12 runs the Maharashtra **synthetic** fixture through the same state-agnostic pipeline. There is no Maharashtra branch in intelligence modules.
+
+### Phase 7 — Data quality & trust
+
+```text
+canonical Job + Phase 5 provenance signals (when available)
+        + Phase 6 JobIntelligence (phase6-v1)
+        ↓
+completeness / source trust / freshness / duplication / intelligence confidence
+        ↓
+analytical eligibility: INCLUDE | INCLUDE_WITH_CAUTION | EXCLUDE
+        ↓
+JobQualityAssessment (quality-v1)
+```
+
+Phase 7 evaluates data for analytical eligibility. It does **not** aggregate market demand. Freshness and deduplication semantics remain owned by Phase 5. Source trust is registry-based and conservative (`STANDARD` for active registered sources; `UNVERIFIED` when missing/inactive/unresolved). `VERIFIED`/`TRUSTED` are reserved until explicit verification metadata exists.
 
 See [data-model.md](data-model.md).
 
