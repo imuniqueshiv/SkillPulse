@@ -3,26 +3,26 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-zinc-50 px-6 font-sans dark:bg-black">
-      <main className="flex w-full max-w-xl flex-col gap-6 rounded-2xl bg-white p-10 shadow-sm dark:bg-zinc-950">
-        <p className="text-sm font-medium tracking-wide text-zinc-500 uppercase">
+    <div className="flex flex-1 flex-col items-center justify-center bg-[#F5F7FA] px-6 font-sans">
+      <main className="flex w-full max-w-xl flex-col gap-6 rounded-xl bg-white p-10 shadow-sm border border-[#D1D5DB]">
+        <p className="text-sm font-medium tracking-wide text-[#6B7280] uppercase">
           Skill development intelligence
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#111827]">
           SkillPulse
         </h1>
-        <p className="text-lg text-zinc-600 dark:text-zinc-400">
+        <p className="text-lg text-[#6B7280]">
           Sign in to open your workspace. Authorization is enforced by the API.
         </p>
         <div className="flex items-center gap-4">
           <Show when="signed-out">
             <SignInButton>
-              <button className="rounded-full bg-zinc-950 px-5 py-2 text-sm font-medium text-white dark:bg-zinc-50 dark:text-zinc-950">
+              <button className="rounded-lg bg-[#005A9C] px-5 py-2 text-sm font-medium text-white hover:bg-[#003B73] transition-colors cursor-pointer">
                 Sign in
               </button>
             </SignInButton>
             <SignUpButton>
-              <button className="rounded-full border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-950 dark:border-zinc-700 dark:text-zinc-50">
+              <button className="rounded-lg border border-[#005A9C] px-5 py-2 text-sm font-medium text-[#005A9C] hover:bg-[#005A9C] hover:text-white transition-colors cursor-pointer">
                 Sign up
               </button>
             </SignUpButton>
@@ -30,7 +30,7 @@ export default function Home() {
           <Show when="signed-in">
             <Link
               href="/dashboard"
-              className="rounded-full bg-zinc-950 px-5 py-2 text-sm font-medium text-white dark:bg-zinc-50 dark:text-zinc-950"
+              className="rounded-lg bg-[#005A9C] px-5 py-2 text-sm font-medium text-white hover:bg-[#003B73] transition-colors"
             >
               Dashboard
             </Link>

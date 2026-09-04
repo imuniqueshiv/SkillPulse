@@ -42,8 +42,8 @@ export function PreferencesSection() {
       <Card title="Appearance" subtitle="Customize the look and feel">
         <div className="space-y-1 divide-y" style={{ borderColor: "var(--sp-border)" }}>
           <Toggle
-            label="Dark Mode"
-            description="Use dark theme across the application"
+            label="Light Mode"
+            description="Use light government portal theme across the application"
             defaultActive={true}
           />
           <Toggle

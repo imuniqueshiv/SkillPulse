@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -79,23 +79,15 @@ export interface SidebarProps {
   onMobileClose: () => void;
 }
 
+const emptySubscribe = () => () => {};
+
 export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("sp-sidebar-collapsed");
-    if (stored === "true") {
-      setIsCollapsed(true);
-    }
-  }, []);
 
   const toggleCollapse = () => {
-    const nextState = !isCollapsed;
-    setIsCollapsed(nextState);
-    localStorage.setItem("sp-sidebar-collapsed", String(nextState));
+    setIsCollapsed((prev) => !prev);
   };
 
   if (!mounted) {
@@ -119,22 +111,20 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
       {/* Mobile Backdrop */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden transition-all duration-150 ease-out"
+          className="fixed inset-0 top-[63px] bg-black/30 z-30 lg:hidden transition-all duration-150 ease-out"
           onClick={onMobileClose}
         />
       )}
 
       {/* Sidebar Container */}
       <aside 
-        className={`fixed left-0 top-0 h-full flex flex-col bg-[var(--sp-bg-surface)] border-r border-[var(--sp-border)] z-40 transition-all duration-150 ease-out ${sidebarWidth} ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        className={`fixed left-0 top-[63px] h-[calc(100vh-63px)] flex flex-col bg-[var(--sp-bg-surface)] border-r border-[var(--sp-border)] z-40 transition-all duration-150 ease-out ${sidebarWidth} ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        {/* Logo Section */}
-        <div className="flex items-center px-[20px] h-[56px] shrink-0">
-          <Link href="/dashboard" className="flex items-center overflow-hidden whitespace-nowrap">
-            <span className="text-[var(--sp-text-primary)] font-bold text-[1.125rem]">
-              {isCollapsed ? "SP" : "SkillPulse"}
-            </span>
-          </Link>
+        {/* Workspace Section Indicator */}
+        <div className="flex items-center px-4 h-[44px] border-b border-[var(--sp-border)] shrink-0">
+          <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[var(--sp-text-tertiary)] truncate">
+            {isCollapsed ? "WS" : "Workspace Navigator"}
+          </span>
         </div>
 
         {/* Nav Items */}

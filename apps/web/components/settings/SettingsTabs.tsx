@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 const TABS = [
   { key: "profile", label: "Profile" },
   { key: "preferences", label: "Preferences" },
