@@ -6,8 +6,25 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { fetchRecommendations, submitAuditFeedback } from "@/lib/api";
 
+interface EvidenceTrace {
+  jobCountAnalyzed?: number;
+  wageSignal?: string;
+  rationale?: string;
+}
+
+interface RecommendationItem {
+  id: string;
+  targetRole: string;
+  priority: string;
+  title: string;
+  summary: string;
+  confidenceScore: number;
+  evidenceTrace?: EvidenceTrace;
+  estimatedImpact: string;
+}
+
 export default function RecommendationsPage() {
-  const [recs, setRecs] = useState<any[]>([]);
+  const [recs, setRecs] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
@@ -17,7 +34,7 @@ export default function RecommendationsPage() {
       setLoading(true);
       const targetRole = roleFilter === "ALL" ? undefined : roleFilter;
       const res = await fetchRecommendations({ targetRole });
-      if (res?.data) setRecs(res.data);
+      if (res?.data) setRecs(res.data as RecommendationItem[]);
       setLoading(false);
     }
     loadRecs();
@@ -77,7 +94,7 @@ export default function RecommendationsPage() {
             <div style={{ textAlign: "center", color: "var(--color-neutral-500)" }}>Generating Evidence Traces...</div>
           </Card>
         ) : (
-          recs.map((item) => (
+          recs.map((item: RecommendationItem) => (
             <Card key={item.id}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "0.75rem" }}>
                 <div>

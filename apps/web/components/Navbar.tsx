@@ -10,10 +10,34 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 
+interface ISpeechRecognitionResult {
+  0: { transcript: string };
+  length: number;
+}
+interface ISpeechRecognitionResultList {
+  [index: number]: ISpeechRecognitionResult;
+  length: number;
+}
+interface ISpeechRecognitionEvent {
+  results: ISpeechRecognitionResultList;
+  error?: string;
+}
+interface ISpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onstart: () => void;
+  onresult: (event: ISpeechRecognitionEvent) => void;
+  onerror: (event: ISpeechRecognitionEvent) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
 declare global {
   interface Window {
-    SpeechRecognition?: any;
-    webkitSpeechRecognition?: any;
+    SpeechRecognition?: new () => ISpeechRecognition;
+    webkitSpeechRecognition?: new () => ISpeechRecognition;
   }
 }
 
@@ -319,7 +343,7 @@ export function Navbar() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   // Close menus on route change
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -445,14 +469,16 @@ export function Navbar() {
         setVoiceErrorMessage(null);
       };
 
-      recognition.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((result: any) => result[0].transcript)
-          .join("");
+      recognition.onresult = (event: ISpeechRecognitionEvent) => {
+        const results = event.results;
+        let transcript = "";
+        for (let i = 0; i < results.length; i++) {
+          transcript += results[i][0].transcript;
+        }
         setSearchQuery(transcript);
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: ISpeechRecognitionEvent) => {
         setIsListening(false);
         if (event.error === "not-allowed" || event.error === "permission-denied") {
           setVoiceErrorMessage("Microphone permission is required for voice search.");

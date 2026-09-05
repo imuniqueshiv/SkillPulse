@@ -8,6 +8,25 @@ import { DataTable } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
 import { fetchJobs, fetchJobAnalytics } from "@/lib/api";
 
+interface JobRecord extends Record<string, unknown> {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  skills: string[];
+  confidenceScore: number;
+  provenance?: {
+    sourceName?: string;
+  };
+}
+
+interface AnalyticsData {
+  totalPostings?: number;
+  verifiedPostings?: number;
+  confidenceAverage?: number;
+  freshnessIndexDays?: number;
+}
+
 function BriefcaseIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -44,8 +63,8 @@ function ClockIcon() {
 }
 
 export default function JobsPage() {
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [analytics, setAnalytics] = useState<any>(null);
+  const [jobs, setJobs] = useState<JobRecord[]>([]);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -57,10 +76,10 @@ export default function JobsPage() {
         fetchJobAnalytics()
       ]);
       if (jobsRes?.data) {
-        setJobs(jobsRes.data);
+        setJobs(jobsRes.data as JobRecord[]);
       }
       if (analyticsRes?.data) {
-        setAnalytics(analyticsRes.data);
+        setAnalytics(analyticsRes.data as AnalyticsData);
       }
       setLoading(false);
     }
@@ -71,7 +90,7 @@ export default function JobsPage() {
     {
       key: "title",
       label: "Job Role",
-      render: (row: any) => (
+      render: (row: JobRecord) => (
         <div>
           <div style={{ fontWeight: 600, color: "var(--color-neutral-900)" }}>{row.title}</div>
           <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-neutral-500)" }}>
@@ -85,7 +104,7 @@ export default function JobsPage() {
     {
       key: "skills",
       label: "Extracted Skill Signals",
-      render: (row: any) => (
+      render: (row: JobRecord) => (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
           {Array.isArray(row.skills) && row.skills.map((skill: string) => (
             <Badge key={skill} variant="neutral">{skill}</Badge>
@@ -96,7 +115,7 @@ export default function JobsPage() {
     {
       key: "confidenceScore",
       label: "Confidence",
-      render: (row: any) => (
+      render: (row: JobRecord) => (
         <Badge variant={row.confidenceScore > 0.9 ? "success" : "warning"}>
           {Math.round((row.confidenceScore || 0.88) * 100)}%
         </Badge>

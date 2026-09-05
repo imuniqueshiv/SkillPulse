@@ -7,6 +7,26 @@ import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
 import { fetchOutcomes } from "@/lib/api";
 
+interface DistrictRecord extends Record<string, unknown> {
+  district: string;
+  placementRate: number;
+  traineesCount: number;
+  topSector: string;
+}
+
+interface OutcomeSummary {
+  overallPlacementRate?: number;
+  placementRateLift?: string;
+  wageGrowthPercentage?: string;
+  averageTimeToHireDays?: number;
+  skillMatchAccuracy?: number;
+}
+
+interface OutcomesData {
+  summary?: OutcomeSummary;
+  districtBreakdown?: DistrictRecord[];
+}
+
 function CheckCircleIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -35,14 +55,14 @@ function ClockIcon() {
 }
 
 export default function OutcomesPage() {
-  const [outcomes, setOutcomes] = useState<any>(null);
+  const [outcomes, setOutcomes] = useState<OutcomesData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       const res = await fetchOutcomes();
-      if (res?.data) setOutcomes(res.data);
+      if (res?.data) setOutcomes(res.data as OutcomesData);
       setLoading(false);
     }
     loadData();
@@ -56,12 +76,12 @@ export default function OutcomesPage() {
     {
       key: "placementRate",
       label: "Placement Rate",
-      render: (row: any) => <strong style={{ color: "#16a34a" }}>{row.placementRate}%</strong>
+      render: (row: DistrictRecord) => <strong style={{ color: "#16a34a" }}>{row.placementRate}%</strong>
     },
     {
       key: "traineesCount",
       label: "Verified Trainees",
-      render: (row: any) => row.traineesCount?.toLocaleString()
+      render: (row: DistrictRecord) => row.traineesCount?.toLocaleString()
     },
     { key: "topSector", label: "Primary Hiring Sector" }
   ];

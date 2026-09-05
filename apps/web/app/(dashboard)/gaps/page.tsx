@@ -7,6 +7,22 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { fetchGapAnalysis } from "@/lib/api";
 
+interface GapItem {
+  curriculumId: string;
+  curriculumTitle: string;
+  institutionType: string;
+  gapSeverityScore: number;
+  missingSkills?: string[];
+  outdatedTopics?: string[];
+  rootCauseDiagnosis: string;
+}
+
+interface GapResponse {
+  averageGapSeverity?: number;
+  criticalGapsCount?: number;
+  data?: GapItem[];
+}
+
 function AlertTriangleIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -18,14 +34,14 @@ function AlertTriangleIcon() {
 }
 
 export default function CurriculumGapsPage() {
-  const [gapData, setGapData] = useState<any>(null);
+  const [gapData, setGapData] = useState<GapResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadGaps() {
       setLoading(true);
       const res = await fetchGapAnalysis();
-      if (res) setGapData(res);
+      if (res) setGapData(res as GapResponse);
       setLoading(false);
     }
     loadGaps();
@@ -61,7 +77,7 @@ export default function CurriculumGapsPage() {
             <div style={{ textAlign: "center", color: "var(--color-neutral-500)" }}>Analyzing Curriculum Gaps...</div>
           </Card>
         ) : (
-          items.map((item: any) => (
+          items.map((item: GapItem) => (
             <Card key={item.curriculumId}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
                 <div>
@@ -99,7 +115,7 @@ export default function CurriculumGapsPage() {
                     Outdated Topics Flagged
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-                    {item.outdatedTopics?.length > 0 ? (
+                    {item.outdatedTopics && item.outdatedTopics.length > 0 ? (
                       item.outdatedTopics.map((t: string) => <Badge key={t} variant="warning">{t}</Badge>)
                     ) : (
                       <span style={{ fontSize: "0.85rem", color: "#64748b" }}>None flagged</span>

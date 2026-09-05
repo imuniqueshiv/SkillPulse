@@ -13,6 +13,20 @@ import { ChartBar } from "@/components/ui/ChartBar";
 import { HeatmapGrid } from "@/components/ui/HeatmapGrid";
 import { SkeletonLoader } from "@/components/ui/SkeletonLoader";
 
+interface JobAnalyticsData {
+  totalPostings?: number;
+  verifiedPostings?: number;
+  confidenceAverage?: number;
+  freshnessIndexDays?: number;
+}
+
+interface OutcomeData {
+  summary?: {
+    overallPlacementRate?: number;
+    placementRateLift?: string;
+  };
+}
+
 const DEFAULT_SKILL_CHART_DATA = [
   { label: "Python", value: 87 },
   { label: "Data Sci", value: 72 },
@@ -106,8 +120,8 @@ export function RoleDashboard() {
   const { getToken, isLoaded } = useAuth();
   const [user, setUser] = useState<ApplicationUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [jobAnalytics, setJobAnalytics] = useState<any>(null);
-  const [outcomes, setOutcomes] = useState<any>(null);
+  const [jobAnalytics, setJobAnalytics] = useState<JobAnalyticsData | null>(null);
+  const [outcomes, setOutcomes] = useState<OutcomeData | null>(null);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -128,8 +142,8 @@ export function RoleDashboard() {
         fetchJobAnalytics(),
         fetchOutcomes()
       ]);
-      if (jRes?.data) setJobAnalytics(jRes.data);
-      if (oRes?.data) setOutcomes(oRes.data);
+      if (jRes?.data) setJobAnalytics(jRes.data as JobAnalyticsData);
+      if (oRes?.data) setOutcomes(oRes.data as OutcomeData);
 
       setLoading(false);
     })();

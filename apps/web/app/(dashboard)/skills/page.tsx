@@ -8,6 +8,25 @@ import { DataTable } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
 import { fetchSkills, fetchSkillDemand } from "@/lib/api";
 
+interface SkillRecord extends Record<string, unknown> {
+  id: string;
+  name: string;
+  category: string;
+  domain: string;
+  demandScore: number;
+  growthRate: string;
+  frequency: number;
+}
+
+interface EmergingSkill {
+  name: string;
+  growth: string;
+}
+
+interface SkillDemandInfo {
+  emergingSkills?: EmergingSkill[];
+}
+
 function ZapIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -27,8 +46,8 @@ function BarChartIcon() {
 }
 
 export default function SkillsPage() {
-  const [skills, setSkills] = useState<any[]>([]);
-  const [demandInfo, setDemandInfo] = useState<any>(null);
+  const [skills, setSkills] = useState<SkillRecord[]>([]);
+  const [demandInfo, setDemandInfo] = useState<SkillDemandInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -39,8 +58,8 @@ export default function SkillsPage() {
         fetchSkills({ search: searchTerm }),
         fetchSkillDemand()
       ]);
-      if (skillsRes?.data) setSkills(skillsRes.data);
-      if (demandRes?.data) setDemandInfo(demandRes.data);
+      if (skillsRes?.data) setSkills(skillsRes.data as SkillRecord[]);
+      if (demandRes?.data) setDemandInfo(demandRes.data as SkillDemandInfo);
       setLoading(false);
     }
     loadData();
@@ -53,7 +72,7 @@ export default function SkillsPage() {
     {
       key: "demandScore",
       label: "Demand Index",
-      render: (row: any) => (
+      render: (row: SkillRecord) => (
         <Badge variant={row.demandScore > 85 ? "success" : "accent"}>
           {row.demandScore || 85} / 100
         </Badge>
@@ -62,7 +81,7 @@ export default function SkillsPage() {
     {
       key: "growthRate",
       label: "Growth Rate",
-      render: (row: any) => (
+      render: (row: SkillRecord) => (
         <span style={{ fontWeight: 600, color: "#16a34a" }}>
           {row.growthRate || "+14%"}
         </span>
@@ -71,7 +90,7 @@ export default function SkillsPage() {
     {
       key: "frequency",
       label: "Job Mentions",
-      render: (row: any) => (row.frequency ? row.frequency.toLocaleString() : "1,250")
+      render: (row: SkillRecord) => (row.frequency ? row.frequency.toLocaleString() : "1,250")
     }
   ];
 
