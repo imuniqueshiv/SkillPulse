@@ -1,22 +1,27 @@
 import React from 'react';
 
-export interface Column {
+export interface Column<T = Record<string, unknown>> {
   key: string;
   label: string;
   align?: 'left' | 'right' | 'center';
+  render?: (row: T) => React.ReactNode;
 }
 
-export interface DataTableProps {
-  columns: Column[];
-  rows: Record<string, React.ReactNode>[];
+export interface DataTableProps<T = Record<string, unknown>> {
+  columns: Column<T>[];
+  rows?: T[];
+  data?: T[];
   className?: string;
 }
 
-export function DataTable({
+export function DataTable<T extends Record<string, unknown>>({
   columns,
   rows,
+  data,
   className = '',
-}: DataTableProps) {
+}: DataTableProps<T>) {
+  const tableData = rows || data || [];
+
   const getAlignClass = (align?: 'left' | 'right' | 'center') => {
     switch (align) {
       case 'right':
@@ -47,7 +52,7 @@ export function DataTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-[var(--sp-border)]">
-          {rows.map((row, idx) => (
+          {tableData.map((row, idx) => (
             <tr
               key={idx}
               className="transition-colors duration-150 ease-out hover:bg-[var(--sp-bg-hover)]"
@@ -58,7 +63,7 @@ export function DataTable({
                   key={col.key}
                   className={`px-4 py-3 text-[0.8125rem] text-[var(--sp-text-primary)] ${getAlignClass(col.align)}`}
                 >
-                  {row[col.key]}
+                  {col.render ? col.render(row) : (row[col.key] as React.ReactNode)}
                 </td>
               ))}
             </tr>
