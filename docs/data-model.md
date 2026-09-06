@@ -77,6 +77,32 @@ Phase 7.7–7.11 add assessment history via one-level `previousAssessment` neste
 
 **EVALUATION DATA** for Phase 7 lives at `data/sample/evaluation/quality.json` and is not labour-market evidence.
 
+## Market demand intelligence (Phase 8)
+
+`summarizeDemand` is a typed service in `apps/api/src/modules/demand/`. Methodology version: **`demand-v1`**.
+
+It consumes PROCESSED `JobQualityAssessment` (`quality-v1`) and PROCESSED `JobIntelligence` (`phase6-v1`). Quality gate:
+
+| Eligibility | Quality weight |
+| --- | --- |
+| INCLUDE | 1.0 |
+| INCLUDE_WITH_CAUTION | 0.5 |
+| EXCLUDE | 0.0 |
+
+Skill contribution = qualityWeight × requirementWeight (REQUIRED 1.0, PREFERRED 0.75, OPTIONAL 0.50, MENTIONED 0.25). Duplicate skill mentions within one job count once (strongest requirement).
+
+Metrics stay distinct: `jobCount`, `weightedDemand`, `jobPenetration` (vs weighted eligible jobs), `skillDemandShare` (vs total skill weighted demand). Ranking: weightedDemand DESC, jobCount DESC, name ASC.
+
+Geography uses `Location` (country/state/district/city) when `Job.locationId` is set; unknown stays unknown. Experience/qualification percentages are **among known (PARSED)** values only, with explicit coverage rates.
+
+Time windows are explicit `[from, to)` on **`postedAt`**. Trends compare the previous equal-duration period; directions RISING / STABLE / DECLINING / INSUFFICIENT_DATA use ±10% thresholds and a minimum sample of 10. No opaque 0–100 AI score.
+
+MVP uses **dynamic aggregation** (no DemandSnapshot). The existing `DemandObservation` Prisma stub is unused by the engine.
+
+Demand metrics represent available analytically eligible job observations — **NOT** official government labour-market statistics. Phase 8 does **not** calculate labour supply, skill gaps, recommendations, curriculum, or forecasting.
+
+**SYNTHETIC EVALUATION DATA** for Phase 8: `data/sample/evaluation/demand.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):

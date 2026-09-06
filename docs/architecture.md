@@ -77,6 +77,27 @@ Phase 7 evaluates data for analytical eligibility. It does **not** aggregate mar
 
 Reassessment (7.7–7.9) keeps `(jobId, assessmentVersion)` uniqueness: identical fingerprints skip writes; changed inputs nest the prior successful snapshot in `result.previousAssessment`; `quality-v2` coexists as a separate row. Bulk assessment (7.10) is synchronous and bounded. Summary (7.11) counts PROCESSED rows only.
 
+### Phase 8 — Market demand intelligence
+
+```text
+PROCESSED JobQualityAssessment (quality-v1)
+        + PROCESSED JobIntelligence (phase6-v1)
+        + Job.postedAt / Location (when present)
+        ↓
+demand-v1 policy weights (quality × requirement)
+        ↓
+dynamic aggregation: skills / occupations / sectors / geography /
+                     experience / qualifications / trends
+        ↓
+DemandSummary (typed service contract)
+```
+
+Phase 8 is the analytical consumer of Phase 7 eligibility. It does **not** recalculate quality, re-extract intelligence, mutate Job/JobSkill/JobIntelligence/JobQualityAssessment, or persist DemandSnapshot rows (MVP uses dynamic aggregation). Event time is `postedAt` (Phase 5 freshness semantics). Maharashtra is ordinary `state` filtering — never special-case code.
+
+Demand metrics represent available analytically eligible job observations. They are **NOT** official government labour-market statistics.
+
+Phase 8 does **NOT** calculate labour supply, skill gaps, recommendations, curriculum, or forecasting.
+
 See [data-model.md](data-model.md).
 
 ```text

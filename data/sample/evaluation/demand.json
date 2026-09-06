@@ -1,0 +1,61 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "NOT REAL LABOUR-MARKET EVIDENCE. Manually constructed Phase 8 demand benchmark only. Not observed market data.",
+  "cases": [
+    {
+      "id": "d-01-requirements-and-dedupe",
+      "label": "requirement weights, duplicate skill once, caution/exclude, Java != JavaScript",
+      "from": "2026-08-01T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "current": [],
+      "previous": [],
+      "expected": {
+        "skillWeightedDemand": {
+          "skill-python": 1.375,
+          "skill-java": 1.0,
+          "skill-javascript": 0.125
+        },
+        "skillJobCount": {
+          "skill-python": 2,
+          "skill-java": 1,
+          "skill-javascript": 1
+        },
+        "javaDistinctFromJavascript": true,
+        "excludedContributesZero": true
+      },
+      "_builder": "d-01"
+    },
+    {
+      "id": "d-02-occupation-sector-geo-experience",
+      "label": "occupations, sectors, unknown geography, experience/qualification coverage",
+      "from": "2026-08-01T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "current": [],
+      "previous": [],
+      "expected": {
+        "occupationNames": ["Software Developers", "UNCLASSIFIED"],
+        "sectorNames": ["IT", "UNCLASSIFIED"],
+        "unknownGeographyPresent": true,
+        "experienceKnown": 1,
+        "experienceUnknown": 1,
+        "qualificationKnown": 1
+      },
+      "_builder": "d-02"
+    },
+    {
+      "id": "d-03-trends",
+      "label": "rising, stable, declining, insufficient sample",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "current": [],
+      "previous": [],
+      "expected": {
+        "risingSkillIds": ["skill-rise"],
+        "decliningSkillIds": ["skill-fall"],
+        "stableSkillIds": ["skill-flat"],
+        "insufficientTrend": true
+      },
+      "_builder": "d-03"
+    }
+  ]
+}

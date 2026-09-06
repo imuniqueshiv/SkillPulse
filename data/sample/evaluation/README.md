@@ -1,9 +1,15 @@
-# Phase 6 evaluation dataset
+# Evaluation datasets
 
-**Classification: EVALUATION DATA**
+**Classification: EVALUATION DATA / SYNTHETIC EVALUATION DATA**
 
 **NOT LABOUR-MARKET EVIDENCE.**
 
-This folder is a manually annotated benchmark for deterministic SkillPulse Phase 6 job intelligence. It is not observed source data, not a canonical Job dump, and not a labour-market sample.
+| File | Phase |
+| --- | --- |
+| `jobs.json` | Phase 6 job intelligence |
+| `quality.json` | Phase 7 quality & trust |
+| `demand.json` | Phase 8 market demand |
+
+These are manually constructed benchmarks for deterministic SkillPulse pipelines. They are not observed source data and not labour-market samples.
 
 Do not mix these files with production ingestion fixtures under `data/sample/ingestion/`.
