@@ -103,6 +103,18 @@ Demand metrics represent available analytically eligible job observations — **
 
 **SYNTHETIC EVALUATION DATA** for Phase 8: `data/sample/evaluation/demand.json`.
 
+## Skill gap intelligence (Phase 9)
+
+`summarizeSkillGaps` in `apps/api/src/modules/gaps/` consumes Phase 8 `summarizeDemand` (`demand-v1`) plus caller-provided `SupplyObservation` rows. Methodology: **`gap-v1`**.
+
+Supply types are retained separately. Comparability defaults: `AVAILABLE_WORKFORCE`→DIRECT (same geo scope), `TRAINED`/`CERTIFIED`/`TRAINING_CAPACITY`→PROXY, `OTHER`→UNKNOWN. Mismatched geography scopes → UNKNOWN.
+
+Equations: `netGap = demand − supply`, `shortageQuantity = max(netGap, 0)`, ratios nullable when denominators are zero (never Infinity). Severity/confidence/trend/priority are centralized in gap-v1. Existing Prisma `SkillGap` model remains an unused curriculum-anchored stub — Phase 9 does not write it.
+
+Demand metrics remain Phase 8 quality-aware. Phase 9 does not recalculate eligibility.
+
+**SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/skill-gaps.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):

@@ -1,0 +1,54 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "NOT REAL LABOUR-MARKET EVIDENCE. Manually constructed Phase 9 skill-gap benchmark only. Not observed market data. TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE.",
+  "cases": [
+    {
+      "id": "g-01-shortage-direct",
+      "label": "demand > direct comparable supply",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-python" },
+      "_builder": "shortage-direct"
+    },
+    {
+      "id": "g-02-surplus",
+      "label": "supply > demand",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-java", "surplus": true },
+      "_builder": "surplus"
+    },
+    {
+      "id": "g-03-zero-supply",
+      "label": "zero supply safe ratios",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-react", "demandSupplyRatioNull": true },
+      "_builder": "zero-supply"
+    },
+    {
+      "id": "g-04-proxy",
+      "label": "proxy training capacity",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-python", "comparability": "PROXY" },
+      "_builder": "proxy-training"
+    },
+    {
+      "id": "g-05-unknown",
+      "label": "unknown comparability OTHER type",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-sql", "comparability": "UNKNOWN" },
+      "_builder": "unknown-type"
+    },
+    {
+      "id": "g-06-widening",
+      "label": "widening shortage trend",
+      "from": "2026-08-16T00:00:00.000Z",
+      "to": "2026-09-01T00:00:00.000Z",
+      "expected": { "skillId": "skill-rise", "trendDirection": "WIDENING" },
+      "_builder": "widening"
+    }
+  ]
+}

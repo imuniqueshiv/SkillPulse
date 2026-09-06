@@ -115,3 +115,5 @@ Phase 6 (`processJobIntelligence`) is also internal. It does not add HTTP routes
 Phase 7 (`assessJobQuality`) is internal. It produces analytical eligibility (`INCLUDE` / `INCLUDE_WITH_CAUTION` / `EXCLUDE`) and does not add HTTP routes or market demand APIs. Related internal services: `reassessJobQuality`, `assessJobsQuality`, `summarizeQualityAssessments`.
 
 Phase 8 (`summarizeDemand`) is an internal typed service contract (`demand-v1`) for market-demand aggregation. It does not add HTTP routes in this phase (same pattern as Phase 6/7). Filters: `from`/`to` (postedAt), geography, source, skill, occupation, sector, bounded limits.
+
+Phase 9 (`summarizeSkillGaps`) is an internal typed service (`gap-v1`). It requires explicit supply observations plus Phase 8 demand filters. No HTTP routes in this phase.

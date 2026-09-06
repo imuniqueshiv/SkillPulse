@@ -98,6 +98,28 @@ Demand metrics represent available analytically eligible job observations. They 
 
 Phase 8 does **NOT** calculate labour supply, skill gaps, recommendations, curriculum, or forecasting.
 
+### Phase 9 — Skill gap intelligence
+
+```text
+Phase 8 DemandSummary (demand-v1)
+        +
+caller-provided SupplyObservation[] (typed; often synthetic)
+        ↓
+comparability (DIRECT | PROXY | UNKNOWN)
+        ↓
+gap-v1 metrics / severity / confidence / trends / priority
+        ↓
+SkillGapSummary
+```
+
+Phase 9 consumes Phase 8 demand — it does **not** recompute demand or Phase 7 eligibility. There is **no** real labour-supply volume registry in the MVP; supply observations are explicit and type-separated (`TRAINED`, `CERTIFIED`, `AVAILABLE_WORKFORCE`, `TRAINING_CAPACITY`, `OTHER`). Types are never silently summed.
+
+`TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE ≠ EMPLOYED`.
+
+A numerical gap is **not** automatically a verified labour shortage. Interpretation depends on comparability, coverage, quality, and data availability.
+
+Phase 9 does **not** produce recommendations, curriculum advice, forecasting, or Phase 10+ intervention engines. MVP uses dynamic computation (existing Prisma `SkillGap` stub unused).
+
 See [data-model.md](data-model.md).
 
 ```text
