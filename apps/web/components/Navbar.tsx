@@ -10,37 +10,6 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 
-interface ISpeechRecognitionResult {
-  0: { transcript: string };
-  length: number;
-}
-interface ISpeechRecognitionResultList {
-  [index: number]: ISpeechRecognitionResult;
-  length: number;
-}
-interface ISpeechRecognitionEvent {
-  results: ISpeechRecognitionResultList;
-  error?: string;
-}
-interface ISpeechRecognition {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onstart: () => void;
-  onresult: (event: ISpeechRecognitionEvent) => void;
-  onerror: (event: ISpeechRecognitionEvent) => void;
-  onend: () => void;
-  start: () => void;
-  stop: () => void;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition?: new () => ISpeechRecognition;
-    webkitSpeechRecognition?: new () => ISpeechRecognition;
-  }
-}
-
 /* -------------------------------------------------------------------------- */
 /*                                SVG Icons                                   */
 /* -------------------------------------------------------------------------- */
@@ -95,26 +64,6 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
     >
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function MicIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" y1="19" x2="12" y2="23" />
-      <line x1="8" y1="23" x2="16" y2="23" />
     </svg>
   );
 }
@@ -335,15 +284,10 @@ export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
-  // Voice Search State
-  const [isListening, setIsListening] = useState(false);
-  const [voiceErrorMessage, setVoiceErrorMessage] = useState<string | null>(null);
-
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   // Close menus on route change
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -435,74 +379,6 @@ export function Navbar() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     executeSearch(searchQuery);
-  };
-
-  // Browser Speech Recognition Logic for Voice Search
-  const toggleVoiceSearch = () => {
-    setVoiceErrorMessage(null);
-
-    const SpeechRecognition = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
-
-    if (!SpeechRecognition) {
-      setVoiceErrorMessage("Voice search is not supported in this browser.");
-      setTimeout(() => setVoiceErrorMessage(null), 4000);
-      return;
-    }
-
-    if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      setIsListening(false);
-      return;
-    }
-
-    try {
-      const recognition = new SpeechRecognition();
-      recognitionRef.current = recognition;
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setVoiceErrorMessage(null);
-      };
-
-      recognition.onresult = (event: ISpeechRecognitionEvent) => {
-        const results = event.results;
-        let transcript = "";
-        for (let i = 0; i < results.length; i++) {
-          transcript += results[i][0].transcript;
-        }
-        setSearchQuery(transcript);
-      };
-
-      recognition.onerror = (event: ISpeechRecognitionEvent) => {
-        setIsListening(false);
-        if (event.error === "not-allowed" || event.error === "permission-denied") {
-          setVoiceErrorMessage("Microphone permission is required for voice search.");
-        } else if (event.error === "no-speech") {
-          setVoiceErrorMessage("No speech detected. Please try again.");
-        } else {
-          setVoiceErrorMessage("Voice search is not supported or failed.");
-        }
-        setTimeout(() => setVoiceErrorMessage(null), 4000);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-        if (searchQuery.trim()) {
-          executeSearch(searchQuery);
-        }
-      };
-
-      recognition.start();
-    } catch {
-      setIsListening(false);
-      setVoiceErrorMessage("Voice search is not supported in this browser.");
-      setTimeout(() => setVoiceErrorMessage(null), 4000);
-    }
   };
 
   // Check if a section or link is active
@@ -797,58 +673,32 @@ export function Navbar() {
           {/* Right: Search + Auth + Actions                                  */}
           {/* ================================================================ */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Desktop Search Bar with Voice Microphone */}
-            <div className="relative hidden md:flex flex-col items-end">
-              <form
-                onSubmit={handleSearchSubmit}
-                className="relative flex items-center"
-                role="search"
-              >
-                <label htmlFor="nav-search-input" className="sr-only">
-                  Search skills, roles, courses
-                </label>
-                <SearchIcon className="absolute left-3 w-4 h-4 text-[#6B7280] pointer-events-none" />
-                <input
-                  id="nav-search-input"
-                  ref={searchInputRef}
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                  placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
-                  className={`w-44 lg:w-60 pl-9 pr-9 py-1.5 text-xs bg-[#FFFFFF] border rounded-md transition-all duration-150 text-[#1F2937] placeholder-[#6B7280] ${
-                    isListening
-                      ? "border-[#005A9C] ring-2 ring-[#005A9C]/30 bg-[#F0F5FA]"
-                      : isSearchFocused
-                      ? "border-[#005A9C] ring-2 ring-[#005A9C]/20 w-56 lg:w-68"
-                      : "border-[#D1D5DB] hover:border-[#9CA3AF]"
-                  }`}
-                />
-                
-                {/* Voice Search Microphone Button inside Search Bar */}
-                <button
-                  type="button"
-                  onClick={toggleVoiceSearch}
-                  aria-label={isListening ? "Stop voice search" : "Start voice search"}
-                  title={isListening ? "Listening... Click to stop" : "Start voice search"}
-                  className={`absolute right-2 p-1 rounded-full transition-all duration-150 ${
-                    isListening
-                      ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                      : "text-[#6B7280] hover:text-[#003B73] hover:bg-[#F3F4F6]"
-                  }`}
-                >
-                  <MicIcon className="w-3.5 h-3.5" />
-                </button>
-              </form>
-
-              {/* Voice Error Notification Popup */}
-              {voiceErrorMessage && (
-                <div className="absolute top-full right-0 mt-1 z-50 bg-[#1E293B] text-white text-[0.7rem] px-2.5 py-1 rounded shadow-md whitespace-nowrap animate-in fade-in">
-                  {voiceErrorMessage}
-                </div>
-              )}
-            </div>
+            {/* Desktop Search Bar */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative hidden md:flex items-center"
+              role="search"
+            >
+              <label htmlFor="nav-search-input" className="sr-only">
+                Search skills, roles, courses
+              </label>
+              <SearchIcon className="absolute left-3 w-4 h-4 text-[#6B7280] pointer-events-none" />
+              <input
+                id="nav-search-input"
+                ref={searchInputRef}
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+                placeholder="Search skills, roles, courses..."
+                className={`w-44 lg:w-60 pl-9 pr-8 py-1.5 text-xs bg-[#FFFFFF] border rounded-md transition-all duration-150 text-[#1F2937] placeholder-[#6B7280] ${
+                  isSearchFocused
+                    ? "border-[#005A9C] ring-2 ring-[#005A9C]/20 w-56 lg:w-68"
+                    : "border-[#D1D5DB] hover:border-[#9CA3AF]"
+                }`}
+              />
+            </form>
 
             {/* Mobile Search Icon Button */}
             <button
@@ -932,7 +782,7 @@ export function Navbar() {
         </div>
 
         {/* ================================================================ */}
-        {/* Mobile Expandable Search Bar with Voice Control                  */}
+        {/* Mobile Expandable Search Bar                                     */}
         {/* ================================================================ */}
         {mobileSearchOpen && (
           <div className="md:hidden py-2.5 border-t border-[#E5E7EB] animate-in fade-in duration-150">
@@ -946,35 +796,21 @@ export function Navbar() {
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
+                placeholder="Search skills, roles, courses..."
                 autoFocus
-                className={`w-full pl-9 pr-14 py-2 text-xs bg-[#FFFFFF] border rounded-md text-[#1F2937] focus:outline-none ${
-                  isListening
-                    ? "border-[#005A9C] ring-2 ring-[#005A9C]/30 bg-[#F0F5FA]"
-                    : "border-[#D1D5DB] focus:border-[#005A9C] focus:ring-2 focus:ring-[#005A9C]/20"
-                }`}
+                className="w-full pl-9 pr-8 py-2 text-xs bg-[#FFFFFF] border border-[#D1D5DB] rounded-md text-[#1F2937] focus:border-[#005A9C] focus:ring-2 focus:ring-[#005A9C]/20 focus:outline-none"
               />
-              
-              {/* Voice Microphone Button for Mobile */}
-              <button
-                type="button"
-                onClick={toggleVoiceSearch}
-                aria-label={isListening ? "Stop voice search" : "Start voice search"}
-                className={`absolute right-3 p-1 rounded-full transition-all ${
-                  isListening
-                    ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                    : "text-[#6B7280] hover:text-[#003B73]"
-                }`}
-              >
-                <MicIcon className="w-4 h-4" />
-              </button>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 p-1 text-[#6B7280] hover:text-[#111827]"
+                  aria-label="Clear search"
+                >
+                  <CloseIcon className="w-3.5 h-3.5" />
+                </button>
+              )}
             </form>
-
-            {voiceErrorMessage && (
-              <div className="mt-1 text-[0.7rem] text-[#DC2626] px-1 font-medium">
-                {voiceErrorMessage}
-              </div>
-            )}
           </div>
         )}
       </div>
