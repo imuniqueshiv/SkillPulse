@@ -119,3 +119,5 @@ Phase 8 (`summarizeDemand`) is an internal typed service contract (`demand-v1`) 
 Phase 9 (`summarizeSkillGaps`) is an internal typed service (`gap-v1`). It requires explicit supply observations plus Phase 8 demand filters. No HTTP routes in this phase.
 
 Phase 10 (`summarizeTrainingIntelligence`) is an internal typed service (`training-v1`). It consumes Phase 9 gap summaries and Course/Curriculum mappings. No HTTP routes in this phase.
+
+Phase 11 (`summarizeInstituteIntelligence`) is an internal typed service (`institute-v1`). It consumes Phase 9 gaps, Phase 10 alignments, and Organization/Course/Curriculum. No HTTP routes in this phase. Not an institute ranking or marketplace API.

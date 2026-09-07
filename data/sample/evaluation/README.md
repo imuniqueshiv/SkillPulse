@@ -11,6 +11,7 @@
 | `demand.json` | Phase 8 market demand |
 | `skill-gaps.json` | Phase 9 skill gap intelligence |
 | `training-intelligence.json` | Phase 10 training & curriculum intelligence |
+| `institute-intelligence.json` | Phase 11 institute & program intelligence |
 
 These are manually constructed benchmarks for deterministic SkillPulse pipelines. They are not observed source data and not labour-market samples.
 

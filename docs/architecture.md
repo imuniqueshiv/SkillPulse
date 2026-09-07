@@ -137,6 +137,24 @@ Program alignment (demand-weighted coverage)
 
 Phase 10 keeps **training need** (market-level) separate from **curriculum gap** (program-level). It reuses existing Course/Curriculum/CurriculumSkill — no new TrainingProgram table. Coverage = CurriculumSkill presence (FULL); no title/text inference. Does **not** produce learner/course recommendations, funding decisions, or Phase 11+.
 
+### Phase 11 — Institute & program intelligence
+
+```text
+Phase 9 SkillGapSummary (gap-v1)
+        +
+Phase 10 ProgramAlignment (training-v1) — consumed, not recomputed
+        +
+Organization (TRAINING_INSTITUTE) / Course / Curriculum / CurriculumSkill
+        +
+optional TRAINING_CAPACITY observations (scoped)
+        ↓
+institute-v1
+        ↓
+Program intelligence | Provider capability | Capability gap | Geographic capability
+```
+
+Phase 11 keeps **provider** (Organization) separate from **program** (Course/Curriculum). **Skill gap ≠ capability gap**. Missing provider data → `INSUFFICIENT_DATA` (not `MISSING`). `TRAINING_CAPACITY` is never converted from/to other supply types. Provider Capability Score is decision-support — **not** a best-institute ranking. Does **not** produce placement, funding, marketplace, or Phase 12+.
+
 See [data-model.md](data-model.md).
 
 ```text

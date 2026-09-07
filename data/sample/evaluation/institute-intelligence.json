@@ -1,0 +1,102 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "NOT REAL INSTITUTE OR TRAINING CAPACITY EVIDENCE. Manually constructed Phase 11 institute & program intelligence benchmark. TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE. Skill gap ≠ capability gap. Missing provider data ≠ no provider exists.",
+  "cases": [
+    {
+      "id": "i-01-one-relevant",
+      "label": "provider with one relevant program",
+      "expected": { "providerCount": 1, "programCount": 1, "relevantProgramsMin": 1 },
+      "_builder": "one-relevant-program"
+    },
+    {
+      "id": "i-02-multi-program",
+      "label": "provider with multiple programs",
+      "expected": { "providerCount": 1, "programCount": 2 },
+      "_builder": "multi-program-provider"
+    },
+    {
+      "id": "i-03-multi-provider",
+      "label": "multiple providers covering the same skill",
+      "expected": { "providerCount": 2, "programCount": 2 },
+      "_builder": "multi-provider-same-skill"
+    },
+    {
+      "id": "i-04-capable",
+      "label": "high-gap skill with capable provider",
+      "expected": { "capabilityStatus": "ADEQUATE", "capacityStatus": "AVAILABLE" },
+      "_builder": "high-gap-capable"
+    },
+    {
+      "id": "i-05-missing",
+      "label": "high-gap skill with no confirmed provider capability",
+      "expected": { "capabilityStatus": "MISSING" },
+      "_builder": "high-gap-no-capability"
+    },
+    {
+      "id": "i-06-no-data",
+      "label": "provider data unavailable → INSUFFICIENT_DATA not MISSING",
+      "expected": { "capabilityStatus": "INSUFFICIENT_DATA", "providerCount": 0 },
+      "_builder": "no-provider-data"
+    },
+    {
+      "id": "i-07-strong-align",
+      "label": "strong curriculum alignment consumed from Phase 10",
+      "expected": { "alignment": "STRONG" },
+      "_builder": "strong-align"
+    },
+    {
+      "id": "i-08-weak-align",
+      "label": "weak/moderate curriculum alignment from Phase 10",
+      "expected": { "alignment": "MODERATE" },
+      "_builder": "weak-align"
+    },
+    {
+      "id": "i-09-known-capacity",
+      "label": "known capacity",
+      "expected": { "capacityStatus": "AVAILABLE", "capacityQuantity": 25 },
+      "_builder": "known-capacity"
+    },
+    {
+      "id": "i-10-unknown-capacity",
+      "label": "unknown capacity",
+      "expected": { "capacityStatus": "UNKNOWN", "capacityQuantity": null },
+      "_builder": "unknown-capacity"
+    },
+    {
+      "id": "i-11-zero-capacity",
+      "label": "zero capacity explicitly reported",
+      "expected": { "capacityStatus": "UNAVAILABLE", "capacityQuantity": 0 },
+      "_builder": "zero-capacity"
+    },
+    {
+      "id": "i-12-capacity-aggregate",
+      "label": "capacity aggregation across additive programs",
+      "expected": { "capacityQuantity": 80 },
+      "_builder": "capacity-aggregate"
+    },
+    {
+      "id": "i-13-capacity-overlap",
+      "label": "overlapping capacity must NOT be summed",
+      "expected": { "capacityQuantity": 40 },
+      "_builder": "capacity-overlap"
+    },
+    {
+      "id": "i-14-inactive",
+      "label": "inactive program exclusion",
+      "expected": { "inactiveExcluded": true, "programCount": 1 },
+      "_builder": "inactive-excluded"
+    },
+    {
+      "id": "i-15-geo",
+      "label": "geographic / district capability",
+      "expected": { "capabilityStatus": "ADEQUATE" },
+      "_builder": "geo-district"
+    },
+    {
+      "id": "i-16-no-infer",
+      "label": "Java != JavaScript — no fabricated skill inference",
+      "expected": { "capabilityStatus": "MISSING" },
+      "_builder": "unresolved-no-infer"
+    }
+  ]
+}

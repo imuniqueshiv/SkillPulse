@@ -129,6 +129,22 @@ No new Prisma models. Existing `SkillGap` stub remains unused by this engine.
 
 **SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/training-intelligence.json`.
 
+## Institute & program intelligence (Phase 11)
+
+`summarizeInstituteIntelligence` in `apps/api/src/modules/institute/` consumes Phase 9 gaps + Phase 10 alignments + Organization/Course/Curriculum. Methodology: **`institute-v1`**.
+
+- **Provider** — `Organization` with type `TRAINING_INSTITUTE` (no separate Provider table).
+- **Program** — Course + latest Curriculum (same analytical unit as Phase 10).
+- **Capability** — skills explicitly covered by active programs; ADEQUATE / LIMITED / MISSING / INSUFFICIENT_DATA.
+- **Capability gap** — high/severe skill gap without confirmed training capability (distinct from Phase 9 skill gap).
+- **Capacity** — only `TRAINING_CAPACITY` observations; additive only when scopes are compatible; overlapping provider vs program seats are not summed.
+
+`TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE ≠ EMPLOYED`.
+
+No new Prisma models. Course has no `locationId` — geographic capability uses gap-context geography.
+
+**SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/institute-intelligence.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):
