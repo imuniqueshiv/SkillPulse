@@ -9,6 +9,7 @@ import type {
   CapabilityStatus,
   InstituteCapacityStatus,
   InstituteConfidence,
+  ProgramRelevanceLevel,
 } from "./policy";
 import { INSTITUTE_METHODOLOGY_VERSION } from "./policy";
 
@@ -49,6 +50,7 @@ export type CapacityAggregateResult = {
 
 export type ProgramRelevanceScore = {
   score: number;
+  level: ProgramRelevanceLevel;
   components: {
     gapSeverity: number;
     skillCoverage: number;

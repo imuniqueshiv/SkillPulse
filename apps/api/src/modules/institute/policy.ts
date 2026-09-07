@@ -35,6 +35,22 @@ export const INSTITUTE_CONFIDENCE = {
 export type InstituteConfidence =
   (typeof INSTITUTE_CONFIDENCE)[keyof typeof INSTITUTE_CONFIDENCE];
 
+/** Program relevance bands — decision-support, not marketplace ranking. */
+export const PROGRAM_RELEVANCE_LEVEL = {
+  HIGH_RELEVANCE: "HIGH_RELEVANCE",
+  MODERATE_RELEVANCE: "MODERATE_RELEVANCE",
+  LOW_RELEVANCE: "LOW_RELEVANCE",
+  INSUFFICIENT_DATA: "INSUFFICIENT_DATA",
+} as const;
+
+export type ProgramRelevanceLevel =
+  (typeof PROGRAM_RELEVANCE_LEVEL)[keyof typeof PROGRAM_RELEVANCE_LEVEL];
+
+export const PROGRAM_RELEVANCE_THRESHOLD = {
+  HIGH: 0.65,
+  MODERATE: 0.35,
+} as const;
+
 /** High/severe gap severities from Phase 9 — do not invent "critical". */
 export const HIGH_GAP_SEVERITIES = new Set(["HIGH", "SEVERE"]);
 

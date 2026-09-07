@@ -183,6 +183,15 @@ test("skill→program→provider mapping; Java != JavaScript; inactive excluded"
   );
   assert.equal(noInfer.summary.skillCapabilities[0]?.capabilityStatus, "MISSING");
 
+  const cCpp = buildInstituteEvaluationCase({
+    id: "c",
+    label: "c",
+    expected: {},
+    _builder: "c-vs-cpp",
+  });
+  assert.equal(getProgramsForSkill(cCpp.programs, "skill-c").length, 0);
+  assert.equal(getProgramsForSkill(cCpp.programs, "skill-cpp").length, 1);
+
   const multi = buildInstituteEvaluationCase({
     id: "m",
     label: "m",
@@ -200,6 +209,41 @@ test("skill→program→provider mapping; Java != JavaScript; inactive excluded"
   });
   assert.equal(inactive.summary.buckets.activePrograms, 1);
   assert.ok(inactive.summary.programs.every((p) => p.isActive));
+});
+
+test("repeated execution is deterministic; relevance has level band", () => {
+  const a = buildInstituteEvaluationCase({
+    id: "d1",
+    label: "d1",
+    expected: {},
+    _builder: "one-relevant-program",
+  });
+  const b = buildInstituteEvaluationCase({
+    id: "d2",
+    label: "d2",
+    expected: {},
+    _builder: "one-relevant-program",
+  });
+  assert.equal(
+    JSON.stringify(a.summary.programs.map((p) => [p.programId, p.relevance.score, p.relevance.level])),
+    JSON.stringify(b.summary.programs.map((p) => [p.programId, p.relevance.score, p.relevance.level])),
+  );
+  assert.ok(a.summary.programs[0]?.relevance.level);
+  assert.match(a.summary.programs[0]!.relevance.level, /RELEVANCE|INSUFFICIENT_DATA/);
+});
+
+test("incompatible capacity periods are not summed", () => {
+  const built = buildInstituteEvaluationCase({
+    id: "p",
+    label: "p",
+    expected: {},
+    _builder: "incompatible-periods",
+  });
+  const capRow = built.summary.skillCapabilities[0]?.capacity;
+  assert.ok(capRow);
+  assert.equal(capRow.additive, false);
+  assert.equal(capRow.quantity, 200);
+  assert.notEqual(capRow.quantity, 240);
 });
 
 test("Phase 10 alignment consumed; provider/program separation; provenance", () => {

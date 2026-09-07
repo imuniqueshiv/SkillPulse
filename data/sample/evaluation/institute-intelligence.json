@@ -58,7 +58,7 @@
     },
     {
       "id": "i-10-unknown-capacity",
-      "label": "unknown capacity",
+      "label": "unknown capacity / missing capacity evidence",
       "expected": { "capacityStatus": "UNKNOWN", "capacityQuantity": null },
       "_builder": "unknown-capacity"
     },
@@ -71,7 +71,7 @@
     {
       "id": "i-12-capacity-aggregate",
       "label": "capacity aggregation across additive programs",
-      "expected": { "capacityQuantity": 80 },
+      "expected": { "capacityQuantity": 80, "capacityAdditive": true },
       "_builder": "capacity-aggregate"
     },
     {
@@ -97,6 +97,24 @@
       "label": "Java != JavaScript — no fabricated skill inference",
       "expected": { "capabilityStatus": "MISSING" },
       "_builder": "unresolved-no-infer"
+    },
+    {
+      "id": "i-17-c-vs-cpp",
+      "label": "C != C++ — no fabricated skill inference",
+      "expected": { "capabilityStatus": "MISSING" },
+      "_builder": "c-vs-cpp"
+    },
+    {
+      "id": "i-18-incompatible-periods",
+      "label": "incompatible capacity periods must NOT be summed",
+      "expected": { "capacityQuantity": 200, "capacityAdditive": false },
+      "_builder": "incompatible-periods"
+    },
+    {
+      "id": "i-19-duplicate-skill",
+      "label": "duplicate skill across programs — provider counted once",
+      "expected": { "providerCount": 1, "programCount": 2 },
+      "_builder": "duplicate-skill-programs"
     }
   ]
 }

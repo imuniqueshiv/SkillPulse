@@ -153,7 +153,7 @@ institute-v1
 Program intelligence | Provider capability | Capability gap | Geographic capability
 ```
 
-Phase 11 keeps **provider** (Organization) separate from **program** (Course/Curriculum). **Skill gap ≠ capability gap**. Missing provider data → `INSUFFICIENT_DATA` (not `MISSING`). `TRAINING_CAPACITY` is never converted from/to other supply types. Provider Capability Score is decision-support — **not** a best-institute ranking. Does **not** produce placement, funding, marketplace, or Phase 12+.
+Phase 11 keeps **provider** (Organization) separate from **program** (Course/Curriculum). **Skill gap ≠ capability gap**. Missing provider data → `INSUFFICIENT_DATA` (not `MISSING`). `TRAINING_CAPACITY` is never converted from/to other supply types. Program relevance uses bands (`HIGH_RELEVANCE` / `MODERATE_RELEVANCE` / `LOW_RELEVANCE` / `INSUFFICIENT_DATA`). Provider Capability Score is decision-support — **not** a best-institute ranking. Does **not** produce placement, funding, marketplace, or Phase 12+.
 
 See [data-model.md](data-model.md).
 

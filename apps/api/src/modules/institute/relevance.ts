@@ -9,10 +9,13 @@ import {
   CAPACITY_SCORE_POINTS,
   CONFIDENCE_SCORE_POINTS,
   HIGH_GAP_SEVERITIES,
+  PROGRAM_RELEVANCE_LEVEL,
+  PROGRAM_RELEVANCE_THRESHOLD,
   PROGRAM_RELEVANCE_WEIGHT,
   PROVIDER_CAPABILITY_WEIGHT,
   SEVERITY_SCORE_POINTS,
   type InstituteConfidence,
+  type ProgramRelevanceLevel,
 } from "./policy";
 
 function clamp01(n: number): number {
@@ -22,6 +25,22 @@ function clamp01(n: number): number {
 
 function round6(n: number): number {
   return Number(n.toFixed(6));
+}
+
+export function classifyProgramRelevanceLevel(
+  score: number,
+  confidence: InstituteConfidence,
+): ProgramRelevanceLevel {
+  if (confidence === "INSUFFICIENT_DATA") {
+    return PROGRAM_RELEVANCE_LEVEL.INSUFFICIENT_DATA;
+  }
+  if (score >= PROGRAM_RELEVANCE_THRESHOLD.HIGH) {
+    return PROGRAM_RELEVANCE_LEVEL.HIGH_RELEVANCE;
+  }
+  if (score >= PROGRAM_RELEVANCE_THRESHOLD.MODERATE) {
+    return PROGRAM_RELEVANCE_LEVEL.MODERATE_RELEVANCE;
+  }
+  return PROGRAM_RELEVANCE_LEVEL.LOW_RELEVANCE;
 }
 
 export function computeProgramRelevance(input: {
@@ -65,6 +84,7 @@ export function computeProgramRelevance(input: {
 
   return {
     score,
+    level: classifyProgramRelevanceLevel(score, input.confidence),
     components: {
       gapSeverity: round6(gapSeverity),
       skillCoverage: round6(skillCoverage),

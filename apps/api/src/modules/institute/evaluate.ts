@@ -20,6 +20,7 @@ export type InstituteEvaluationExpected = {
   alignment?: string;
   capacityStatus?: string;
   capacityQuantity?: number | null;
+  capacityAdditive?: boolean;
   providerCount?: number;
   programCount?: number;
   relevantProgramsMin?: number;
@@ -724,6 +725,87 @@ export function buildInstituteEvaluationCase(
       ];
       return finish(gaps, programs, []);
     }
+    case "c-vs-cpp": {
+      const gaps = [
+        makeGap({
+          skillId: "skill-c",
+          canonicalName: "C",
+          severity: "HIGH",
+        }),
+      ];
+      const programs = [
+        makeProgram({
+          programId: "prog-cpp",
+          courseName: "C++ Advanced",
+          organizationId: "org-cpp",
+          skills: [skill("skill-cpp", "C++")],
+        }),
+      ];
+      return finish(gaps, programs, []);
+    }
+    case "incompatible-periods": {
+      const gaps = [
+        makeGap({
+          skillId: "skill-python",
+          canonicalName: "Python",
+          severity: "HIGH",
+        }),
+      ];
+      const programs = [
+        makeProgram({
+          programId: "prog-py",
+          courseName: "Python",
+          organizationId: "org-py",
+          skills: [skill("skill-python", "Python")],
+        }),
+      ];
+      return finish(gaps, programs, [
+        cap({
+          observationId: "cap-month",
+          quantity: 40,
+          providerId: "org-py",
+          programId: "prog-py",
+          skillId: "skill-python",
+          periodFrom: "2026-08-01T00:00:00.000Z",
+          periodTo: "2026-08-31T00:00:00.000Z",
+        }),
+        cap({
+          observationId: "cap-year",
+          quantity: 200,
+          providerId: "org-py",
+          programId: "prog-py",
+          skillId: "skill-python",
+          periodFrom: "2026-01-01T00:00:00.000Z",
+          periodTo: "2026-12-31T00:00:00.000Z",
+        }),
+      ]);
+    }
+    case "duplicate-skill-programs": {
+      const gaps = [
+        makeGap({
+          skillId: "skill-sql",
+          canonicalName: "SQL",
+          severity: "HIGH",
+        }),
+      ];
+      const programs = [
+        makeProgram({
+          programId: "prog-sql-a",
+          courseName: "SQL Basics",
+          organizationId: "org-dup",
+          organizationName: "Dup Institute",
+          skills: [skill("skill-sql", "SQL")],
+        }),
+        makeProgram({
+          programId: "prog-sql-b",
+          courseName: "SQL Advanced",
+          organizationId: "org-dup",
+          organizationName: "Dup Institute",
+          skills: [skill("skill-sql", "SQL")],
+        }),
+      ];
+      return finish(gaps, programs, []);
+    }
     default:
       throw new Error(`Unknown institute evaluation builder: ${c._builder}`);
   }
@@ -808,6 +890,16 @@ export function checkInstituteEvaluationCase(
           `capacityQuantity expected ${expected.capacityQuantity}, got skill=${row?.capacity.quantity} provider=${prov?.capacity.quantity}`,
         );
       }
+    }
+  }
+  if (expected.capacityAdditive !== undefined) {
+    const row = summary.skillCapabilities[0];
+    const prov = summary.providers[0];
+    const additive = row?.capacity.additive ?? prov?.capacity.additive;
+    if (additive !== expected.capacityAdditive) {
+      failures.push(
+        `capacityAdditive expected ${expected.capacityAdditive}, got ${additive}`,
+      );
     }
   }
   if (expected.providerCount !== undefined) {

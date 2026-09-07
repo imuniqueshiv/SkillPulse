@@ -49,6 +49,7 @@ export function getProgramsForSkill(
 
 /**
  * Skill → Providers (deduped) via programs.
+ * Alias: getInstitutesForSkill (Organization TRAINING_INSTITUTE).
  */
 export function getProvidersForSkill(
   programs: readonly TrainingProgramView[],
@@ -82,6 +83,9 @@ export function getProvidersForSkill(
     (a.providerName ?? a.providerId).localeCompare(b.providerName ?? b.providerId),
   );
 }
+
+/** Repository naming alias — institutes are Organization TRAINING_INSTITUTE. */
+export const getInstitutesForSkill = getProvidersForSkill;
 
 function gapSkillRef(gap: SkillGapRow, covered: boolean): ProgramGapSkillRef {
   return {

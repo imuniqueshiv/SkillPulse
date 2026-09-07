@@ -3,6 +3,8 @@ export {
   CAPABILITY_STATUS,
   INSTITUTE_CAPACITY_STATUS,
   INSTITUTE_CONFIDENCE,
+  PROGRAM_RELEVANCE_LEVEL,
+  PROGRAM_RELEVANCE_THRESHOLD,
   HIGH_GAP_SEVERITIES,
   PROGRAM_RELEVANCE_WEIGHT,
   PROVIDER_CAPABILITY_WEIGHT,
@@ -15,6 +17,7 @@ export type {
   CapabilityStatus,
   InstituteCapacityStatus,
   InstituteConfidence,
+  ProgramRelevanceLevel,
 } from "./policy";
 
 export type * from "./contract";
@@ -40,6 +43,7 @@ export {
   programSkillIds,
   getProgramsForSkill,
   getProvidersForSkill,
+  getInstitutesForSkill,
   buildProgramIntelligence,
   buildAllProgramIntelligence,
 } from "./programs";
@@ -51,6 +55,7 @@ export {
 
 export {
   computeProgramRelevance,
+  classifyProgramRelevanceLevel,
   computeProviderCapabilityScore,
   isHighGapSeverity,
   degradeConfidence,
