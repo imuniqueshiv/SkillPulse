@@ -1,0 +1,114 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "Not government decision evidence. Not real labour-market evidence. Phase 13 decision-v1 synthetic benchmark. Signals are investigation/review options — not autonomous policy.",
+  "cases": [
+    {
+      "id": "d-01-severe",
+      "label": "severe skill shortage",
+      "expected": { "hasCategory": "SKILL_SHORTAGE", "actionType": "MONITOR" },
+      "_builder": "severe-shortage"
+    },
+    {
+      "id": "d-02-capacity",
+      "label": "high demand + insufficient capacity",
+      "expected": { "hasCategory": "TRAINING_CAPACITY", "actionType": "REVIEW_TRAINING_CAPACITY" },
+      "_builder": "capacity-constraint"
+    },
+    {
+      "id": "d-03-curriculum",
+      "label": "weak curriculum + high demand",
+      "expected": { "hasCategory": "CURRICULUM_ALIGNMENT", "actionType": "REVIEW_CURRICULUM" },
+      "_builder": "weak-curriculum"
+    },
+    {
+      "id": "d-04-emp",
+      "label": "strong curriculum + weak employment",
+      "expected": { "hasCategory": "EMPLOYMENT_OUTCOME", "actionType": "INVESTIGATE_EMPLOYMENT_OUTCOME" },
+      "_builder": "strong-align-weak-emp"
+    },
+    {
+      "id": "d-05-program-review",
+      "label": "adequate capacity + low demand → MONITOR program review",
+      "expected": { "hasCategory": "PROGRAM_REVIEW", "actionType": "MONITOR" },
+      "_builder": "adequate-low-demand"
+    },
+    {
+      "id": "d-06-quality",
+      "label": "poor data quality",
+      "expected": { "hasCategory": "DATA_QUALITY", "actionType": "IMPROVE_DATA_COLLECTION" },
+      "_builder": "data-quality"
+    },
+    {
+      "id": "d-07-insufficient",
+      "label": "insufficient evidence",
+      "expected": { "insufficientData": true },
+      "_builder": "insufficient-evidence"
+    },
+    {
+      "id": "d-08-high-low",
+      "label": "high priority + low confidence",
+      "expected": { "priority": "HIGH", "confidence": "LOW" },
+      "_builder": "high-priority-low-confidence"
+    },
+    {
+      "id": "d-09-conflict",
+      "label": "conflicting severe gap + strong employment",
+      "expected": { "hasCategory": "SKILL_SHORTAGE", "confidence": "LOW" },
+      "_builder": "conflicting-evidence"
+    },
+    {
+      "id": "d-10-healthy",
+      "label": "healthy/balanced — no false intervention",
+      "expected": { "noCategory": "SKILL_SHORTAGE" },
+      "_builder": "healthy-no-false-alarm"
+    },
+    {
+      "id": "d-11-period",
+      "label": "incompatible periods",
+      "expected": { "insufficientData": true, "hasCategory": "DATA_QUALITY" },
+      "_builder": "incompatible-period"
+    },
+    {
+      "id": "d-12-unknown-cap",
+      "label": "unknown capacity ≠ zero / insufficient",
+      "expected": { "noCategory": "TRAINING_CAPACITY" },
+      "_builder": "unknown-capacity"
+    },
+    {
+      "id": "d-13-missing-cap",
+      "label": "no institute capability",
+      "expected": { "hasCategory": "TRAINING_CAPACITY" },
+      "_builder": "no-institute-capability"
+    },
+    {
+      "id": "d-14-java-js",
+      "label": "Java != JavaScript canonical identity",
+      "expected": { "hasCategory": "SKILL_SHORTAGE" },
+      "_builder": "java-vs-js"
+    },
+    {
+      "id": "d-15-c-cpp",
+      "label": "C != C++",
+      "expected": { "hasCategory": "TRAINING_CAPACITY" },
+      "_builder": "c-vs-cpp"
+    },
+    {
+      "id": "d-16-geo",
+      "label": "geographic mismatch",
+      "expected": { "hasCategory": "GEOGRAPHIC_MISMATCH", "actionType": "INVESTIGATE_GEOGRAPHIC_GAP" },
+      "_builder": "geo-mismatch"
+    },
+    {
+      "id": "d-17-persistent-emp",
+      "label": "persistent weak employment",
+      "expected": { "hasCategory": "EMPLOYMENT_OUTCOME" },
+      "_builder": "persistent-employment"
+    },
+    {
+      "id": "d-18-strong-all",
+      "label": "strong demand+gap+employment conflict preserved",
+      "expected": { "hasCategory": "SKILL_SHORTAGE" },
+      "_builder": "strong-demand-gap-emp"
+    }
+  ]
+}

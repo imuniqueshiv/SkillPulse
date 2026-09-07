@@ -170,6 +170,18 @@ Employer insights | Program employment insights | Trends
 
 Phase 12 is **observational**. `TRAINED ≠ CERTIFIED ≠ PLACED ≠ EMPLOYED`. `REPORTED ≠ CONFIRMED`. SkillPulse MVP has **no durable learner/placement Prisma model** — intelligence is limited by provided observations. Synthetic evaluation fixtures are **not** real labour-market evidence. Does **not** predict, rank, forecast, or implement Phase 13+.
 
+### Phase 13 — Government decision intelligence
+
+```text
+Phase 7–12 typed summaries (consumed, not recomputed)
+        ↓
+decision-v1 rules + optional explainable score
+        ↓
+GovernmentDecisionSummary (DecisionSignals)
+```
+
+Phase 13 synthesizes demand, gaps, training, institute capability, employment, and quality into **explainable decision-support signals** (investigation/review/monitor). It does **not** allocate budgets, close programs, rank institutes, predict, or execute government policy. Missing evidence → `INSUFFICIENT_DATA` (not “no problem”).
+
 See [data-model.md](data-model.md).
 
 ```text

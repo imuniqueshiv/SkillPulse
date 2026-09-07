@@ -13,6 +13,7 @@
 | `training-intelligence.json` | Phase 10 training & curriculum intelligence |
 | `institute-intelligence.json` | Phase 11 institute & program intelligence |
 | `employment-intelligence.json` | Phase 12 employer & placement intelligence |
+| `decision-intelligence.json` | Phase 13 government decision intelligence |
 
 These are manually constructed benchmarks for deterministic SkillPulse pipelines. They are not observed source data and not labour-market samples.
 

@@ -158,6 +158,17 @@ No new Prisma models. Existing mock `GET /api/v1/outcomes` SAMPLE metrics are **
 
 **SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/employment-intelligence.json`.
 
+## Government decision intelligence (Phase 13)
+
+`summarizeGovernmentDecisions` in `apps/api/src/modules/decision/` consumes Phase 7–12 summaries. Methodology: **`decision-v1`**.
+
+Categories: SKILL_SHORTAGE, TRAINING_CAPACITY, CURRICULUM_ALIGNMENT, EMPLOYMENT_OUTCOME, GEOGRAPHIC_MISMATCH, DATA_QUALITY, PROGRAM_REVIEW.
+Actions: REVIEW_*, INVESTIGATE_*, IMPROVE_DATA_COLLECTION, MONITOR — never CLOSE_*/ALLOCATE_*.
+
+No new Prisma models. Signals are decision-support only.
+
+**SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/decision-intelligence.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):
