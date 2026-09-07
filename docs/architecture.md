@@ -120,6 +120,23 @@ A numerical gap is **not** automatically a verified labour shortage. Interpretat
 
 Phase 9 does **not** produce recommendations, curriculum advice, forecasting, or Phase 10+ intervention engines. MVP uses dynamic computation (existing Prisma `SkillGap` stub unused).
 
+### Phase 10 — Training & curriculum intelligence
+
+```text
+Phase 9 SkillGapSummary (gap-v1)
+        +
+Course / Curriculum / CurriculumSkill (canonical mappings)
+        +
+optional TRAINING_CAPACITY supply observations
+        ↓
+training-v1
+        ↓
+Training Need (market)  |  Curriculum Gap (program)
+Program alignment (demand-weighted coverage)
+```
+
+Phase 10 keeps **training need** (market-level) separate from **curriculum gap** (program-level). It reuses existing Course/Curriculum/CurriculumSkill — no new TrainingProgram table. Coverage = CurriculumSkill presence (FULL); no title/text inference. Does **not** produce learner/course recommendations, funding decisions, or Phase 11+.
+
 See [data-model.md](data-model.md).
 
 ```text

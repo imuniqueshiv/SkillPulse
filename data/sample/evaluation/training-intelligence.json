@@ -1,0 +1,36 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "NOT REAL LABOUR-MARKET EVIDENCE. Manually constructed Phase 10 training & curriculum intelligence benchmark. TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE. Training need ≠ curriculum gap.",
+  "cases": [
+    {
+      "id": "t-01-high-need",
+      "label": "high skill gap → high training need with insufficient capacity",
+      "expected": {},
+      "_builder": "high-need"
+    },
+    {
+      "id": "t-02-strong-align",
+      "label": "fully aligned program demand-weighted coverage",
+      "expected": {},
+      "_builder": "strong-align"
+    },
+    {
+      "id": "t-03-weak-gaps",
+      "label": "weak alignment with curriculum gaps for missing high-demand skills",
+      "expected": {},
+      "_builder": "weak-align-gaps"
+    },
+    {
+      "id": "t-04-low-need",
+      "label": "balanced gap → low training need",
+      "expected": {},
+      "_builder": "low-need"
+    },
+    {
+      "id": "t-05-insufficient",
+      "label": "insufficient data training need",
+      "expected": {},
+      "_builder": "insufficient"
+    }
+  ]
+}

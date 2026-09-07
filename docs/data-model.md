@@ -115,6 +115,20 @@ Demand metrics remain Phase 8 quality-aware. Phase 9 does not recalculate eligib
 
 **SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/skill-gaps.json`.
 
+## Training & curriculum intelligence (Phase 10)
+
+`summarizeTrainingIntelligence` in `apps/api/src/modules/training/` consumes Phase 9 `SkillGapSummary` plus Course/Curriculum/CurriculumSkill mappings. Methodology: **`training-v1`**.
+
+- **Training need** — market-level signal from Phase 9 gaps (+ optional TRAINING_CAPACITY).
+- **Curriculum gap** — program-level missing market-relevant skills.
+- **Alignment** — demand-weighted coverage of program skills vs market demand.
+
+`TRAINING_CAPACITY ≠ TRAINED ≠ CERTIFIED ≠ AVAILABLE_WORKFORCE ≠ EMPLOYED`.
+
+No new Prisma models. Existing `SkillGap` stub remains unused by this engine.
+
+**SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/training-intelligence.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):
