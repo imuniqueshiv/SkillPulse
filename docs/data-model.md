@@ -145,6 +145,19 @@ No new Prisma models. Course has no `locationId` — geographic capability uses 
 
 **SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/institute-intelligence.json`.
 
+## Employer & placement intelligence (Phase 12)
+
+`summarizeEmploymentIntelligence` in `apps/api/src/modules/employment/` consumes explicit `EmploymentOutcomeObservation[]` plus optional Phase 8–11 summaries. Methodology: **`employment-v1`**.
+
+- **Outcomes** — TRAINED / CERTIFIED / PLACED / EMPLOYED kept distinct; REPORTED ≠ CONFIRMED.
+- **Rates** — null when cohort linkage missing or denominator zero (never Infinity/NaN/fake 0%).
+- **Skill utilization** — canonical skill ID intersection only; never inferred from job titles.
+- **Employers** — Organization `EMPLOYER` when `employerId` present; observational insights, not rankings.
+
+No new Prisma models. Existing mock `GET /api/v1/outcomes` SAMPLE metrics are **not** this engine.
+
+**SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/employment-intelligence.json`.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):

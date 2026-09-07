@@ -1,0 +1,96 @@
+{
+  "classification": "SYNTHETIC EVALUATION DATA",
+  "note": "NOT REAL LABOUR-MARKET EVIDENCE. Manually constructed Phase 12 employer & placement intelligence benchmark. TRAINED ≠ CERTIFIED ≠ PLACED ≠ EMPLOYED. REPORTED ≠ CONFIRMED. Synthetic fixtures must not enter production calculations.",
+  "cases": [
+    {
+      "id": "e-01-confirmed",
+      "label": "confirmed employment with valid dates and full utilization",
+      "expected": { "employed": 1, "uniqueLearners": 1, "utilizationLevel": "FULL", "timeToEmploymentMedian": 30 },
+      "_builder": "confirmed-employment"
+    },
+    {
+      "id": "e-02-reported-placement",
+      "label": "reported placement (not confirmed employment)",
+      "expected": { "placed": 1, "employed": 0 },
+      "_builder": "reported-placement"
+    },
+    {
+      "id": "e-03-trained-only",
+      "label": "training without placement evidence",
+      "expected": { "trained": 1, "placed": 0, "employed": 0 },
+      "_builder": "trained-only"
+    },
+    {
+      "id": "e-04-partial-util",
+      "label": "partial skill utilization",
+      "expected": { "utilizationLevel": "PARTIAL", "alignment": "MODERATE" },
+      "_builder": "partial-utilization"
+    },
+    {
+      "id": "e-05-no-emp-skills",
+      "label": "no employment skill evidence → UNKNOWN utilization",
+      "expected": { "utilizationLevel": "UNKNOWN" },
+      "_builder": "no-employment-skills"
+    },
+    {
+      "id": "e-06-zero-denom",
+      "label": "zero / empty observations → null rates",
+      "expected": { "uniqueLearners": 0, "trainingToEmploymentNull": true },
+      "_builder": "zero-denominator"
+    },
+    {
+      "id": "e-07-missing-linkage",
+      "label": "missing cohort linkage → null rates",
+      "expected": { "trainingToEmploymentNull": true },
+      "_builder": "missing-linkage"
+    },
+    {
+      "id": "e-08-duplicate",
+      "label": "duplicate observation identity",
+      "expected": { "employed": 1, "uniqueLearners": 1 },
+      "_builder": "duplicate-obs"
+    },
+    {
+      "id": "e-09-conflict",
+      "label": "conflicting placed vs employed — precedence to EMPLOYED/CONFIRMED",
+      "expected": { "employed": 1, "placed": 0, "uniqueLearners": 1, "conflictGroups": 1 },
+      "_builder": "conflict-obs"
+    },
+    {
+      "id": "e-10-multi-employer",
+      "label": "multiple employers",
+      "expected": { "employerCount": 2, "employed": 2 },
+      "_builder": "multi-employer"
+    },
+    {
+      "id": "e-11-multi-program",
+      "label": "multiple programs",
+      "expected": { "employed": 1, "trained": 1 },
+      "_builder": "multi-program"
+    },
+    {
+      "id": "e-12-negative-duration",
+      "label": "impossible negative duration rejected",
+      "expected": { "rejectedInvalid": 1 },
+      "_builder": "negative-duration"
+    },
+    {
+      "id": "e-13-java-js",
+      "label": "Java != JavaScript skill utilization",
+      "expected": { "utilizationLevel": "NONE" },
+      "_builder": "java-vs-js"
+    },
+    {
+      "id": "e-14-geo",
+      "label": "geography-supported outcome",
+      "expected": { "employed": 1 },
+      "_builder": "geo-state"
+    },
+    {
+      "id": "e-15-certified",
+      "label": "certified distinct from employed; certification cohort",
+      "expected": { "certified": 1, "employed": 1, "uniqueLearners": 2 },
+      "_builder": "certified-employed"
+    }
+  ]
+}

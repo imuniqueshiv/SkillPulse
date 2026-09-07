@@ -155,6 +155,21 @@ Program intelligence | Provider capability | Capability gap | Geographic capabil
 
 Phase 11 keeps **provider** (Organization) separate from **program** (Course/Curriculum). **Skill gap ≠ capability gap**. Missing provider data → `INSUFFICIENT_DATA` (not `MISSING`). `TRAINING_CAPACITY` is never converted from/to other supply types. Program relevance uses bands (`HIGH_RELEVANCE` / `MODERATE_RELEVANCE` / `LOW_RELEVANCE` / `INSUFFICIENT_DATA`). Provider Capability Score is decision-support — **not** a best-institute ranking. Does **not** produce placement, funding, marketplace, or Phase 12+.
 
+### Phase 12 — Employer & placement intelligence
+
+```text
+Explicit EmploymentOutcomeObservation[] (caller-provided)
+        +
+optional Phase 8–11 summaries (consumed, not recomputed)
+        ↓
+employment-v1
+        ↓
+Outcome totals | Rates | Time-to-employment | Skill utilization
+Employer insights | Program employment insights | Trends
+```
+
+Phase 12 is **observational**. `TRAINED ≠ CERTIFIED ≠ PLACED ≠ EMPLOYED`. `REPORTED ≠ CONFIRMED`. SkillPulse MVP has **no durable learner/placement Prisma model** — intelligence is limited by provided observations. Synthetic evaluation fixtures are **not** real labour-market evidence. Does **not** predict, rank, forecast, or implement Phase 13+.
+
 See [data-model.md](data-model.md).
 
 ```text
