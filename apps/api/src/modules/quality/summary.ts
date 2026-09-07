@@ -114,7 +114,10 @@ export async function summarizeQualityAssessments(
   let low = 0;
 
   for (const row of rows) {
-    eligibility[row.eligibility] += 1;
+    const elKey = row.eligibility as QualityEligibility;
+    if (elKey in eligibility) {
+      eligibility[elKey] += 1;
+    }
     const result = row.result as JobQualityAssessmentResult;
 
     const freshnessStatus = result.freshness?.status ?? "UNKNOWN";
