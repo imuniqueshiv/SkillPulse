@@ -125,7 +125,7 @@ function GridNavIcon(props: React.SVGProps<SVGSVGElement>) {
 function ChevronDownIcon({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`w-3.5 h-3.5 transition-transform duration-200 ${className}`}
+      className={`w-3 h-3 transition-transform duration-200 ${className}`}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -235,7 +235,7 @@ function BellIcon(props: React.SVGProps<SVGSVGElement>) {
 // Section Item Icons
 function BriefcaseIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
     </svg>
@@ -244,7 +244,7 @@ function BriefcaseIcon() {
 
 function ZapIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
   );
@@ -252,7 +252,7 @@ function ZapIcon() {
 
 function BarChartIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="20" x2="12" y2="10" />
       <line x1="18" y1="20" x2="18" y2="4" />
       <line x1="6" y1="20" x2="6" y2="16" />
@@ -262,7 +262,7 @@ function BarChartIcon() {
 
 function BuildingIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
       <path d="M9 22v-4h6v4" />
     </svg>
@@ -271,7 +271,7 @@ function BuildingIcon() {
 
 function BookOpenIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
@@ -280,7 +280,7 @@ function BookOpenIcon() {
 
 function LayersIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
       <polyline points="2 17 12 22 22 17" />
       <polyline points="2 12 12 17 22 12" />
@@ -290,7 +290,7 @@ function LayersIcon() {
 
 function LayoutDashboardIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" />
       <rect x="14" y="3" width="7" height="7" />
       <rect x="14" y="14" width="7" height="7" />
@@ -301,7 +301,7 @@ function LayoutDashboardIcon() {
 
 function SettingsIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
@@ -574,7 +574,7 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-3.5 pt-2.5 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
+      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-2.5 pt-2 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
     >
       {/* ------------------------------------------------------------------ */}
       {/* BACKGROUND DECORATIONS (Soft arcs, wave background & pulse line)  */}
@@ -588,7 +588,7 @@ export function Navbar() {
 
         {/* Integrated SkillPulse Workforce Pulse / Data Signal Line */}
         <svg
-          className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-14 opacity-20 pointer-events-none"
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-12 opacity-20 pointer-events-none"
           viewBox="0 0 1440 48"
           fill="none"
           preserveAspectRatio="none"
@@ -603,11 +603,11 @@ export function Navbar() {
         </svg>
 
         {/* Subtle Institutional Watermark Backdrop (Right side) */}
-        <div className="hidden lg:flex flex-col items-end absolute right-8 top-3 pointer-events-none opacity-30 select-none">
-          <span className="text-[0.625rem] font-serif italic tracking-wider text-[#64748B] uppercase">
+        <div className="hidden xl:flex flex-col items-end absolute right-6 top-2 pointer-events-none opacity-25 select-none">
+          <span className="text-[0.5625rem] font-serif italic tracking-wider text-[#64748B] uppercase">
             Empowering
           </span>
-          <span className="text-[0.6875rem] font-medium tracking-tight text-[#E85D2A]">
+          <span className="text-[0.625rem] font-medium tracking-tight text-[#E85D2A]">
             Maharashtra&apos;s Workforce
           </span>
         </div>
@@ -616,58 +616,51 @@ export function Navbar() {
       {/* ------------------------------------------------------------------ */}
       {/* FLOATING SOFT NAVBAR CONTAINER                                    */}
       {/* ------------------------------------------------------------------ */}
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 relative z-10 overflow-visible">
-        <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E5D9D0] rounded-full sm:rounded-[32px] px-4 sm:px-6 py-2 flex items-center justify-between gap-3 shadow-[0_8px_25px_-4px_rgba(232,93,42,0.06),0_3px_10px_rgba(0,0,0,0.03)] h-[62px] transition-all duration-200 overflow-visible">
+      <div className="max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-6 relative z-10 overflow-visible">
+        <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E5D9D0] rounded-full px-3.5 sm:px-5 py-1.5 flex items-center justify-between gap-2 lg:gap-2.5 shadow-[0_6px_20px_-4px_rgba(232,93,42,0.06),0_2px_8px_rgba(0,0,0,0.03)] h-[54px] transition-all duration-200 overflow-visible">
           
           {/* ================================================================ */}
           {/* Left: SkillPulse Logo & Institutional Brand                      */}
           {/* ================================================================ */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-full py-1 pr-2"
+              className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-full py-0.5 pr-1"
               aria-label="SkillPulse Home"
             >
-              <LogoIcon className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 transition-transform group-hover:scale-105 duration-200 shadow-xs" />
+              <LogoIcon className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 transition-transform group-hover:scale-105 duration-200 shadow-xs" />
               <div className="flex flex-col">
-                <span className="text-[1.125rem] sm:text-[1.25rem] font-bold tracking-tight text-[#1F2933] leading-none">
+                <span className="text-[1rem] sm:text-[1.125rem] font-bold tracking-tight text-[#1F2933] leading-none">
                   Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
-                <span className="text-[0.5625rem] sm:text-[0.625rem] font-semibold uppercase tracking-[0.09em] text-[#64748B] leading-tight mt-0.5 hidden sm:block">
+                <span className="text-[0.5rem] sm:text-[0.5625rem] font-semibold uppercase tracking-[0.08em] text-[#64748B] leading-tight mt-0.5 hidden sm:block">
                   Workforce Intelligence
                 </span>
               </div>
             </Link>
-
-            {/* Subtle Brand Tagline Badge */}
-            <div className="hidden 2xl:flex items-center pl-3 border-l border-[#E5D9D0] h-7">
-              <span className="text-[#E85D2A] text-[0.75rem] font-serif italic tracking-wide opacity-90 whitespace-nowrap">
-                Skills Stronger Futures
-              </span>
-            </div>
           </div>
 
           {/* ================================================================ */}
           {/* Center: Desktop Navigation Links & Dropdowns                    */}
           {/* ================================================================ */}
           <nav
-            className="hidden xl:flex items-center gap-1.5 relative overflow-visible"
+            className="hidden xl:flex items-center gap-1 relative overflow-visible"
             role="navigation"
             aria-label="Main Navigation"
           >
             {/* 1. Home */}
             <Link
               href="/"
-              className={`px-3.5 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname === "/"
                   ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2] shadow-2xs"
                   : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
-              <HomeIcon className={`w-4 h-4 ${pathname === "/" ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+              <HomeIcon className={`w-3.5 h-3.5 ${pathname === "/" ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Home
               {pathname === "/" && (
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
@@ -680,7 +673,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={(e) => handleDropdownToggle("intelligence", e)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isIntelligenceActive || activeDropdown === "intelligence"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -688,21 +681,21 @@ export function Navbar() {
                 aria-expanded={activeDropdown === "intelligence"}
                 aria-haspopup="true"
               >
-                <BarChartNavIcon className={`w-4 h-4 ${isIntelligenceActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+                <BarChartNavIcon className={`w-3.5 h-3.5 ${isIntelligenceActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Intelligence
                 <ChevronDownIcon className={activeDropdown === "intelligence" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isIntelligenceActive && (
-                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "intelligence" && (
                 <div
-                  className="absolute left-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Intelligence menu"
                 >
-                  <div className="px-3.5 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Workforce & Skill Intelligence
                   </div>
                   {INTELLIGENCE_ITEMS.map((item) => {
@@ -713,22 +706,22 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         onClick={() => setActiveDropdown(null)}
-                        className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-lg mt-0.5 shrink-0 transition-colors ${
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
                             isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#1F2933] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#64748B] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -748,7 +741,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={(e) => handleDropdownToggle("training", e)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isTrainingActive || activeDropdown === "training"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -756,21 +749,21 @@ export function Navbar() {
                 aria-expanded={activeDropdown === "training"}
                 aria-haspopup="true"
               >
-                <GraduationCapIcon className={`w-4 h-4 ${isTrainingActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+                <GraduationCapIcon className={`w-3.5 h-3.5 ${isTrainingActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Training & Curriculum
                 <ChevronDownIcon className={activeDropdown === "training" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isTrainingActive && (
-                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "training" && (
                 <div
-                  className="absolute left-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Training menu"
                 >
-                  <div className="px-3.5 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Learning Pathways & Standards
                   </div>
                   {TRAINING_ITEMS.map((item) => {
@@ -781,22 +774,22 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         onClick={() => setActiveDropdown(null)}
-                        className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-lg mt-0.5 shrink-0 transition-colors ${
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
                             isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#1F2933] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#64748B] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -810,32 +803,32 @@ export function Navbar() {
             {/* 4. Outcomes */}
             <Link
               href="/outcomes"
-              className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname.startsWith("/outcomes")
                   ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                   : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
-              <TrendingUpNavIcon className={`w-4 h-4 ${pathname.startsWith("/outcomes") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+              <TrendingUpNavIcon className={`w-3.5 h-3.5 ${pathname.startsWith("/outcomes") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Outcomes
               {pathname.startsWith("/outcomes") && (
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
             {/* 5. Recommendations */}
             <Link
               href="/recommendations"
-              className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname.startsWith("/recommendations")
                   ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                   : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
-              <LightbulbNavIcon className={`w-4 h-4 ${pathname.startsWith("/recommendations") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+              <LightbulbNavIcon className={`w-3.5 h-3.5 ${pathname.startsWith("/recommendations") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Recommendations
               {pathname.startsWith("/recommendations") && (
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
@@ -848,7 +841,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={(e) => handleDropdownToggle("dashboards", e)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isDashboardsActive || activeDropdown === "dashboards"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -856,21 +849,21 @@ export function Navbar() {
                 aria-expanded={activeDropdown === "dashboards"}
                 aria-haspopup="true"
               >
-                <GridNavIcon className={`w-4 h-4 ${isDashboardsActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
+                <GridNavIcon className={`w-3.5 h-3.5 ${isDashboardsActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Dashboards
                 <ChevronDownIcon className={activeDropdown === "dashboards" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isDashboardsActive && (
-                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-[#E85D2A] rounded-full shadow-xs" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "dashboards" && (
                 <div
-                  className="absolute right-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute right-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Dashboards menu"
                 >
-                  <div className="px-3.5 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Stakeholder Views & Control
                   </div>
                   {DASHBOARDS_ITEMS.map((item) => {
@@ -881,22 +874,22 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         onClick={() => setActiveDropdown(null)}
-                        className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-lg mt-0.5 shrink-0 transition-colors ${
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
                             isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#1F2933] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#64748B] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -911,9 +904,9 @@ export function Navbar() {
           {/* ================================================================ */}
           {/* Right: Search + Auth + Actions                                  */}
           {/* ================================================================ */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-nowrap">
             {/* Desktop Search Bar with Voice Microphone */}
-            <div className="relative hidden md:flex flex-col items-end">
+            <div className="relative hidden lg:flex flex-col items-end">
               <form
                 onSubmit={handleSearchSubmit}
                 className="relative flex items-center"
@@ -922,7 +915,7 @@ export function Navbar() {
                 <label htmlFor="nav-search-input" className="sr-only">
                   Search skills, roles, courses
                 </label>
-                <SearchIcon className="absolute left-3.5 w-4 h-4 text-[#64748B] pointer-events-none" />
+                <SearchIcon className="absolute left-3 w-3.5 h-3.5 text-[#64748B] pointer-events-none" />
                 <input
                   id="nav-search-input"
                   ref={searchInputRef}
@@ -931,38 +924,38 @@ export function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
-                  placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
-                  className={`w-36 lg:w-52 xl:w-60 pl-9 pr-10 py-1.5 text-xs bg-[#FFFFFF] border rounded-full transition-all duration-150 text-[#1F2933] placeholder-[#64748B] shadow-2xs ${
+                  placeholder={isListening ? "Listening..." : "Search skills..."}
+                  className={`w-28 xl:w-44 pl-8 pr-8 py-1 text-[0.75rem] bg-[#FFFFFF] border rounded-full transition-all duration-150 text-[#1F2933] placeholder-[#64748B] shadow-2xs ${
                     isListening
                       ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
                       : isSearchFocused
-                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-48 lg:w-60 xl:w-68 bg-[#FFFCF9]"
+                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-40 xl:w-52 bg-[#FFFCF9]"
                       : "border-[#E5D9D0] hover:border-[#F28C5B]"
                   }`}
                 />
                 
                 {/* Micro vertical divider & Voice Search Microphone Button */}
-                <div className="absolute right-2 flex items-center gap-1">
-                  <span className="h-3.5 w-[1px] bg-[#E5D9D0]" />
+                <div className="absolute right-1.5 flex items-center gap-0.5">
+                  <span className="h-3 w-[1px] bg-[#E5D9D0]" />
                   <button
                     type="button"
                     onClick={toggleVoiceSearch}
                     aria-label={isListening ? "Stop voice search" : "Start voice search"}
                     title={isListening ? "Listening... Click to stop" : "Start voice search"}
-                    className={`p-1 rounded-full transition-all duration-150 cursor-pointer ${
+                    className={`p-0.5 rounded-full transition-all duration-150 cursor-pointer ${
                       isListening
                         ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
                         : "text-[#E85D2A] hover:bg-[#FFF0E8]"
                     }`}
                   >
-                    <MicIcon className="w-3.5 h-3.5" />
+                    <MicIcon className="w-3 h-3" />
                   </button>
                 </div>
               </form>
 
               {/* Voice Error Notification Popup */}
               {voiceErrorMessage && (
-                <div className="absolute top-full right-0 mt-1 z-50 bg-[#1E293B] text-white text-[0.7rem] px-2.5 py-1 rounded-lg shadow-md whitespace-nowrap animate-in fade-in">
+                <div className="absolute top-full right-0 mt-1 z-50 bg-[#1E293B] text-white text-[0.7rem] px-2 py-0.5 rounded-md shadow-md whitespace-nowrap animate-in fade-in">
                   {voiceErrorMessage}
                 </div>
               )}
@@ -972,19 +965,19 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
+              className="lg:hidden p-1.5 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
               aria-label="Toggle search input"
             >
-              <SearchIcon className="w-5 h-5" />
+              <SearchIcon className="w-4 h-4" />
             </button>
 
             {/* Authentication States via Clerk — Visible Sign In and Register Buttons */}
             {(!isLoaded || !isSignedIn) && (
-              <div className="flex items-center gap-2 shrink-0 flex-nowrap">
+              <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
                 <SignInButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 sm:px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-full transition-all duration-150 cursor-pointer shrink-0 shadow-2xs"
+                    className="whitespace-nowrap px-3 py-1 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-full transition-all duration-150 cursor-pointer shrink-0 shadow-2xs"
                   >
                     Sign In
                   </button>
@@ -992,7 +985,7 @@ export function Navbar() {
                 <SignUpButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 sm:px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-all duration-150 shadow-xs cursor-pointer shrink-0"
+                    className="whitespace-nowrap px-3 py-1 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-all duration-150 shadow-xs cursor-pointer shrink-0"
                   >
                     Register
                   </button>
@@ -1001,22 +994,22 @@ export function Navbar() {
             )}
 
             {isLoaded && isSignedIn && (
-              <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 {/* Notification Bell */}
                 <button
                   type="button"
-                  className="relative p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
+                  className="relative p-1.5 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
                   aria-label="View notifications"
                 >
                   <BellIcon className="w-4 h-4" />
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#E85D2A] rounded-full ring-2 ring-white" />
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#E85D2A] rounded-full ring-2 ring-white" />
                 </button>
 
                 {/* Quick Dashboard Shortcut (if not on dashboard) */}
                 {!pathname.startsWith("/dashboard") && (
                   <Link
                     href="/dashboard"
-                    className="hidden lg:inline-flex items-center gap-1.5 px-4 py-1.5 text-xs sm:text-sm font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
+                    className="hidden xl:inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
                   >
                     <LayoutDashboardIcon />
                     Dashboard
@@ -1024,11 +1017,11 @@ export function Navbar() {
                 )}
 
                 {/* Clerk User Button */}
-                <div className="flex items-center pl-1 shrink-0">
+                <div className="flex items-center pl-0.5 shrink-0">
                   <UserButton
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 border border-[#E5D9D0] rounded-full",
+                        avatarBox: "w-7 h-7 border border-[#E5D9D0] rounded-full",
                       },
                     }}
                   />
@@ -1040,11 +1033,11 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A] cursor-pointer"
+              className="xl:hidden p-1.5 text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A] cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+              {mobileMenuOpen ? <CloseIcon className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -1053,7 +1046,7 @@ export function Navbar() {
         {/* Mobile Expandable Search Bar with Voice Control                  */}
         {/* ================================================================ */}
         {mobileSearchOpen && (
-          <div className="md:hidden mt-2 py-2 px-1 animate-in fade-in duration-150">
+          <div className="lg:hidden mt-2 py-1.5 px-1 animate-in fade-in duration-150">
             <form onSubmit={handleSearchSubmit} className="relative flex items-center">
               <label htmlFor="mobile-search-input" className="sr-only">
                 Search skills, roles, courses
@@ -1066,7 +1059,7 @@ export function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
                 autoFocus
-                className={`w-full pl-9 pr-14 py-2 text-xs bg-[#FFFFFF] border rounded-full text-[#1F2933] focus:outline-none shadow-xs ${
+                className={`w-full pl-9 pr-14 py-1.5 text-xs bg-[#FFFFFF] border rounded-full text-[#1F2933] focus:outline-none shadow-xs ${
                   isListening
                     ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
                     : "border-[#E5D9D0] focus:border-[#E85D2A] focus:ring-2 focus:ring-[#E85D2A]/20"
@@ -1112,8 +1105,8 @@ export function Navbar() {
           {/* Drawer Content */}
           <div className="relative flex flex-col w-full max-w-xs bg-[#FFFFFF] h-full shadow-2xl border-r border-[#E5D9D0] overflow-y-auto animate-in slide-in-from-left duration-200">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between px-5 h-16 border-b border-[#E5D9D0] bg-[#FFF8F2]">
-              <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-[#E5D9D0] bg-[#FFF8F2]">
+              <div className="flex items-center gap-2">
                 <LogoIcon className="w-7 h-7 shrink-0" />
                 <span className="font-bold text-base text-[#1F2933]">
                   Skill<span className="text-[#E85D2A]">Pulse</span>
@@ -1122,7 +1115,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 text-[#64748B] hover:text-[#1F2933] rounded-full hover:bg-[#FFF0E8]"
+                className="p-1 text-[#64748B] hover:text-[#1F2933] rounded-full hover:bg-[#FFF0E8]"
                 aria-label="Close menu"
               >
                 <CloseIcon className="w-5 h-5" />
@@ -1135,7 +1128,7 @@ export function Navbar() {
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
                   pathname === "/" ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                 }`}
               >
@@ -1150,7 +1143,7 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "intelligence" ? null : "intelligence"))
                   }
-                  className="flex items-center justify-between w-full px-3.5 py-2.5 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
                   <span className={`flex items-center gap-2.5 ${isIntelligenceActive ? "font-semibold text-[#E85D2A]" : ""}`}>
                     <BarChartNavIcon className="w-4 h-4" />
@@ -1188,7 +1181,7 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "training" ? null : "training"))
                   }
-                  className="flex items-center justify-between w-full px-3.5 py-2.5 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
                   <span className={`flex items-center gap-2.5 ${isTrainingActive ? "font-semibold text-[#E85D2A]" : ""}`}>
                     <GraduationCapIcon className="w-4 h-4" />
@@ -1223,7 +1216,7 @@ export function Navbar() {
               <Link
                 href="/outcomes"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
                   pathname.startsWith("/outcomes")
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:bg-[#FFF8F2]"
@@ -1237,7 +1230,7 @@ export function Navbar() {
               <Link
                 href="/recommendations"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
                   pathname.startsWith("/recommendations")
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:bg-[#FFF8F2]"
@@ -1254,7 +1247,7 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "dashboards" ? null : "dashboards"))
                   }
-                  className="flex items-center justify-between w-full px-3.5 py-2.5 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
                   <span className={`flex items-center gap-2.5 ${isDashboardsActive ? "font-semibold text-[#E85D2A]" : ""}`}>
                     <GridNavIcon className="w-4 h-4" />
@@ -1293,7 +1286,7 @@ export function Navbar() {
                   <SignInButton mode="modal">
                     <button
                       type="button"
-                      className="flex-1 py-2 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] rounded-full bg-white hover:bg-[#FFF0E8] transition-colors whitespace-nowrap shadow-2xs"
+                      className="flex-1 py-1.5 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] rounded-full bg-white hover:bg-[#FFF0E8] transition-colors whitespace-nowrap shadow-2xs"
                     >
                       Sign In
                     </button>
@@ -1301,7 +1294,7 @@ export function Navbar() {
                   <SignUpButton mode="modal">
                     <button
                       type="button"
-                      className="flex-1 py-2 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
+                      className="flex-1 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
                     >
                       Register
                     </button>
@@ -1311,14 +1304,14 @@ export function Navbar() {
 
               {isLoaded && isSignedIn && (
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <UserButton />
                     <span className="text-xs font-medium text-[#1F2933]">My Account</span>
                   </div>
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] rounded-full hover:bg-[#C94A20] whitespace-nowrap shadow-xs"
+                    className="px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] rounded-full hover:bg-[#C94A20] whitespace-nowrap shadow-xs"
                   >
                     Dashboard
                   </Link>
