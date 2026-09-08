@@ -34,6 +34,18 @@ const envSchema = z
       .enum(["true", "false", "1", "0"])
       .optional()
       .transform((v) => v === "true" || v === "1"),
+    /** Phase 17.2 NCS acquisition. Never defaults to scraping ncs.gov.in. */
+    NCS_ACQUISITION_MODE: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+    NCS_API_BASE_URL: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+    NCS_API_TOKEN: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+    NCS_RAW_RETENTION_DAYS: z.preprocess(
+      (v) => (v === "" || v === undefined || v === null ? 90 : v),
+      z.coerce.number().int().min(1).max(3650),
+    ),
+    NCS_SCHEDULE_INTERVAL_HOURS: z.preprocess(
+      (v) => (v === "" || v === undefined || v === null ? 24 : v),
+      z.coerce.number().int().min(1).max(168),
+    ),
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV !== "production") return;

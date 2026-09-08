@@ -1,24 +1,27 @@
 /**
- * Phase 17 — NCS-shaped job ingestion CLI.
+ * Phase 17.2 — NCS acquisition CLI.
  *
  * Usage (from repo root or apps/api):
  *   npx tsx apps/api/scripts/ingest-ncs.ts --mode synthetic --dry-run
  *   npx tsx apps/api/scripts/ingest-ncs.ts --mode file --input path/to/file.json
  *   npx tsx apps/api/scripts/ingest-ncs.ts --mode synthetic --state Maharashtra
+ *   npx tsx apps/api/scripts/ingest-ncs.ts --mode api
  *
  * Modes:
- *   disabled   — refuse (ACCESS_NOT_CONFIGURED)
+ *   disabled   — refuse (ACCESS_NOT_CONFIGURED); persists ACCESS_DENIED snapshot
  *   synthetic  — SYNTHETIC_FIXTURE (default sample under data/sample/ingestion/)
  *   file       — AUTHORIZED_FILE (operator-supplied NCS-shaped JSON)
- *   live       — refused (no authorized live client)
+ *   api        — AUTHORIZED_API (official feed URL + token; never scrapes)
+ *   live       — refused (no scraping client)
  *
- * Does not print secrets. Dry-run does not write canonical Jobs.
+ * Does not print secrets. Dry-run does not write snapshots or canonical Jobs.
+ * Does not retrain ML models.
  */
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { runNcsAcquisition } from "../src/modules/acquisition/pipeline";
 import { disconnectPrisma } from "../src/config/database";
-import { ingestSourceDataset } from "../src/modules/ingestion/ingest-dataset";
 import { validateJobIngestion } from "../src/modules/ingestion/job-validation";
 import {
   describeNcsAccess,
@@ -32,6 +35,7 @@ type CliArgs = {
   input?: string;
   state?: string;
   dryRun: boolean;
+  expireMissing?: boolean;
   observedAt: string;
   ingestedAt: string;
   referenceTime: string;
@@ -47,7 +51,7 @@ type FixtureFile = {
 
 function parseArgs(argv: string[]): CliArgs {
   const args: CliArgs = {
-    mode: "disabled",
+    mode: process.env.NCS_ACQUISITION_MODE ?? "disabled",
     dryRun: false,
     observedAt: "2026-09-08T10:00:00.000Z",
     ingestedAt: "2026-09-08T10:05:00.000Z",
@@ -68,6 +72,8 @@ function parseArgs(argv: string[]): CliArgs {
       i += 1;
     } else if (flag === "--dry-run") {
       args.dryRun = true;
+    } else if (flag === "--expire-missing") {
+      args.expireMissing = true;
     } else if (flag === "--observed-at" && next) {
       args.observedAt = next;
       i += 1;
@@ -79,7 +85,7 @@ function parseArgs(argv: string[]): CliArgs {
       i += 1;
     } else if (flag === "--help" || flag === "-h") {
       console.log(
-        "Usage: ingest-ncs.ts --mode synthetic|file|disabled [--input file] [--state Name] [--dry-run]",
+        "Usage: ingest-ncs.ts --mode synthetic|file|api|disabled [--input file] [--state Name] [--dry-run]",
       );
       process.exit(0);
     }
@@ -193,7 +199,7 @@ async function main(): Promise<void> {
   console.log(
     JSON.stringify(
       {
-        phase: 17,
+        phase: 17.2,
         access,
         dryRun: args.dryRun,
         stateFilter: args.state ?? null,
@@ -203,44 +209,44 @@ async function main(): Promise<void> {
     ),
   );
 
-  if (mode === NCS_ACCESS_MODE.DISABLED) {
-    console.error("ACCESS_NOT_CONFIGURED: pass --mode synthetic or --mode file");
-    process.exitCode = 1;
-    return;
-  }
-
-  const inputPath =
-    mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
-      ? (args.input ?? defaultSyntheticPath())
-      : args.input;
-
-  if (!inputPath) {
-    console.error("--input is required for AUTHORIZED_FILE mode");
-    process.exitCode = 1;
-    return;
-  }
-
-  const fixture = loadFixture(inputPath);
-  if (mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE) {
-    if (fixture.acquisition !== "synthetic-fixture") {
-      console.error("Synthetic mode requires acquisition=synthetic-fixture");
+  if (args.dryRun) {
+    if (mode === NCS_ACCESS_MODE.DISABLED) {
+      console.error("ACCESS_NOT_CONFIGURED: pass --mode synthetic, file, or api");
       process.exitCode = 1;
       return;
     }
-  }
+    if (mode === NCS_ACCESS_MODE.AUTHORIZED_API) {
+      console.error("Dry-run is file/synthetic only; AUTHORIZED_API is not fetched in dry-run");
+      process.exitCode = 1;
+      return;
+    }
 
-  if (!Array.isArray(fixture.records)) {
-    console.error("Fixture must contain a records array");
-    process.exitCode = 1;
-    return;
-  }
+    const inputPath =
+      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
+        ? (args.input ?? defaultSyntheticPath())
+        : args.input;
+    if (!inputPath) {
+      console.error("--input is required for AUTHORIZED_FILE mode");
+      process.exitCode = 1;
+      return;
+    }
 
-  const plainRecords = fixture.records.filter(isPlainObject);
-  const records = filterByState(plainRecords, args.state);
+    const fixture = loadFixture(inputPath);
+    if (mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE) {
+      if (fixture.acquisition !== "synthetic-fixture") {
+        console.error("Synthetic mode requires acquisition=synthetic-fixture");
+        process.exitCode = 1;
+        return;
+      }
+    }
+    if (!Array.isArray(fixture.records)) {
+      console.error("Fixture must contain a records array");
+      process.exitCode = 1;
+      return;
+    }
 
-  if (args.dryRun) {
     const preview = await dryRunIngest(
-      records,
+      filterByState(fixture.records.filter(isPlainObject), args.state),
       args.observedAt,
       args.ingestedAt,
     );
@@ -253,7 +259,7 @@ async function main(): Promise<void> {
           accessClass: fixture.accessClass ?? null,
           durationMs: Date.now() - started,
           ...preview,
-          note: "dry-run: no canonical Job writes",
+          note: "dry-run: no snapshot or canonical Job writes",
         },
         null,
         2,
@@ -262,39 +268,55 @@ async function main(): Promise<void> {
     return;
   }
 
-  const result = await ingestSourceDataset({
-    adapter: ncsAdapter,
-    records,
+  const result = await runNcsAcquisition({
+    mode,
     observedAt: args.observedAt,
     ingestedAt: args.ingestedAt,
     referenceTime: new Date(args.referenceTime),
+    inputPath:
+      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
+        ? (args.input ?? defaultSyntheticPath())
+        : args.input,
+    state: args.state,
+    expireMissing: args.expireMissing,
+    processDownstream: true,
   });
 
   console.log(
     JSON.stringify(
       {
         mode,
-        inputPath,
-        acquisition: fixture.acquisition ?? null,
-        accessClass: fixture.accessClass ?? null,
+        snapshotId: result.snapshotId,
+        checksum: result.checksum,
+        sourceReference: result.sourceReference,
+        accessMethod: result.accessMethod,
+        status: result.status,
+        failureCode: result.failureCode,
         durationMs: Date.now() - started,
-        sourceCode: result.sourceCode,
-        geographicScope: result.geographicScope,
         total: result.total,
-        accepted: result.accepted,
+        created: result.created,
+        changed: result.changed,
+        skipped: result.skipped,
+        expired: result.expired,
         rejected: result.rejected,
         failed: result.failed,
-        jobsCreated: result.jobsCreated,
-        jobsReused: result.jobsReused,
-        unresolvedSkillTerms: result.unresolvedSkillTerms,
         realNcsDataIngested: false,
+        note:
+          mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
+            ? "SYNTHETIC_FIXTURE is not real NCS labour-market data"
+            : undefined,
       },
       null,
       2,
     ),
   );
 
-  if (result.failed > 0 && result.accepted === 0 && result.rejected === 0) {
+  if (
+    result.status === "ACCESS_DENIED" ||
+    result.status === "SOURCE_UNAVAILABLE" ||
+    result.status === "SCHEMA_CHANGED" ||
+    result.status === "FAILED"
+  ) {
     process.exitCode = 1;
   }
 }

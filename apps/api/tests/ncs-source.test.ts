@@ -34,6 +34,10 @@ test("NCS access modes distinguish source availability from live access", () => 
     resolveNcsAccessMode({ mode: "file" }),
     NCS_ACCESS_MODE.AUTHORIZED_FILE,
   );
+  assert.equal(
+    resolveNcsAccessMode({ mode: "api" }),
+    NCS_ACCESS_MODE.AUTHORIZED_API,
+  );
   assert.throws(() => resolveNcsAccessMode({ mode: "live" }));
   assert.throws(() => resolveNcsAccessMode({ liveEnabled: "true" }));
 
@@ -47,6 +51,11 @@ test("NCS access modes distinguish source availability from live access", () => 
   assert.equal(synthetic.accessConfigured, true);
   assert.equal(synthetic.liveAccessImplemented, false);
   assert.match(synthetic.notes.join(" "), /SYNTHETIC/i);
+
+  const api = describeNcsAccess(NCS_ACCESS_MODE.AUTHORIZED_API);
+  assert.equal(api.accessConfigured, true);
+  assert.equal(api.liveAccessImplemented, false);
+  assert.match(api.notes.join(" "), /AUTHORIZED_API/);
 });
 
 test("synthetic NCS fixture is labelled and is not real NCS data", () => {

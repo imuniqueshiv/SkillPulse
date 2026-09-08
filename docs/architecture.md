@@ -24,7 +24,7 @@ Sources → Ingestion + Provenance → Job Intelligence → Quality/Trust
 → Product API → Dashboard
 ```
 
-Phase 17 adds an **NCS-shaped** source adapter at the Phase 5 boundary (file / synthetic fixture). It does not rewrite Phases 6–8 and does not claim live NCS API access. See [ncs-ingestion.md](ncs-ingestion.md).
+Phase 17 adds an **NCS-shaped** source adapter at the Phase 5 boundary (file / synthetic fixture). Phase 17.2 adds a provider-neutral acquisition layer (snapshots, change detection, job lifecycle) without rewriting Phases 6–8 and without scraping ncs.gov.in. See [ncs-ingestion.md](ncs-ingestion.md).
 
 The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://localhost:4000`). Prisma is used only from `apps/api`.
 

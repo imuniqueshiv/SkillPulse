@@ -5,7 +5,7 @@
  *   SOURCE_AVAILABLE          — DataSource sp.source.ncs is registered
  *   ACCESS_NOT_CONFIGURED     — no authorized live/file path configured
  *   AUTHORIZED_FILE           — operator-supplied NCS-shaped file (authorized)
- *   AUTHORIZED_LIVE           — reserved; not implemented without a real API
+ *   AUTHORIZED_API            — official feed URL + token; never scrapes ncs.gov.in
  *   SYNTHETIC_FIXTURE         — evaluation/demo sample only
  *
  * SkillPulse does not assume unrestricted permission to scrape ncs.gov.in.
@@ -20,7 +20,7 @@ export const NCS_ACCESS_MODE = {
   DISABLED: "DISABLED",
   SYNTHETIC_FIXTURE: "SYNTHETIC_FIXTURE",
   AUTHORIZED_FILE: "AUTHORIZED_FILE",
-  AUTHORIZED_LIVE: "AUTHORIZED_LIVE",
+  AUTHORIZED_API: "AUTHORIZED_API",
 } as const;
 
 export type NcsAccessMode =
@@ -34,14 +34,16 @@ export type NcsAccessStatus = {
   accessConfigured: boolean;
   liveAccessImplemented: false;
   authorizedFileSupported: true;
+  authorizedApiConnectorReady: boolean;
   syntheticFixtureSupported: true;
   realNcsDataIngested: false;
   notes: string[];
 };
 
 /**
- * Resolve access mode from CLI/env intent. Never upgrades to AUTHORIZED_LIVE:
- * no documented authorized live API client exists in this repository.
+ * Resolve access mode from CLI/env intent.
+ * AUTHORIZED_API is a connector mode for a future official feed URL/token.
+ * Website scraping / unauthorized live access remains refused.
  */
 export function resolveNcsAccessMode(input?: {
   mode?: string | null;
@@ -52,20 +54,25 @@ export function resolveNcsAccessMode(input?: {
   if (
     requested === "live" ||
     requested === "authorized_live" ||
-    requested === NCS_ACCESS_MODE.AUTHORIZED_LIVE.toLowerCase()
+    requested === "scrape"
   ) {
     throw new Error(
-      "AUTHORIZED_LIVE is not implemented: no authorized NCS API/client is configured in SkillPulse",
+      "Unauthorized live NCS execution is rejected: no scraping client and no undocumented NCS website API",
+    );
+  }
+
+  if (input?.liveEnabled === "true" || input?.liveEnabled === "1") {
+    throw new Error(
+      "NCS_LIVE_ENABLED cannot enable live access: configure AUTHORIZED_API with an official feed URL and token",
     );
   }
 
   if (
-    input?.liveEnabled === "true" ||
-    input?.liveEnabled === "1"
+    requested === "api" ||
+    requested === "authorized_api" ||
+    requested === NCS_ACCESS_MODE.AUTHORIZED_API.toLowerCase()
   ) {
-    throw new Error(
-      "NCS_LIVE_ENABLED cannot enable live access: no authorized NCS endpoint is registered",
-    );
+    return NCS_ACCESS_MODE.AUTHORIZED_API;
   }
 
   if (
@@ -94,18 +101,19 @@ export function resolveNcsAccessMode(input?: {
   }
 
   throw new Error(
-    `Unknown NCS access mode "${input?.mode}". Use disabled | synthetic | file`,
+    `Unknown NCS access mode "${input?.mode}". Use disabled | synthetic | file | api`,
   );
 }
 
 export function describeNcsAccess(mode: NcsAccessMode): NcsAccessStatus {
   const accessConfigured =
     mode === NCS_ACCESS_MODE.AUTHORIZED_FILE ||
-    mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE;
+    mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE ||
+    mode === NCS_ACCESS_MODE.AUTHORIZED_API;
 
   const notes: string[] = [
     "SOURCE_AVAILABLE: DataSource sp.source.ncs is registered (WEB_REFERENCE).",
-    "Live NCS API/file dump / scraping permission are NOT VERIFIED.",
+    "Live NCS website scraping and undocumented API envelopes are NOT used.",
   ];
 
   if (mode === NCS_ACCESS_MODE.DISABLED) {
@@ -121,6 +129,11 @@ export function describeNcsAccess(mode: NcsAccessMode): NcsAccessStatus {
       "AUTHORIZED_FILE: operator-supplied NCS-shaped file; SkillPulse does not claim official NCS schema.",
     );
   }
+  if (mode === NCS_ACCESS_MODE.AUTHORIZED_API) {
+    notes.push(
+      "AUTHORIZED_API: provider-neutral official feed connector. Requires NCS_API_BASE_URL and NCS_API_TOKEN. Does not scrape ncs.gov.in.",
+    );
+  }
 
   return {
     sourceAvailable: true,
@@ -130,6 +143,9 @@ export function describeNcsAccess(mode: NcsAccessMode): NcsAccessStatus {
     accessConfigured,
     liveAccessImplemented: false,
     authorizedFileSupported: true,
+    authorizedApiConnectorReady: Boolean(
+      process.env.NCS_API_BASE_URL?.trim() && process.env.NCS_API_TOKEN?.trim(),
+    ),
     syntheticFixtureSupported: true,
     realNcsDataIngested: false,
     notes,
