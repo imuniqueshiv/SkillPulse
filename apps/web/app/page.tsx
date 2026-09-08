@@ -1,266 +1,281 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Show, SignInButton } from "@clerk/nextjs";
+import Image from "next/image";
+
+/* ═══════════════════════════════════════════════════════
+   Utility Hooks
+   ═══════════════════════════════════════════════════════ */
+
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, inView };
+}
+
+/* ═══════════════════════════════════════════════════════
+   Inline SVG Icons (no external dependencies)
+   ═══════════════════════════════════════════════════════ */
+
+function ArrowRight({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+    </svg>
+  );
+}
+
+function SearchIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   Data
+   ═══════════════════════════════════════════════════════ */
+
+const timelineSteps = [
+  { num: "01", name: "Collect", title: "Data Collection", detail: "Ingest job postings, employer surveys, curriculum data, and institute training capacity records from multiple verified sources." },
+  { num: "02", name: "Validate", title: "Evidence Validation", detail: "Check freshness, reliability, duplicates, reposted vacancies, conflicting information, and coverage limits for every data point." },
+  { num: "03", name: "Analyse", title: "Skill Analysis", detail: "Normalize job descriptions into standardized competency domains and qualification standards using NLP-driven extraction." },
+  { num: "04", name: "Identify", title: "Gap Detection", detail: "Compare demand vs supply to distinguish between skill, curriculum, capacity, and geographic gaps across regions." },
+  { num: "05", name: "Recommend", title: "Policy Guidance", detail: "Generate explainable recommendations specifying target action, root cause, confidence score, and data limitations." },
+  { num: "06", name: "Measure", title: "Outcome Tracking", detail: "Track actual hiring results and post-intervention placement sustainability to refine future intelligence models." },
+];
+
+const stakeholders = [
+  {
+    role: "Government & Policymakers",
+    subtitle: "Strategic workforce planning & resource allocation",
+    question: "Where should public skill development funds be deployed?",
+    items: ["District-level skill gap heatmaps", "Emerging occupation tracking", "Institute capacity optimization", "Evidence-based priority interventions"],
+    href: "/dashboard",
+    linkText: "Executive Dashboard",
+    image: "/assets/employer-meeting.png",
+  },
+  {
+    role: "Training Institutes",
+    subtitle: "Curriculum alignment & training quality",
+    question: "Does training match what employers actually need?",
+    items: ["Curriculum module alignment scoring", "Course relevance health indicators", "Trainer upskilling requirements", "Equipment & lab planning insights"],
+    href: "/courses",
+    linkText: "Explore Courses",
+    image: "/assets/skills-training.png",
+  },
+  {
+    role: "Employers & Industry",
+    subtitle: "Talent pipeline intelligence & skill signaling",
+    question: "How can industry signal future skill requirements?",
+    items: ["Direct skill demand signaling", "Proficiency benchmark definition", "Curriculum feedback integration", "Candidate readiness assessment"],
+    href: "/employers",
+    linkText: "Employer Intelligence",
+    image: "/assets/employer-meeting.png",
+  },
+  {
+    role: "Learners & Job Seekers",
+    subtitle: "Career pathway navigation & skill development",
+    question: "What skills are required for target career roles?",
+    items: ["Target role skill requirements", "Personalized skill gap identification", "High-alignment accredited courses", "Regional career pathway mapping"],
+    href: "/skills",
+    linkText: "Skill Intelligence",
+    image: "/assets/skills-training.png",
+  },
+];
+
+const insightTabs = [
+  {
+    label: "What Data Shows",
+    content: (
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="shrink-0 rounded-md bg-[#DCFCE7] px-3 py-1.5 text-xs font-bold text-[#15803D]">HIGH</span>
+          <div><span className="text-sm font-semibold text-[#0F172A]">Labour Market Demand</span><p className="text-xs text-[#64748B]">Strong hiring frequency in IT sector across multiple districts</p></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="shrink-0 rounded-md bg-[#FFF0E8] px-3 py-1.5 text-xs font-bold text-[#C94A20]">HIGH</span>
+          <div><span className="text-sm font-semibold text-[#0F172A]">Training Capacity</span><p className="text-xs text-[#64748B]">Institute seats available and partially underutilized</p></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="shrink-0 rounded-md bg-[#FEE2E2] px-3 py-1.5 text-xs font-bold text-[#B91C1C]">LOW</span>
+          <div><span className="text-sm font-semibold text-[#0F172A]">Curriculum Alignment</span><p className="text-xs text-[#64748B]">Practical module gap identified in current syllabus</p></div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    label: "What It Means",
+    content: (
+      <div className="space-y-3">
+        <p className="text-sm text-[#334155] leading-relaxed">
+          Training infrastructure exists and capacity is available, but <strong>course content may not adequately cover the practical skills employers require</strong>.
+        </p>
+        <p className="text-sm text-[#334155] leading-relaxed">
+          The gap is not a <em>capacity</em> problem — it is a <em>curriculum alignment</em> problem. Adding more training seats without updating content will not close this gap.
+        </p>
+        <div className="rounded-lg border border-[#FED7AA] bg-[#FFF7ED] p-3 text-xs text-[#9A3412]">
+          <strong>Root Cause:</strong> Curriculum-employer skill mismatch in practical training modules
+        </div>
+      </div>
+    ),
+  },
+  {
+    label: "What To Do",
+    content: (
+      <div className="space-y-4">
+        <div className="rounded-xl bg-[#FFF0E8] border border-[#E5D9D0] p-5">
+          <span className="inline-block rounded-md bg-[#E85D2A] px-3 py-1.5 text-sm font-bold text-white mb-3">UPDATE CURRICULUM</span>
+          <p className="text-sm text-[#334155] leading-relaxed">
+            Improve existing practical training modules rather than creating additional seats. Focus curriculum revision on employer-identified skill gaps in the IT sector.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Confidence</strong><p className="text-[#64748B] mt-0.5">Medium–High</p></div>
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Coverage</strong><p className="text-[#64748B] mt-0.5">3 districts verified</p></div>
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Limitation</strong><p className="text-[#64748B] mt-0.5">Regional concentration</p></div>
+        </div>
+      </div>
+    ),
+  },
+];
+
+/* ═══════════════════════════════════════════════════════
+   Main Component
+   ═══════════════════════════════════════════════════════ */
 
 export default function Home() {
   const router = useRouter();
-
-  // Search/explore state in Hero
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeStep, setActiveStep] = useState(0);
+  const [activeStakeholder, setActiveStakeholder] = useState(0);
+  const [activeInsight, setActiveInsight] = useState(0);
 
-  // Interactive Node selection state in Hero visual
-  const [activeNode, setActiveNode] = useState<string>("market");
+  const heroRef = useInView(0.1);
+  const featureRef = useInView(0.15);
+  const timelineRef = useInView(0.15);
+  const dataFlowRef = useInView(0.15);
+  const insightRef = useInView(0.15);
+  const stakeholderRef = useInView(0.15);
+  const maharashtraRef = useInView(0.15);
 
-  // Timeline step state in "How SkillPulse Works"
-  const [activeTimelineStep, setActiveTimelineStep] = useState<number>(1);
-
-  // Tab state in "From Data to Decision"
-  const [activeScenarioTab, setActiveScenarioTab] = useState<"data" | "recommendation">("recommendation");
-
-  // Tab state in Stakeholders section
-  const [activeStakeholderTab, setActiveStakeholderTab] = useState<number>(0);
-
-  // Handle Search submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-
-    const query = searchQuery.toLowerCase();
-    if (query.includes("course") || query.includes("capacity") || query.includes("training")) {
-      router.push("/courses");
-    } else if (query.includes("gap") || query.includes("shortage") || query.includes("supply")) {
-      router.push("/gaps");
-    } else if (query.includes("job") || query.includes("market") || query.includes("demand")) {
-      router.push("/jobs");
-    } else {
-      router.push("/skills");
-    }
+    const q = searchQuery.toLowerCase();
+    if (q.includes("course") || q.includes("capacity") || q.includes("training")) router.push("/courses");
+    else if (q.includes("gap") || q.includes("shortage") || q.includes("supply")) router.push("/gaps");
+    else if (q.includes("job") || q.includes("market") || q.includes("demand")) router.push("/jobs");
+    else router.push("/skills");
   };
-
-  // Node descriptions for Hero visual
-  const nodeInfo: Record<string, { title: string; subtitle: string; description: string }> = {
-    market: {
-      title: "01. Labour Market Demand",
-      subtitle: "What employers need",
-      description: "Understand employer demand, job vacancy frequency, hiring signals, and labour-market trends across regional sectors.",
-    },
-    skills: {
-      title: "02. Skills Taxonomy",
-      subtitle: "What candidates & workers have",
-      description: "Map required skills, proficiency benchmarks, and qualification levels against standardized national competency frameworks.",
-    },
-    training: {
-      title: "03. Training & Curriculum",
-      subtitle: "What institutions teach & provide",
-      description: "Compare industry requirements with course module coverage, trainer readiness, and institute seat capacities.",
-    },
-    outcomes: {
-      title: "04. Employment Outcomes",
-      subtitle: "What happens after training",
-      description: "Track candidate placement verification, post-training employment sustainability, and policy outcome signals.",
-    },
-  };
-
-  // Timeline steps
-  const timelineSteps = [
-    { num: "01", name: "Collect", title: "Collect Data", detail: "Ingest job postings, employer surveys, curriculum units, and institute training capacity records." },
-    { num: "02", name: "Validate", title: "Validate Evidence", detail: "Check freshness, reliability, duplicates, reposted vacancies, conflicting information and coverage limits." },
-    { num: "03", name: "Analyse", title: "Analyse Skills", detail: "Normalize job descriptions into standardized competency domains and qualification standards." },
-    { num: "04", name: "Identify Gaps", title: "Identify Gaps", detail: "Compare demand vs supply to distinguish between skill, curriculum, capacity, and geographic gaps." },
-    { num: "05", name: "Recommend", title: "Recommend Action", detail: "Generate explainable policy guidance specifying target action, root cause, confidence score, and limitations." },
-    { num: "06", name: "Measure", title: "Measure Outcomes", detail: "Track actual hiring results and post-intervention placement sustainability to refine future models." },
-  ];
-
-  // Stakeholder items
-  const stakeholders = [
-    {
-      role: "Government & Policymakers",
-      question: "Where should public skill development funds be deployed?",
-      items: ["District skill gap heatmaps", "Emerging occupation tracking", "Institute capacity optimization", "Targeted priority interventions"],
-      href: "/dashboard",
-      linkText: "Open Executive Dashboard →",
-    },
-    {
-      role: "Training Institutes",
-      question: "Does training match what employers need?",
-      items: ["Curriculum module alignment", "Course relevance health scores", "Trainer upskilling requirements", "Equipment & lab planning data"],
-      href: "/courses",
-      linkText: "Explore Courses & Capacity →",
-    },
-    {
-      role: "Employers & Industry",
-      question: "How can industry signal future skill requirements?",
-      items: ["Direct skill demand signaling", "Proficiency benchmark definition", "Curriculum feedback integration", "Candidate readiness feedback"],
-      href: "/employers",
-      linkText: "View Employer Intelligence →",
-    },
-    {
-      role: "Learners & Job Seekers",
-      question: "What skills are required for target career roles?",
-      items: ["Target role skill requirements", "Personalized skill gap identification", "High-alignment accredited courses", "Regional career pathways"],
-      href: "/skills",
-      linkText: "Explore Skill Intelligence →",
-    },
-  ];
 
   return (
     <div className="flex flex-1 flex-col bg-white font-sans text-[#1F2937] antialiased">
-      {/* ============================================================
-          SECTION 1 — HERO (ACTION ORIENTED + INTERACTIVE NODE EXPLORER)
-          ============================================================ */}
-      <section className="border-b border-[#D9E1E8] bg-[#F5F7FA] py-10 lg:py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
-            {/* Left Column: Heading & Action Exploration Area */}
-            <div className="lg:col-span-7 flex flex-col gap-4 text-left">
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 self-start bg-[#003B73] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-                SKILL & WORKFORCE INTELLIGENCE
-              </div>
 
-              {/* Main Heading */}
-              <h1 className="text-3xl font-extrabold tracking-tight text-[#003B73] sm:text-4xl lg:text-5xl leading-tight">
-                Turn Workforce Data Into Better Decisions
+      {/* ═══════════════════════════════════════════════════════
+          S1 — HERO
+          ═══════════════════════════════════════════════════════ */}
+      <section ref={heroRef.ref} className="relative overflow-hidden bg-white">
+        <div className="h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+
+            {/* Left */}
+            <div className={`flex flex-col gap-5 transition-all duration-700 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
+                <span className="h-px w-8 bg-[#E85D2A]" />
+                Skill &amp; Workforce Intelligence
+              </span>
+
+              <h1 className="text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-[#1F2933] sm:text-5xl lg:text-[3.25rem]">
+                Turn Workforce Data Into{" "}
+                <span className="text-[#E85D2A]">Better Decisions</span>
               </h1>
 
-              {/* Short Description */}
-              <p className="text-sm leading-relaxed text-[#475569] sm:text-base max-w-2xl">
+              <p className="max-w-lg text-base leading-relaxed text-[#475569] lg:text-lg">
                 SkillPulse connects labour-market demand, skills, training and employment outcomes to identify workforce gaps and support evidence-based decisions.
               </p>
 
-              {/* Search & Exploration Action Bar */}
-              <div className="mt-2 rounded-xs border border-[#D9E1E8] bg-white p-4 shadow-xs">
-                <span className="text-xs font-bold text-[#003B73] block mb-2">
-                  What do you want to explore?
-                </span>
-
-                <form onSubmit={handleSearchSubmit} className="flex gap-2 mb-3">
+              {/* Search */}
+              <form onSubmit={handleSearchSubmit} className="flex max-w-md">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]"><SearchIcon /></span>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search skills, roles, courses or workforce insights..."
-                    className="flex-1 border border-[#D9E1E8] bg-[#F5F7FA] px-3 py-2 text-xs text-[#1F2937] placeholder-[#94A3B8] focus:border-[#005A9C] focus:bg-white focus:outline-none"
+                    placeholder="Search skills, roles, courses..."
+                    className="w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-3 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#E85D2A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/10"
                   />
-                  <button
-                    type="submit"
-                    className="bg-[#005A9C] px-4 py-2 text-xs font-semibold text-white hover:bg-[#003B73] transition-colors cursor-pointer"
-                  >
-                    Search
-                  </button>
-                </form>
-
-                {/* Quick Action Pills */}
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="text-[11px] font-semibold text-[#64748B]">Quick Actions:</span>
-                  <Link
-                    href="/skills"
-                    className="border border-[#D9E1E8] bg-[#F5F7FA] px-2.5 py-1 text-[11px] font-semibold text-[#005A9C] hover:bg-[#EFF6FF] hover:border-[#005A9C]"
-                  >
-                    [Explore Skills]
-                  </Link>
-                  <Link
-                    href="/courses"
-                    className="border border-[#D9E1E8] bg-[#F5F7FA] px-2.5 py-1 text-[11px] font-semibold text-[#005A9C] hover:bg-[#EFF6FF] hover:border-[#005A9C]"
-                  >
-                    [Explore Courses]
-                  </Link>
-                  <Link
-                    href="/dashboard"
-                    className="border border-[#D9E1E8] bg-[#F5F7FA] px-2.5 py-1 text-[11px] font-semibold text-[#005A9C] hover:bg-[#EFF6FF] hover:border-[#005A9C]"
-                  >
-                    [View Workforce Insights]
-                  </Link>
-                  <Link
-                    href="/gaps"
-                    className="border border-[#D9E1E8] bg-[#F5F7FA] px-2.5 py-1 text-[11px] font-semibold text-[#005A9C] hover:bg-[#EFF6FF] hover:border-[#005A9C]"
-                  >
-                    [Understand Skill Gaps]
-                  </Link>
                 </div>
-              </div>
+                <button type="submit" className="rounded-r-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer">
+                  Search
+                </button>
+              </form>
 
-              {/* Primary Buttons & Clerk Auth */}
+              {/* CTAs */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link
-                  href="/skills"
-                  className="inline-flex items-center justify-center bg-[#005A9C] px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#003B73] focus-visible:outline-2 focus-visible:outline-[#005A9C] focus-visible:outline-offset-2"
-                >
-                  Explore Skill Intelligence
+                <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
+                  Explore Skill Intelligence <ArrowRight />
                 </Link>
-
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center justify-center border border-[#005A9C] bg-white px-5 py-2 text-xs font-semibold text-[#005A9C] transition-colors hover:bg-[#EFF6FF]"
-                >
-                  How It Works
+                <a href="#feature-section" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
+                  View Workforce Insights
                 </a>
-
                 <Show when="signed-out">
                   <SignInButton>
-                    <button className="inline-flex items-center justify-center border border-[#D9E1E8] bg-white px-5 py-2 text-xs font-semibold text-[#003B73] transition-colors hover:bg-[#F5F7FA] cursor-pointer">
-                      Sign In
-                    </button>
+                    <button className="rounded-lg border border-[#D9E1E8] px-5 py-3 text-sm font-semibold text-[#475569] transition-all hover:border-[#E85D2A] hover:text-[#1F2933] cursor-pointer">Sign In</button>
                   </SignInButton>
                 </Show>
-
                 <Show when="signed-in">
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex items-center justify-center border border-[#003B73] bg-[#003B73] px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#002D59]"
-                  >
-                    Open Workspace Dashboard
-                  </Link>
+                  <Link href="/dashboard" className="rounded-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
                 </Show>
               </div>
             </div>
 
-            {/* Right Column: Interactive Node Explorer Panel */}
-            <div className="lg:col-span-5">
-              <div className="border border-[#D9E1E8] bg-white p-4 shadow-xs">
-                <div className="bg-[#003B73] px-3 py-2 text-white font-bold text-xs uppercase tracking-wider mb-3 flex justify-between items-center">
-                  <span>SkillPulse Intelligence Flow</span>
-                  <span className="text-[10px] font-normal text-[#BFDBFE]">Click any node</span>
-                </div>
-
-                {/* Node Buttons */}
-                <div className="grid grid-cols-2 gap-2 mb-3">
-                  {[
-                    { key: "market", label: "Labour Market", icon: "💼" },
-                    { key: "skills", label: "Skills Taxonomy", icon: "⚡" },
-                    { key: "training", label: "Training & Curriculum", icon: "📚" },
-                    { key: "outcomes", label: "Employment Outcomes", icon: "🎯" },
-                  ].map((node) => (
-                    <button
-                      key={node.key}
-                      type="button"
-                      onClick={() => setActiveNode(node.key)}
-                      className={`p-2.5 text-left border text-xs font-bold transition-all cursor-pointer ${
-                        activeNode === node.key
-                          ? "border-[#005A9C] bg-[#EFF6FF] text-[#003B73]"
-                          : "border-[#D9E1E8] bg-[#F5F7FA] text-[#475569] hover:bg-white"
-                      }`}
-                    >
-                      <span className="mr-1.5">{node.icon}</span>
-                      {node.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Selected Node Explanation Card */}
-                <div className="border border-[#005A9C] bg-[#EFF6FF] p-3 text-xs">
-                  <span className="font-bold text-[#003B73] block mb-0.5">
-                    {nodeInfo[activeNode].title}
-                  </span>
-                  <span className="text-[11px] font-semibold text-[#005A9C] block mb-1">
-                    ({nodeInfo[activeNode].subtitle})
-                  </span>
-                  <p className="text-[#334155] text-[11px] leading-snug">
-                    &quot;{nodeInfo[activeNode].description}&quot;
-                  </p>
+            {/* Right — Editorial Image */}
+            <div className={`relative transition-all duration-700 delay-200 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
+                <Image src="/assets/hero-workforce.png" alt="Indian workforce training in modern industrial facility" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 50vw" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1F2933]/70 via-transparent to-transparent" />
+                {/* Floating info panel */}
+                <div className="absolute bottom-4 left-4 right-4 rounded-xl bg-white/95 backdrop-blur-sm p-4 shadow-lg border border-white/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="h-2 w-2 rounded-full bg-[#E85D2A]" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">SkillPulse Intelligence</span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#475569]">
+                    <span className="font-semibold text-[#1F2933]">Demand</span>
+                    <span className="text-[#D9E1E8]">·</span>
+                    <span className="font-semibold text-[#1F2933]">Skills</span>
+                    <span className="text-[#D9E1E8]">·</span>
+                    <span className="font-semibold text-[#1F2933]">Training</span>
+                    <span className="text-[#D9E1E8]">·</span>
+                    <span className="font-semibold text-[#1F2933]">Outcomes</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -268,358 +283,445 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============================================================
-          SECTION 2 — QUICK ACCESS PORTAL SHORTCUTS AREA
-          ============================================================ */}
-      <section className="border-b border-[#D9E1E8] bg-white py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="h-2 w-2 bg-[#005A9C]" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-[#003B73]">Quick Access Portal Shortcuts</h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Link
-              href="/skills"
-              className="flex items-start gap-3 border border-[#D9E1E8] bg-[#F5F7FA] p-3 text-left transition-colors hover:border-[#005A9C] hover:bg-[#EFF6FF]"
-            >
-              <span className="text-base font-bold text-[#005A9C]">01</span>
-              <div>
-                <h3 className="text-xs font-bold text-[#003B73]">Skill Intelligence</h3>
-                <p className="text-[11px] text-[#64748B] mt-0.5">Explore skills required for emerging roles.</p>
-              </div>
-            </Link>
-
-            <Link
-              href="/gaps"
-              className="flex items-start gap-3 border border-[#D9E1E8] bg-[#F5F7FA] p-3 text-left transition-colors hover:border-[#005A9C] hover:bg-[#EFF6FF]"
-            >
-              <span className="text-base font-bold text-[#005A9C]">02</span>
-              <div>
-                <h3 className="text-xs font-bold text-[#003B73]">Demand & Supply</h3>
-                <p className="text-[11px] text-[#64748B] mt-0.5">Understand workforce shortages and mismatches.</p>
-              </div>
-            </Link>
-
-            <Link
-              href="/curricula"
-              className="flex items-start gap-3 border border-[#D9E1E8] bg-[#F5F7FA] p-3 text-left transition-colors hover:border-[#005A9C] hover:bg-[#EFF6FF]"
-            >
-              <span className="text-base font-bold text-[#005A9C]">03</span>
-              <div>
-                <h3 className="text-xs font-bold text-[#003B73]">Curriculum Analysis</h3>
-                <p className="text-[11px] text-[#64748B] mt-0.5">Compare training with industry requirements.</p>
-              </div>
-            </Link>
-
-            <Link
-              href="/recommendations"
-              className="flex items-start gap-3 border border-[#D9E1E8] bg-[#F5F7FA] p-3 text-left transition-colors hover:border-[#005A9C] hover:bg-[#EFF6FF]"
-            >
-              <span className="text-base font-bold text-[#005A9C]">04</span>
-              <div>
-                <h3 className="text-xs font-bold text-[#003B73]">Recommendations</h3>
-                <p className="text-[11px] text-[#64748B] mt-0.5">See evidence-based actionable guidance.</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECTION 3 — THE WORKFORCE CHALLENGE
-          ============================================================ */}
-      <section className="py-10 bg-[#F5F7FA] border-b border-[#D9E1E8]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold text-[#003B73]">Bridging the Gap Between Skills and Demand</h2>
-          </div>
-
-          <div className="border border-[#D9E1E8] bg-white p-5">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-4 text-center text-xs font-bold">
-              <div className="p-3 border border-[#D9E1E8] bg-[#F5F7FA]">
-                <span className="text-[#003B73] block uppercase tracking-wider text-[10px] text-[#64748B]">Demand</span>
-                <span className="text-[#003B73]">INDUSTRY NEEDS</span>
-                <p className="text-[11px] font-normal text-[#64748B] mt-1">What employers need</p>
-              </div>
-
-              <div className="p-3 border border-[#D9E1E8] bg-[#F5F7FA]">
-                <span className="text-[#003B73] block uppercase tracking-wider text-[10px] text-[#64748B]">Skills</span>
-                <span className="text-[#003B73]">SKILLS AVAILABLE</span>
-                <p className="text-[11px] font-normal text-[#64748B] mt-1">What candidates have</p>
-              </div>
-
-              <div className="p-3 border border-[#D9E1E8] bg-[#F5F7FA]">
-                <span className="text-[#003B73] block uppercase tracking-wider text-[10px] text-[#64748B]">Capacity</span>
-                <span className="text-[#003B73]">TRAINING CAPACITY</span>
-                <p className="text-[11px] font-normal text-[#64748B] mt-1">What institutions teach</p>
-              </div>
-
-              <div className="p-3 border border-[#005A9C] bg-[#EFF6FF]">
-                <span className="text-[#005A9C] block uppercase tracking-wider text-[10px]">Outcomes</span>
-                <span className="text-[#003B73]">EMPLOYMENT OUTCOMES</span>
-                <p className="text-[11px] font-normal text-[#005A9C] mt-1">What happens after training</p>
-              </div>
-            </div>
-
-            <div className="mt-4 border-l-4 border-[#005A9C] bg-[#EFF6FF] p-3 text-xs font-bold text-[#003B73]">
-              High demand does not automatically mean more training is the answer. Does training match what employers need?
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECTION 4 — HOW SKILLPULSE WORKS (CLICKABLE TIMELINE)
-          ============================================================ */}
-      <section id="how-it-works" className="py-10 bg-white border-b border-[#D9E1E8]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold text-[#003B73]">From Data to Decisions</h2>
-            <p className="text-xs text-[#64748B] mt-0.5">Click any stage in the timeline to explore how data becomes actionable policy.</p>
-          </div>
-
-          {/* Interactive Horizontal Timeline */}
-          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-6 border border-[#D9E1E8] bg-[#F5F7FA] p-2 text-xs font-bold mb-3">
-            {timelineSteps.map((step, idx) => (
-              <button
-                key={step.num}
-                type="button"
-                onClick={() => setActiveTimelineStep(idx)}
-                className={`p-2.5 text-center border transition-all cursor-pointer ${
-                  activeTimelineStep === idx
-                    ? "border-[#005A9C] bg-[#003B73] text-white"
-                    : "border-[#D9E1E8] bg-white text-[#003B73] hover:bg-[#EFF6FF]"
-                }`}
-              >
-                <span className="block text-[10px] font-mono opacity-80 mb-0.5">{step.num}</span>
-                {step.name}
-              </button>
+      {/* ═══════════════════════════════════════════════════════
+          S2 — AT A GLANCE
+          ═══════════════════════════════════════════════════════ */}
+      <section className="border-y border-[#E2E8F0] bg-[#FFF8F2]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs">
+            <span className="font-bold uppercase tracking-[0.15em] text-[#1F2933]">SkillPulse at a Glance</span>
+            <span className="hidden sm:block h-4 w-px bg-[#D9E1E8]" />
+            {["Maharashtra MVP", "Evidence-Driven", "Multi-Source Intelligence", "Confidence-Aware", "Decision Support"].map((item, i) => (
+              <React.Fragment key={item}>
+                <span className="text-[#64748B] font-medium">{item}</span>
+                {i < 4 && <span className="hidden sm:block h-4 w-px bg-[#D9E1E8]" />}
+              </React.Fragment>
             ))}
           </div>
-
-          {/* Active Step Single Detail Box */}
-          <div className="border border-[#005A9C] bg-[#EFF6FF] p-3.5 text-xs text-[#334155]">
-            <span className="font-bold text-[#003B73] block mb-1">
-              Stage {timelineSteps[activeTimelineStep].num}: {timelineSteps[activeTimelineStep].title}
-            </span>
-            <p className="text-[11px] leading-relaxed">
-              &quot;{timelineSteps[activeTimelineStep].detail}&quot;
-            </p>
-          </div>
-
-          <p className="mt-3 text-xs text-[#475569]">
-            SkillPulse combines labour-market, employer, training and employment evidence to identify real workforce mismatches and support actionable decisions.
-          </p>
         </div>
       </section>
 
-      {/* ============================================================
-          SECTION 5 — FROM DATA TO DECISION (INTERACTIVE SCENARIO TAB)
-          ============================================================ */}
-      <section className="py-10 bg-[#F5F7FA] border-b border-[#D9E1E8]">
+      {/* ═══════════════════════════════════════════════════════
+          S3 — WHERE SKILLS MEET DEMAND (Feature)
+          ═══════════════════════════════════════════════════════ */}
+      <section id="feature-section" ref={featureRef.ref} className="py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-xl font-bold text-[#003B73]">From Data to Decision</h2>
-              <p className="text-xs text-[#64748B] mt-0.5">Toggle tabs to see how raw signals translate into diagnostic actions.</p>
-            </div>
-            <span className="border border-[#D9E1E8] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#005A9C]">
-              Illustrative Example
-            </span>
-          </div>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
 
-          <div className="border border-[#003B73] bg-white p-4 text-xs">
-            {/* Tab Switcher */}
-            <div className="flex gap-2 mb-3 border-b border-[#D9E1E8] pb-2">
-              <button
-                type="button"
-                onClick={() => setActiveScenarioTab("data")}
-                className={`px-3 py-1.5 font-bold text-xs cursor-pointer ${
-                  activeScenarioTab === "data"
-                    ? "bg-[#003B73] text-white"
-                    : "bg-[#F5F7FA] text-[#475569] hover:bg-[#E2E8F0]"
-                }`}
-              >
-                [What the Data Says]
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveScenarioTab("recommendation")}
-                className={`px-3 py-1.5 font-bold text-xs cursor-pointer ${
-                  activeScenarioTab === "recommendation"
-                    ? "bg-[#005A9C] text-white"
-                    : "bg-[#F5F7FA] text-[#475569] hover:bg-[#E2E8F0]"
-                }`}
-              >
-                [What SkillPulse Recommends]
-              </button>
-            </div>
-
-            {/* Active Tab Content */}
-            {activeScenarioTab === "data" ? (
-              <div className="space-y-1.5 p-3 bg-[#F5F7FA] border border-[#D9E1E8]">
-                <strong className="text-[#003B73] block mb-1">Observed Market Data Signals:</strong>
-                <p>• <strong>Labour Market Demand:</strong> High (Strong hiring frequency)</p>
-                <p>• <strong>Training Capacity:</strong> High (Institute seats available)</p>
-                <p>• <strong>Curriculum Alignment:</strong> Low (Module practical gap)</p>
+            {/* Image side */}
+            <div className={`relative transition-all duration-700 ${featureRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}>
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
+                <Image src="/assets/skills-training.png" alt="Indian students learning technical skills in a modern classroom" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1F2933]/30 via-transparent to-transparent" />
               </div>
-            ) : (
-              <div className="space-y-1.5 p-3 bg-[#EFF6FF] border border-[#005A9C]">
-                <strong className="text-[#003B73] block mb-1">SkillPulse Diagnostic Recommendation:</strong>
-                <p className="text-sm font-bold text-[#005A9C]">UPDATE CURRICULUM</p>
-                <p className="text-[#334155] text-[11px]">
-                  &quot;Improve existing practical training modules rather than creating additional training seats.&quot;
-                </p>
+              {/* Floating accent card */}
+              <div className="absolute -bottom-4 -right-4 sm:bottom-6 sm:-right-6 rounded-xl bg-[#E85D2A] p-4 text-white shadow-xl max-w-[200px]">
+                <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">Key Principle</span>
+                <p className="text-sm font-semibold mt-1 leading-snug">Identify the gap.<br />Understand the cause.<br />Recommend action.</p>
               </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECTION 6 — EVIDENCE & CONFIDENCE (SIMPLIFIED PANEL)
-          ============================================================ */}
-      <section className="py-10 bg-white border-b border-[#D9E1E8]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-[#003B73]">Evidence Before Assumptions</h2>
-            <span className="border border-[#D9E1E8] bg-[#F5F7FA] px-2.5 py-1 text-[11px] font-semibold text-[#005A9C]">
-              Illustrative Example
-            </span>
-          </div>
-
-          <div className="border border-[#003B73] bg-[#F5F7FA] p-4 text-xs text-[#334155]">
-            <div className="flex flex-wrap items-center gap-2 font-bold text-[#003B73] mb-3">
-              <span>Evidence</span>
-              <span>→</span>
-              <span>Confidence</span>
-              <span>→</span>
-              <span className="text-[#005A9C]">Action</span>
             </div>
 
-            <div className="space-y-1.5 pt-2 border-t border-[#D9E1E8] bg-white p-3">
-              <p><strong>Recommendation:</strong> Update Curriculum</p>
-              <p><strong>Confidence:</strong> Medium–High</p>
-              <p><strong>Why?:</strong> Strong employer demand with insufficient curriculum coverage.</p>
-              <p><strong>Limitation:</strong> Evidence may be concentrated in selected districts.</p>
-            </div>
-          </div>
+            {/* Content side */}
+            <div className={`flex flex-col gap-6 transition-all duration-700 delay-200 ${featureRef.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
+              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
+                <span className="h-px w-6 bg-[#E85D2A]" />
+                Featured Intelligence
+              </span>
 
-          <p className="mt-3 text-xs text-[#475569]">
-            SkillPulse surfaces evidence quality and limitations instead of hiding uncertainty. How reliable is the evidence?
-          </p>
-        </div>
-      </section>
+              <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl leading-[1.15]">
+                Where Skills Meet{" "}
+                <span className="text-[#E85D2A]">Demand</span>
+              </h2>
 
-      {/* ============================================================
-          SECTION 7 — STAKEHOLDERS (INTERACTIVE TABS)
-          ============================================================ */}
-      <section className="py-10 bg-[#F5F7FA] border-b border-[#D9E1E8]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold text-[#003B73]">One Platform. Multiple Stakeholders.</h2>
-            <p className="text-xs text-[#64748B] mt-0.5">Select a stakeholder perspective to view tailored intelligence capabilities.</p>
-          </div>
+              <p className="text-base text-[#475569] leading-relaxed">
+                SkillPulse maps the complete workforce intelligence chain — from what employers need to whether training produces employable graduates.
+              </p>
 
-          {/* Interactive Stakeholder Tabs */}
-          <div className="flex flex-wrap gap-2 mb-3 border-b border-[#D9E1E8] pb-2">
-            {stakeholders.map((sh, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setActiveStakeholderTab(idx)}
-                className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                  activeStakeholderTab === idx
-                    ? "bg-[#003B73] text-white"
-                    : "bg-white text-[#475569] border border-[#D9E1E8] hover:bg-[#EFF6FF]"
-                }`}
-              >
-                [{sh.role}]
-              </button>
-            ))}
-          </div>
-
-          {/* Active Stakeholder Content Box */}
-          <div className="border border-[#005A9C] bg-white p-4 text-xs">
-            <div className="flex justify-between items-center mb-2 pb-2 border-b border-[#D9E1E8]">
-              <div>
-                <h3 className="text-sm font-bold text-[#003B73]">
-                  {stakeholders[activeStakeholderTab].role}
-                </h3>
-                <p className="text-[11px] font-semibold text-[#005A9C]">
-                  {stakeholders[activeStakeholderTab].question}
-                </p>
+              {/* Vertical chain */}
+              <div className="space-y-0">
+                {[
+                  { label: "Industry Demand", desc: "What employers need", color: "#1F2933" },
+                  { label: "Required Skills", desc: "What candidates must learn", color: "#E85D2A" },
+                  { label: "Training Supply", desc: "What institutions teach", color: "#C94A20" },
+                  { label: "Employment Outcomes", desc: "What happens after training", color: "#E85D2A" },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-4 group">
+                    <div className="flex flex-col items-center">
+                      <div className="w-3 h-3 rounded-full border-2 transition-colors group-hover:scale-125" style={{ borderColor: item.color, backgroundColor: idx === 3 ? item.color : "transparent" }} />
+                      {idx < 3 && <div className="w-px h-8 bg-[#D9E1E8]" />}
+                    </div>
+                    <div className="pb-2">
+                      <span className="text-sm font-bold" style={{ color: item.color }}>{item.label}</span>
+                      <p className="text-xs text-[#64748B]">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <Link
-                href={stakeholders[activeStakeholderTab].href}
-                className="font-bold text-[#005A9C] hover:underline text-xs"
-              >
-                {stakeholders[activeStakeholderTab].linkText}
+              <Link href="/gaps" className="inline-flex items-center gap-2 self-start text-sm font-semibold text-[#E85D2A] hover:text-[#C94A20] transition-colors">
+                Explore Demand vs Supply <ArrowRight />
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
-              {stakeholders[activeStakeholderTab].items.map((item, i) => (
-                <div key={i} className="p-2 border border-[#D9E1E8] bg-[#F5F7FA] font-medium text-[#334155]">
-                  • {item}
+      {/* ═══════════════════════════════════════════════════════
+          S4 — FROM EVIDENCE TO ACTION (Timeline)
+          ═══════════════════════════════════════════════════════ */}
+      <section id="how-it-works" ref={timelineRef.ref} className="py-16 lg:py-24 bg-[#FFFCF9]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${timelineRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
+              <span className="h-px w-6 bg-[#E85D2A]" />
+              Intelligence Pipeline
+              <span className="h-px w-6 bg-[#E85D2A]" />
+            </span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
+              From Evidence to <span className="text-[#E85D2A]">Action</span>
+            </h2>
+            <p className="mt-3 text-base text-[#64748B]">Six rigorous stages transform fragmented workforce signals into evidence-based decisions.</p>
+          </div>
+
+          {/* Timeline */}
+          <div className="relative">
+            {/* Horizontal connector line */}
+            <div className="hidden lg:block absolute top-[22px] left-[8.33%] right-[8.33%] h-px bg-[#D9E1E8]" />
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-0 mb-8">
+              {timelineSteps.map((step, idx) => (
+                <button
+                  key={step.num}
+                  type="button"
+                  onClick={() => setActiveStep(idx)}
+                  className="group flex flex-col items-center gap-2 cursor-pointer relative"
+                >
+                  <div className={`relative z-10 w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    activeStep === idx
+                      ? "bg-[#E85D2A] text-white shadow-lg shadow-[#E85D2A]/25 scale-110"
+                      : "bg-white text-[#64748B] border-2 border-[#D9E1E8] group-hover:border-[#E85D2A] group-hover:text-[#E85D2A]"
+                  }`}>
+                    {step.num}
+                  </div>
+                  <span className={`text-xs font-semibold transition-colors ${activeStep === idx ? "text-[#1F2933]" : "text-[#64748B]"}`}>
+                    {step.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Active detail */}
+            <div className="mx-auto max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm transition-all">
+              <div className="flex items-start gap-4">
+                <span className="shrink-0 w-10 h-10 rounded-lg bg-[#FFF0E8] flex items-center justify-center text-sm font-bold text-[#E85D2A]">
+                  {timelineSteps[activeStep].num}
+                </span>
+                <div>
+                  <h3 className="text-base font-bold text-[#1F2933]">{timelineSteps[activeStep].title}</h3>
+                  <p className="text-sm text-[#475569] mt-1 leading-relaxed">{timelineSteps[activeStep].detail}</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          S5 — DATA → INTELLIGENCE → ACTION (Infographic)
+          ═══════════════════════════════════════════════════════ */}
+      <section ref={dataFlowRef.ref} className="py-16 lg:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className={`text-center max-w-2xl mx-auto mb-14 transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
+              Understanding the{" "}
+              <span className="text-[#E85D2A]">Workforce Gap</span>
+            </h2>
+            <p className="mt-3 text-base text-[#64748B]">A high-demand occupation does not automatically mean more training seats are required.</p>
+          </div>
+
+          {/* Three-column infographic */}
+          <div className={`grid grid-cols-1 lg:grid-cols-3 gap-0 rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            {/* DATA */}
+            <div className="bg-[#F5F7FA] p-8 border-b lg:border-b-0 lg:border-r border-[#E2E8F0]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E85D2A]">Data Sources</span>
+              <h3 className="text-lg font-bold text-[#1F2933] mt-2 mb-4">Collect</h3>
+              <div className="space-y-2">
+                {["Labour Market", "Employer Surveys", "Training Records", "Curriculum Data", "Outcome Reports"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-[#475569]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E85D2A]" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* INTELLIGENCE */}
+            <div className="bg-[#FFF0E8] p-8 border-b lg:border-b-0 lg:border-r border-[#E5D9D0]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1F2933]">Intelligence Engine</span>
+              <h3 className="text-lg font-bold text-[#1F2933] mt-2 mb-4">Analyse</h3>
+              <div className="space-y-2">
+                {["Skill Mapping", "Demand vs Supply", "Gap Classification", "Evidence Confidence", "Root Cause Analysis"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm text-[#334155]">
+                    <CheckIcon className="w-3.5 h-3.5 text-[#E85D2A]" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ACTION */}
+            <div className="bg-[#1F2933] p-8 text-white">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FAD5C2]">Decision Support</span>
+              <h3 className="text-lg font-bold mt-2 mb-4">Act</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {["Update", "Expand", "Reduce", "Pilot", "Train", "Monitor"].map((item) => (
+                  <div key={item} className="rounded-md border border-[#E85D2A] bg-[#E85D2A]/30 px-3 py-2 text-xs font-semibold text-center">
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-[#F4B183] mt-4 leading-relaxed">Each recommendation includes confidence score, evidence sources, and known limitations.</p>
+            </div>
+          </div>
+
+          {/* Gap types strip */}
+          <div className="mt-8 rounded-xl border border-[#E2E8F0] bg-[#F5F7FA] p-5">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#64748B] block mb-3">Gap types SkillPulse identifies</span>
+            <div className="flex flex-wrap gap-2">
+              {["Skill Mismatch", "Curriculum Gap", "Capacity Limitation", "Trainer Shortage", "Geographic Mismatch", "Insufficient Evidence"].map((gap) => (
+                <span key={gap} className="rounded-full border border-[#D9E1E8] bg-white px-3.5 py-1.5 text-xs font-medium text-[#475569] transition-colors hover:border-[#E85D2A] hover:text-[#E85D2A]">
+                  {gap}
+                </span>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ============================================================
-          SECTION 8 — MAHARASHTRA MVP + FINAL CTA
-          ============================================================ */}
-      <section className="py-10 bg-[#003B73] text-white">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <span className="inline-block bg-[#005A9C] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white mb-2">
-            Pilot Scope
-          </span>
-
-          <h2 className="text-2xl font-bold tracking-tight text-white">
-            Starting in Maharashtra. Built for India.
-          </h2>
-
-          {/* Simple Geographic Hierarchy Chain */}
-          <div className="my-4 flex flex-wrap justify-center items-center gap-1.5 text-xs font-bold text-[#BFDBFE]">
-            <span className="p-1.5 border border-[#005A9C] bg-[#002D59]">Maharashtra</span>
-            <span>→</span>
-            <span className="p-1.5 border border-[#005A9C] bg-[#002D59]">36 Districts</span>
-            <span>→</span>
-            <span className="p-1.5 border border-[#005A9C] bg-[#002D59]">Institutions</span>
-            <span>→</span>
-            <span className="p-1.5 border border-[#005A9C] bg-[#002D59]">Employers</span>
-            <span>→</span>
-            <span className="p-1.5 border border-[#005A9C] bg-[#002D59]">Skills</span>
+      {/* ═══════════════════════════════════════════════════════
+          S6 — INTERACTIVE INSIGHT
+          ═══════════════════════════════════════════════════════ */}
+      <section ref={insightRef.ref} className="py-16 lg:py-24 bg-[#FFF8F2]">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className={`mb-10 transition-all duration-700 ${insightRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-3">
+                  <span className="h-px w-6 bg-[#E85D2A]" />
+                  Interactive Example
+                </span>
+                <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
+                  See What the Evidence <span className="text-[#E85D2A]">Means</span>
+                </h2>
+              </div>
+              <span className="rounded-full border border-[#FED7AA] bg-[#FFF7ED] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9A3412] shrink-0">
+                Illustrative Example
+              </span>
+            </div>
           </div>
 
-          <p className="mx-auto max-w-2xl text-xs text-[#BFDBFE] leading-relaxed">
-            Maharashtra serves as the initial MVP and validation environment, while the architecture is designed to scale across India&apos;s diverse labour markets.
-          </p>
+          {/* Tabs */}
+          <div className="rounded-2xl border border-[#E2E8F0] bg-white shadow-sm overflow-hidden">
+            <div className="flex border-b border-[#E2E8F0]">
+              {insightTabs.map((tab, idx) => (
+                <button
+                  key={tab.label}
+                  type="button"
+                  onClick={() => setActiveInsight(idx)}
+                  className={`flex-1 px-4 py-3.5 text-sm font-semibold transition-all cursor-pointer ${
+                    activeInsight === idx
+                      ? "bg-[#1F2933] text-white"
+                      : "bg-[#F5F7FA] text-[#64748B] hover:bg-[#FFF0E8] hover:text-[#E85D2A]"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            <div className="p-6 sm:p-8">
+              {insightTabs[activeInsight].content}
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <hr className="my-5 border-[#005A9C] max-w-lg mx-auto" />
+      {/* ═══════════════════════════════════════════════════════
+          S7 — STAKEHOLDERS
+          ═══════════════════════════════════════════════════════ */}
+      <section ref={stakeholderRef.ref} className="py-16 lg:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${stakeholderRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
+              One Platform.{" "}
+              <span className="text-[#E85D2A]">Multiple Stakeholders.</span>
+            </h2>
+            <p className="mt-3 text-base text-[#64748B]">Tailored intelligence for every participant in the workforce ecosystem.</p>
+          </div>
 
-          <h3 className="text-base font-bold text-white mb-4">
-            Make Workforce Decisions With Better Evidence
-          </h3>
+          {/* Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
+            {stakeholders.map((sh, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveStakeholder(idx)}
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all cursor-pointer ${
+                  activeStakeholder === idx
+                    ? "bg-[#1F2933] text-white shadow-md"
+                    : "bg-[#F5F7FA] text-[#475569] border border-[#E2E8F0] hover:border-[#E85D2A] hover:text-[#E85D2A]"
+                }`}
+              >
+                {sh.role}
+              </button>
+            ))}
+          </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/skills"
-              className="bg-[#005A9C] px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-[#003B73]"
-            >
-              Explore SkillPulse
-            </Link>
-            <Link
-              href="/dashboard"
-              className="border border-[#BFDBFE] bg-transparent px-5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#002D59]"
-            >
-              Open Workspace Dashboard
-            </Link>
+          {/* Active content */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            {/* Image */}
+            <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-lg aspect-[4/3] relative">
+              <Image src={stakeholders[activeStakeholder].image} alt={stakeholders[activeStakeholder].role} fill className="object-cover transition-all duration-500" sizes="(max-width: 768px) 100vw, 40vw" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1F2933]/60 to-transparent" />
+              <div className="absolute bottom-4 left-4">
+                <span className="rounded-md bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-bold text-[#1F2933]">
+                  {stakeholders[activeStakeholder].role}
+                </span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="lg:col-span-3">
+              <p className="text-sm font-medium text-[#64748B] mb-1">{stakeholders[activeStakeholder].subtitle}</p>
+              <h3 className="text-xl font-bold text-[#1F2933] mb-2">{stakeholders[activeStakeholder].role}</h3>
+              <p className="text-base text-[#475569] italic mb-6">&ldquo;{stakeholders[activeStakeholder].question}&rdquo;</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                {stakeholders[activeStakeholder].items.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5 rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] p-3.5 transition-colors hover:bg-white hover:border-[#E5D9D0]">
+                    <CheckIcon className="w-4 h-4 text-[#E85D2A] shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#334155]">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <Link href={stakeholders[activeStakeholder].href} className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">
+                {stakeholders[activeStakeholder].linkText} <ArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          S8 — EVIDENCE & TRUST
+          ═══════════════════════════════════════════════════════ */}
+      <section className="py-16 lg:py-20 bg-[#FFFCF9] border-y border-[#E2E8F0]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
+              Evidence Before <span className="text-[#E85D2A]">Assumptions</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
+            {[
+              { label: "Source", desc: "Multi-platform verified" },
+              { label: "Freshness", desc: "Temporal decay scoring" },
+              { label: "Validation", desc: "Cross-reference checks" },
+              { label: "Coverage", desc: "Geographic completeness" },
+              { label: "Confidence", desc: "0–100 composite index" },
+            ].map((item) => (
+              <div key={item.label} className="rounded-xl border border-[#E2E8F0] bg-white p-4 text-center transition-all hover:shadow-md hover:-translate-y-0.5">
+                <span className="text-sm font-bold text-[#1F2933]">{item.label}</span>
+                <p className="text-[11px] text-[#64748B] mt-1">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mx-auto max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-5 text-center">
+            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm">
+              <span className="font-semibold text-[#1F2933]">Missing data ≠ zero demand</span>
+              <span className="text-[#D9E1E8]">·</span>
+              <span className="font-semibold text-[#1F2933]">Unknown employment status ≠ unemployed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          S9 — MAHARASHTRA MVP
+          ═══════════════════════════════════════════════════════ */}
+      <section ref={maharashtraRef.ref} className="py-16 lg:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Image */}
+            <div className={`relative rounded-2xl overflow-hidden shadow-xl aspect-[16/10] transition-all duration-700 ${maharashtraRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}>
+              <Image src="/assets/maharashtra-cityscape.png" alt="Maharashtra industrial and commercial landscape" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#1F2933]/60 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <span className="rounded-md bg-[#E85D2A] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">Pilot Scope</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className={`transition-all duration-700 delay-200 ${maharashtraRef.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
+              <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl mb-4">
+                Starting in <span className="text-[#E85D2A]">Maharashtra</span>. Built for India.
+              </h2>
+              <p className="text-base text-[#475569] leading-relaxed mb-6">
+                Maharashtra serves as the initial MVP and validation environment, with an architecture designed for future expansion across India&apos;s diverse labour markets.
+              </p>
+
+              {/* Flow */}
+              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[#475569] mb-6">
+                {["Maharashtra", "Districts", "Institutions", "Employers", "Skills"].map((item, idx, arr) => (
+                  <React.Fragment key={item}>
+                    <span className="rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] px-3.5 py-2 transition-colors hover:border-[#E85D2A] hover:text-[#E85D2A]">{item}</span>
+                    {idx < arr.length - 1 && <span className="text-[#D9E1E8]">→</span>}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-[#E85D2A] hover:text-[#C94A20] transition-colors">
+                View Executive Dashboard <ArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          S10 — FINAL CTA BANNER
+          ═══════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#FFF0E8] via-[#FFF8F2] to-[#FFF0E8] py-16 lg:py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div>
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
+                  <span className="h-px w-6 bg-[#E85D2A]" />
+                  Get Started
+                </span>
+                <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl mb-4">
+                  Better Workforce Decisions Start With Better Evidence
+                </h2>
+                <p className="text-base text-[#475569] leading-relaxed mb-6 max-w-lg">
+                  SkillPulse brings labour-market, skills, training and employment signals together to support informed workforce decisions.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
+                    Explore Skill Intelligence <ArrowRight />
+                  </Link>
+                  <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
+                    Open Dashboard
+                  </Link>
+                </div>
+              </div>
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[16/10]">
+                <Image src="/assets/banner-opportunity.png" alt="Indian professionals in a modern workspace environment" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#FFF8EF]/30" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
