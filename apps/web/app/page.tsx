@@ -296,14 +296,14 @@ function SkillPulseHeroArtwork() {
         {/* Full-Bleed HD Background Image (No card/box container, no crop, no quality degradation) */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/assets/hero-heritage-bg.jpg"
-            alt="Konark Sun Temple Indian Heritage Architecture"
+            src="/assets/hero-sun-temple-4k.png"
+            alt="Konark Sun Temple Indian Heritage Architecture 4K"
             fill
             priority
             quality={100}
             unoptimized
             sizes="100vw"
-            className="object-cover object-[70%_25%] sm:object-[75%_35%] lg:object-[82%_38%]"
+            className="object-cover object-center sm:object-[70%_50%]"
           />
 
           {/* Intelligently balanced dark gradient backdrops behind text for WCAG AA readability without washing out original heritage image */}
