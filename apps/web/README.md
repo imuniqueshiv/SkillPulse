@@ -1,32 +1,131 @@
-This Next.js app is the SkillPulse frontend (`apps/web`). For local development, use the **repository root** README: `pnpm dev:web` (port 3000) together with `pnpm dev:api` (port 4000).
+# SkillPulse Web (`apps/web`)
 
-This package was bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+The frontend application for **SkillPulse** — an India-wide skill-development and labour-market intelligence platform built with Next.js 16 (App Router), React 19, Tailwind CSS v4, and Clerk authentication.
 
-## Getting Started
+---
 
-From the SkillPulse repo root:
+## 🎨 Visual Identity & Design System
 
-```bash
-pnpm dev:web
+The portal uses a modern, high-trust **Saffron/Terracotta Orange and Warm Cream** theme tailored for public and institutional intelligence.
+
+### Color Palette (Defined in `app/globals.css`)
+
+| Role | Variable / Hex | Usage |
+| :--- | :--- | :--- |
+| **Primary Brand Accent** | `--sp-accent` / `--sp-nav-orange-primary` (`#E85D2A`) | Signal pulse logo, primary CTA buttons, search button, hero title highlights |
+| **Dark / Hover Accent** | `--sp-accent-hover` / `--sp-nav-orange-dark` (`#C94A20`) | Button hover states, active navigation accents |
+| **Light Orange Tint** | `--sp-nav-orange-light` (`#F28C5B`) | Secondary accent badges, signal nodes |
+| **Pale Accent Tint** | `--sp-nav-orange-pale` (`#FFF0E8`) | Badge backgrounds (e.g. `Evidence Synergy +94.2%`), card highlights |
+| **Warm Cream Surface** | `--sp-nav-cream` (`#FFF8F2`) / `--sp-nav-warm-white` (`#FFFCF9`) | Header background tints, decorative border accents |
+| **Base Surface** | `--sp-bg-surface` (`#FFFFFF`) | Main cards, modals, content containers |
+| **Base Background** | `--sp-bg-base` (`#F5F7FA`) | Page background neutral |
+| **Warm Border Neutral** | `--sp-nav-border` (`#E5D9D0`) / `--sp-border` (`#D1D5DB`) | Card outlines, dividers, and inputs |
+| **Text Primary** | `--sp-text-primary` (`#1F2937`) | Headings and primary body copy |
+| **Text Secondary** | `--sp-text-secondary` (`#6B7280`) | Labels, subtitles, metadata |
+
+---
+
+## 🖥️ Page & Route Structure
+
+```
+apps/web/app/
+├── (auth)/
+│   ├── sign-in/[[...sign-in]]/page.tsx      # Clerk sign-in modal
+│   └── sign-up/[[...sign-up]]/page.tsx      # Clerk sign-up modal
+├── (dashboard)/
+│   ├── layout.tsx                           # Authenticated shell (Sidebar + TopBar)
+│   ├── dashboard/page.tsx                   # Executive / Role Overview Dashboard
+│   ├── skills/page.tsx                      # Market demand & skill gaps table
+│   ├── skills/[id]/page.tsx                 # Individual skill deep-dive
+│   ├── programs/page.tsx                    # Training needs & institute intelligence
+│   ├── programs/institutes/[orgId]/page.tsx # Institute-level intelligence
+│   ├── decisions/page.tsx                   # Government decision signals table
+│   ├── decisions/[signalId]/page.tsx        # Signal explanation & provenance
+│   ├── quality/page.tsx                     # Data freshness, trust & quality scores
+│   ├── jobs/page.tsx                        # Ingested job postings & skill extraction
+│   ├── jobs/[id]/page.tsx                   # Job posting detail view
+│   ├── courses/page.tsx                     # Course catalogue (Placeholder)
+│   ├── courses/[id]/page.tsx                # Program intelligence by ID
+│   ├── curricula/page.tsx                   # Curriculum analysis (Placeholder)
+│   ├── gaps/page.tsx                        # Demand vs Supply gap explorer (Placeholder)
+│   ├── recommendations/page.tsx             # Actionable policy guidance (Placeholder)
+│   ├── employers/page.tsx                   # Employer intelligence & signals (Placeholder)
+│   ├── outcomes/page.tsx                    # Placement & post-training tracking (Placeholder)
+│   └── settings/page.tsx                    # User preferences, profile, and API key management
+├── layout.tsx                               # Root layout with ClerkProvider, Navbar, Footer
+└── page.tsx                                 # Public landing page
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The API must be running separately (`pnpm dev:api`).
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌟 Key Frontend Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Public Landing Page (`app/page.tsx`)
+- **Navigation (`components/Navbar.tsx`):**
+  - Brand logo with animated pulse signal (`#E85D2A`).
+  - Dropdown menus: *Intelligence*, *Training & Curriculum*, *Outcomes*, *Recommendations*, *Dashboards*.
+  - Search bar with integrated voice search (`webkitSpeechRecognition`).
+  - Clerk-integrated Sign In / Register buttons.
+- **Hero Section:**
+  - *"Turn Workforce Data Into Better Decisions"* with orange accent typography.
+  - Search bar routing directly to corresponding modules (`/courses`, `/skills`, `/jobs`, `/gaps`).
+  - Interactive **Workforce Intelligence Flow**: Clickable nodes (*Labour Market*, *Skills Taxonomy*, *Training & Curriculum*, *Employment Outcomes*) that update live diagnostic context.
+- **Featured Intelligence:**
+  - *"Where Skills Meet Demand"* showcasing real-world vocational training imagery and step-by-step workforce pipeline indicators.
+- **Interactive Methodology Timeline:**
+  - 6-stage pipeline: *Collect* → *Validate* → *Analyse* → *Identify Gaps* → *Recommend* → *Measure*.
+- **Data vs Decision Scenario Switcher:**
+  - Toggle between raw market signals and SkillPulse diagnostic recommendations (e.g. `UPDATE_CURRICULUM` vs seat expansion).
+- **Stakeholder Intelligence Hub:**
+  - Tailored perspectives for *Government & Policymakers*, *Training Institutes*, *Employers & Industry*, and *Learners*.
+- **Maharashtra MVP Scope:**
+  - Highlights pilot coverage across all 36 districts of Maharashtra.
 
-## Learn More
+### 2. Executive Dashboard (`app/(dashboard)/`)
+- **RoleDashboard (`components/dashboard/RoleDashboard.tsx`):**
+  - Adapts views for `PLATFORM_ADMIN`, `GOVERNMENT_MANAGER`, `INSTITUTE_ADMIN`, `EMPLOYER`, `TRAINER`, and `LEARNER`.
+  - Displays KPI stat cards: *High Demand Skills*, *Severe / High Gaps*, *Training → Employment*, *High Priority Signals*.
+  - High-priority decision signals table with direct links to explainer pages.
+  - Data quality snapshot highlighting fresh vs. stale evidence.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Reusable UI Components (`components/ui/`)
+- `Sidebar.tsx` — Responsive, collapsible navigation sidebar.
+- `TopBar.tsx` — Header with mobile drawer toggle and user status.
+- `Card.tsx`, `StatCard.tsx`, `Badge.tsx`, `DataTable.tsx` — Core data presentation.
+- `ProgressBar.tsx`, `ChartBar.tsx`, `HeatmapGrid.tsx` — Data visualization.
+- `SkeletonLoader.tsx`, `EmptyState.tsx` — Polished fallback & loading states.
+- `IntelligenceStates.tsx` — Specialized UI for `INSUFFICIENT_DATA`, `UNKNOWN`, errors, and priority tags.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Running Locally
 
-## Deploy on Vercel
+From the **repository root**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Start the web development server (port 3000)
+pnpm dev:web
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Or start web and API in parallel
+pnpm dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Key Environment Variables (`.env` in repo root)
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — Clerk public key for authentication.
+- `CLERK_SECRET_KEY` — Clerk secret key.
+- `NEXT_PUBLIC_API_URL` — Express backend URL (defaults to `http://localhost:4000`).
+
+### Quality & Verification Commands
+
+```bash
+# Run TypeScript typecheck
+pnpm --filter web typecheck
+
+# Run ESLint
+pnpm --filter web lint
+
+# Build for production
+pnpm --filter web build
+```
