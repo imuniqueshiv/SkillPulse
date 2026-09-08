@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Show, SignInButton } from "@clerk/nextjs";
 import Image from "next/image";
-import { IndiaMapBackground } from "@/components/landing/IndiaMapBackground";
+import { IndiaScrollMap } from "@/components/landing/IndiaScrollMap";
 
 /* ═══════════════════════════════════════════════════════
    Utility Hooks
@@ -287,8 +287,8 @@ function SkillPulseHeroArtwork() {
   return (
     <div className="flex flex-1 flex-col font-sans text-[#1F2937] antialiased relative">
 
-      {/* Global Scroll-Driven India Map Background */}
-      <IndiaMapBackground />
+      {/* Global Scroll-Driven India SVG Map Background */}
+      <IndiaScrollMap />
 
       {/* ═══════════════════════════════════════════════════════
           S1 — HERO (Full-Bleed High HD Heritage Background)
