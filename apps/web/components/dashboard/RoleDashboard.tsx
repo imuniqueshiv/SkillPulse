@@ -19,6 +19,7 @@ import {
   formatMetric,
   IntelligenceEmpty,
   IntelligenceError,
+  IntelligenceUnauthorized,
   LimitationsPanel,
   PriorityBadge,
   StatusBadge,
@@ -108,6 +109,7 @@ export function RoleDashboard() {
   const [user, setUser] = useState<ApplicationUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
 
@@ -117,6 +119,7 @@ export function RoleDashboard() {
     void (async () => {
       setLoading(true);
       setError(null);
+      setUnauthorized(false);
       try {
         const token = await getToken();
         if (!token) {
@@ -129,7 +132,7 @@ export function RoleDashboard() {
 
         if (appUser.role === "LEARNER") {
           setOverview(null);
-          setError("This role cannot access government-wide intelligence.");
+          setUnauthorized(true);
           setLoading(false);
           return;
         }
@@ -139,7 +142,7 @@ export function RoleDashboard() {
         setMeta(result.meta);
       } catch (err) {
         if (err instanceof IntelligenceApiError && err.status === 403) {
-          setError("You are not authorized to view this intelligence.");
+          setUnauthorized(true);
         } else {
           setError("Unable to load intelligence.");
         }
@@ -160,6 +163,18 @@ export function RoleDashboard() {
 
   const role = user?.role ?? "LEARNER";
   const title = ROLE_TITLES[role] ?? "Dashboard";
+
+  if (unauthorized) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <PageHeader
+          title={`SkillPulse ${title} Overview`}
+          subtitle="Authenticated executive view over Phase 7–13 intelligence adapters."
+        />
+        <IntelligenceUnauthorized message="This role cannot access government-wide intelligence." />
+      </div>
+    );
+  }
 
   if (error) {
     return (

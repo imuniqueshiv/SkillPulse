@@ -16,6 +16,7 @@ import {
   IntelligenceEmpty,
   IntelligenceError,
   IntelligenceLoading,
+  IntelligenceUnauthorized,
   LimitationsPanel,
   PriorityBadge,
 } from "@/components/intelligence/IntelligenceStates";
@@ -33,6 +34,7 @@ export default function DecisionsPage() {
   const { getToken, isLoaded } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
   const [rows, setRows] = useState<SignalRow[]>([]);
   const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
   const [priority, setPriority] = useState("");
@@ -43,6 +45,7 @@ export default function DecisionsPage() {
     void (async () => {
       setLoading(true);
       setError(null);
+      setUnauthorized(false);
       try {
         const token = await getToken();
         if (!token) {
@@ -72,7 +75,7 @@ export default function DecisionsPage() {
         setMeta(result.meta);
       } catch (err) {
         if (err instanceof IntelligenceApiError && err.status === 403) {
-          setError("You are not authorized to view decision intelligence.");
+          setUnauthorized(true);
         } else {
           setError("Unable to load intelligence.");
         }
@@ -163,6 +166,8 @@ export default function DecisionsPage() {
 
       {loading ? (
         <IntelligenceLoading />
+      ) : unauthorized ? (
+        <IntelligenceUnauthorized message="You are not authorized to view decision intelligence." />
       ) : error ? (
         <IntelligenceError message={error} />
       ) : rows.length === 0 ? (

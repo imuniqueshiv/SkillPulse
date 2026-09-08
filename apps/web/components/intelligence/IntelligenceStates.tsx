@@ -66,6 +66,23 @@ export function IntelligenceError({ message }: { message?: string }) {
   );
 }
 
+export function IntelligenceUnauthorized({ message }: { message?: string }) {
+  return (
+    <EmptyState
+      icon={
+        <span aria-hidden style={{ fontSize: "1.5rem" }}>
+          ⊘
+        </span>
+      }
+      title="Unauthorized"
+      description={
+        message ??
+        "Your role is not permitted to view this intelligence. Server-side authorization blocked the request."
+      }
+    />
+  );
+}
+
 export function IntelligenceEmpty() {
   return (
     <EmptyState

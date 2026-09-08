@@ -151,6 +151,20 @@ test("invalid query parameters are rejected", async (t) => {
     token,
   );
   assert.equal(badPriority.response.status, 400);
+
+  const badOffset = await json(
+    "/api/v1/intelligence/decisions?offset=-1",
+    token,
+  );
+  assert.equal(badOffset.response.status, 400);
+
+  const oversized = await json(
+    "/api/v1/intelligence/decisions?limit=999",
+    token,
+  );
+  assert.equal(oversized.response.status, 200);
+  const page = oversized.body.data as { pagination: { limit: number } };
+  assert.ok(page.pagination.limit <= 50);
 });
 
 test("decisions require government roles and are bounded", async (t) => {

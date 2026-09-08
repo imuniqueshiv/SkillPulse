@@ -15,6 +15,7 @@ import {
   IntelligenceEmpty,
   IntelligenceError,
   IntelligenceLoading,
+  IntelligenceUnauthorized,
   LimitationsPanel,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
@@ -23,6 +24,7 @@ export default function QualityPage() {
   const { getToken, isLoaded } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
   const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
 
@@ -31,6 +33,7 @@ export default function QualityPage() {
     void (async () => {
       setLoading(true);
       setError(null);
+      setUnauthorized(false);
       try {
         const token = await getToken();
         if (!token) {
@@ -42,7 +45,7 @@ export default function QualityPage() {
         setMeta(result.meta);
       } catch (err) {
         if (err instanceof IntelligenceApiError && err.status === 403) {
-          setError("You are not authorized to view data quality intelligence.");
+          setUnauthorized(true);
         } else {
           setError("Unable to load intelligence.");
         }
@@ -64,6 +67,8 @@ export default function QualityPage() {
       />
       {loading ? (
         <IntelligenceLoading />
+      ) : unauthorized ? (
+        <IntelligenceUnauthorized message="You are not authorized to view data quality intelligence." />
       ) : error ? (
         <IntelligenceError message={error} />
       ) : !data || data.status === "INSUFFICIENT_DATA" ? (

@@ -5,11 +5,15 @@ import type { DemandGeographyFilter, DemandSummary } from "../demand/contract";
 import { summarizeSkillGaps } from "../gaps";
 import type { SkillGapSummary, SupplyObservation } from "../gaps/contract";
 import {
+  extractTrainingCapacity,
   loadTrainingPrograms,
-  summarizeTrainingIntelligenceFromDb,
+  summarizeTrainingIntelligence,
 } from "../training";
 import type { TrainingIntelligenceSummary } from "../training/contract";
-import { summarizeInstituteIntelligenceFromDb } from "../institute";
+import {
+  capacityFromSupplyObservations,
+  summarizeInstituteIntelligence,
+} from "../institute";
 import type { InstituteIntelligenceSummary } from "../institute/contract";
 import { summarizeEmploymentIntelligence } from "../employment";
 import type {
@@ -121,25 +125,24 @@ export async function loadUpstreamIntelligence(
     rankLimit,
   });
 
-  const [training, institute] = await Promise.all([
-    summarizeTrainingIntelligenceFromDb({
-      gapSummary: gaps,
-      supplyObservations,
-      includeDemo: true,
-      rankLimit,
-    }),
-    summarizeInstituteIntelligenceFromDb({
-      gapSummary: gaps,
-      supplyObservations,
-      includeDemo: true,
-      rankLimit,
-      runPhase10: true,
-    }),
-  ]);
-
+  // One program load → Phase 10 → Phase 11 (no duplicate Phase 10 / N× loadTrainingPrograms).
   const programViews = await loadTrainingPrograms({
     includeDemo: true,
-    limit: Math.min(rankLimit * 4, 100),
+    limit: Math.min(Math.max(rankLimit * 4, 20), 100),
+  });
+  const trainingCapacityBySkill = extractTrainingCapacity(supplyObservations);
+  const training = summarizeTrainingIntelligence({
+    gapSummary: gaps,
+    programs: programViews,
+    trainingCapacityBySkill,
+    rankLimit,
+  });
+  const institute = summarizeInstituteIntelligence({
+    gapSummary: gaps,
+    programs: programViews,
+    trainingSummary: training,
+    capacityObservations: capacityFromSupplyObservations(supplyObservations),
+    rankLimit,
   });
 
   const employment = summarizeEmploymentIntelligence({
@@ -698,7 +701,14 @@ export type DecisionListFilters = IntelligenceQueryFilters & {
 };
 
 export async function listDecisionSignals(filters: DecisionListFilters) {
-  const bundle = await loadUpstreamIntelligence(filters);
+  const rankLimit = Math.min(
+    Math.max(1, filters.rankLimit),
+    MAX_INTELLIGENCE_LIMIT,
+  );
+  const bundle = await loadUpstreamIntelligence({
+    ...filters,
+    rankLimit,
+  });
   let signals = [...bundle.decisions.signals];
 
   if (filters.priority) {
@@ -734,10 +744,7 @@ export async function listDecisionSignals(filters: DecisionListFilters) {
   });
 
   const total = signals.length;
-  const page = signals.slice(
-    filters.offset,
-    filters.offset + filters.rankLimit,
-  );
+  const page = signals.slice(filters.offset, filters.offset + rankLimit);
 
   return {
     data: {
@@ -751,9 +758,9 @@ export async function listDecisionSignals(filters: DecisionListFilters) {
       evidenceCoverage: bundle.decisions.evidenceCoverage,
       pagination: {
         total,
-        limit: filters.rankLimit,
+        limit: rankLimit,
         offset: filters.offset,
-        hasMore: filters.offset + filters.rankLimit < total,
+        hasMore: filters.offset + rankLimit < total,
       },
     },
     meta: metaEnvelope({
