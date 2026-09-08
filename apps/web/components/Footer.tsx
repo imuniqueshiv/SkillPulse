@@ -168,7 +168,7 @@ export function Footer() {
 
   return (
     <footer
-      className={`w-full bg-[#FFF7EF] border-t border-[#E8D4C5] relative overflow-hidden select-none text-[#3A2A25] transition-all duration-150 ${
+      className={`w-full bg-[#FFF7EF] border-t border-[#E8D4C5] relative z-[30] overflow-hidden select-none text-[#3A2A25] transition-all duration-150 ${
         isDashboardRoute ? "lg:ml-[var(--sp-sidebar-width,256px)]" : "w-full"
       }`}
       aria-label="Site Footer"
@@ -195,7 +195,7 @@ export function Footer() {
               </div>
             </Link>
 
-            <p className="text-xs text-[#75645D] leading-relaxed max-w-md">
+            <p className="text-xs text-[#52433D] font-medium leading-relaxed max-w-md">
               Evidence-driven skill and workforce intelligence for better decisions.
             </p>
           </div>
@@ -210,7 +210,7 @@ export function Footer() {
                 <li key={link.href + link.label}>
                   <Link
                     href={link.href}
-                    className="text-xs text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    className="text-xs text-[#2D1B15] font-medium transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
                   >
                     {link.label}
                   </Link>
@@ -229,7 +229,7 @@ export function Footer() {
                 <li key={link.href + link.label}>
                   <Link
                     href={link.href}
-                    className="text-xs text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    className="text-xs text-[#2D1B15] font-medium transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
                   >
                     {link.label}
                   </Link>
@@ -240,7 +240,7 @@ export function Footer() {
         </div>
 
         {/* 3. Copyright & Utility Links Bar (Integrated on top of the skyline base) */}
-        <div className="border-t border-[#E8D4C5]/80 pt-3 pb-1 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#75645D]">
+        <div className="border-t border-[#E8D4C5]/80 pt-3 pb-1 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#52433D] font-medium">
           <p>© {currentYear} SkillPulse. All rights reserved.</p>
           <div className="flex items-center gap-3 font-medium">
             <Link href="/settings" className="hover:text-[#E85D2A] transition-colors">

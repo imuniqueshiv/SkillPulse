@@ -293,7 +293,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S1 — HERO (Full-Bleed High HD Heritage Background)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B] min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
+      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B]/30 min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
         {/* Top Brand Accent Line */}
         <div className="absolute top-0 left-0 right-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
@@ -311,7 +311,7 @@ function SkillPulseHeroArtwork() {
           />
 
           {/* Intelligently balanced dark gradient backdrops behind text for WCAG AA readability without washing out original heritage image */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#160E0B]/95 via-[#160E0B]/75 to-transparent sm:w-4/5 lg:w-3/5" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#160E0B]/75 via-[#160E0B]/50 to-transparent z-10" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#160E0B] to-transparent opacity-60" />
         </div>
 
@@ -378,7 +378,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S3 — WHERE SKILLS MEET DEMAND (Feature)
           ═══════════════════════════════════════════════════════ */}
-      <section id="feature-section" ref={featureRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/[0.92]">
+      <section id="feature-section" ref={featureRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
 
@@ -443,7 +443,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S4 — FROM EVIDENCE TO ACTION (Timeline)
           ═══════════════════════════════════════════════════════ */}
-      <section id="how-it-works" ref={timelineRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFFCF9]/[0.93]">
+      <section id="how-it-works" ref={timelineRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFFCF9]/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${timelineRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
@@ -503,7 +503,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S5 — DATA → INTELLIGENCE → ACTION (Infographic)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={dataFlowRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/[0.92]">
+      <section ref={dataFlowRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-14 transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
@@ -575,7 +575,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S6 — INTERACTIVE INSIGHT
           ═══════════════════════════════════════════════════════ */}
-      <section ref={insightRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFF8F2]/[0.93]">
+      <section ref={insightRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFF8F2]/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className={`mb-10 transition-all duration-700 ${insightRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -622,7 +622,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S7 — STAKEHOLDERS
           ═══════════════════════════════════════════════════════ */}
-      <section ref={stakeholderRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/[0.92]">
+      <section ref={stakeholderRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${stakeholderRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
@@ -689,7 +689,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S8 — EVIDENCE & TRUST
           ═══════════════════════════════════════════════════════ */}
-      <section className="relative z-[2] py-16 lg:py-20 bg-[#FFFCF9]/[0.93] border-y border-[#E2E8F0]">
+      <section className="relative z-[2] py-16 lg:py-20 bg-[#FFFCF9]/20 backdrop-blur-[1px] border-y border-[#E2E8F0]/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
@@ -725,7 +725,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S9 — MAHARASHTRA MVP
           ═══════════════════════════════════════════════════════ */}
-      <section ref={maharashtraRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/[0.92]">
+      <section ref={maharashtraRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             {/* Image */}
