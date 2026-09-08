@@ -4,42 +4,94 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/* Logo Mark */
+/* SkillPulse Logo SVG Mark */
 function SkillPulseLogoMark({ className = "h-7 w-7" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="32" height="32" rx="6" fill="#E85D2A" />
-      <path d="M6 18H10L13 9L17 23L21 14L23 18H26" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="13" cy="9" r="2" fill="#F28C5B" />
-      <circle cx="17" cy="23" r="2" fill="#FAD5C2" />
-      <circle cx="21" cy="14" r="2" fill="#F28C5B" />
+    <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="10" fill="#E85D2A" />
+      <path
+        d="M7 20H11L14.5 10L19 26L23.5 15L26 20H29"
+        stroke="#FFFFFF"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="14.5" cy="10" r="2.2" fill="#F28C5B" />
+      <circle cx="19" cy="26" r="2.2" fill="#FFF0E8" />
+      <circle cx="23.5" cy="15" r="2.2" fill="#F28C5B" />
     </svg>
   );
 }
 
-const footerLinks = {
-  platform: [
-    { label: "Labour Market Demand", href: "/jobs" },
-    { label: "Skill Intelligence", href: "/skills" },
-    { label: "Demand vs Supply Gaps", href: "/gaps" },
-    { label: "Curriculum Analysis", href: "/curricula" },
-    { label: "Recommendations", href: "/recommendations" },
-    { label: "Outcome Tracking", href: "/outcomes" },
-  ],
-  stakeholders: [
-    { label: "Government & Policymakers", href: "/dashboard" },
-    { label: "Training Institutes", href: "/courses" },
-    { label: "Employers & Industry", href: "/employers" },
-    { label: "Learners & Job Seekers", href: "/skills" },
-  ],
-  resources: [
-    { label: "Executive Dashboard", href: "/dashboard" },
-    { label: "Courses & Capacity", href: "/courses" },
-    { label: "Regional Skill Gaps", href: "/gaps" },
-    { label: "Data Sources & Settings", href: "/settings" },
-    { label: "Platform Home", href: "/" },
-  ],
-};
+// Partner / Institutional Ecosystem Badges
+const ECOSYSTEM_BADGES = [
+  {
+    icon: (
+      <svg className="w-4 h-4 text-[#E85D2A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+    title: "Skill Taxonomy",
+    sub: "Standardized Frameworks",
+  },
+  {
+    icon: (
+      <svg className="w-4 h-4 text-[#E85D2A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+        <path d="M9 22v-4h6v4" />
+      </svg>
+    ),
+    title: "Employer Network",
+    sub: "Industry Hiring Partners",
+  },
+  {
+    icon: (
+      <svg className="w-4 h-4 text-[#E85D2A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+        <path d="M6 12v5c3 3 9 3 12 0v-5" />
+      </svg>
+    ),
+    title: "NSQF Standards",
+    sub: "Academic Pathways",
+  },
+  {
+    icon: (
+      <svg className="w-4 h-4 text-[#E85D2A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </svg>
+    ),
+    title: "Labour Market Stream",
+    sub: "Live Demand Signal",
+  },
+  {
+    icon: (
+      <svg className="w-4 h-4 text-[#E85D2A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+      </svg>
+    ),
+    title: "Outcome Analytics",
+    sub: "Evidence-Based Decisions",
+  },
+];
+
+const PLATFORM_LINKS = [
+  { label: "Intelligence", href: "/skills" },
+  { label: "Training & Curriculum", href: "/curricula" },
+  { label: "Outcomes", href: "/outcomes" },
+  { label: "Recommendations", href: "/recommendations" },
+  { label: "Dashboards", href: "/dashboard" },
+];
+
+const RESOURCE_LINKS = [
+  { label: "Skills", href: "/skills" },
+  { label: "Workforce Insights", href: "/jobs" },
+  { label: "About SkillPulse", href: "/quality" },
+  { label: "Contact", href: "/settings" },
+];
 
 export function Footer() {
   const pathname = usePathname();
@@ -52,124 +104,124 @@ export function Footer() {
 
   return (
     <footer
-      className={`border-t border-[#E2E8F0] bg-white text-[#1F2937] transition-all duration-150 ${
+      className={`w-full transition-all duration-150 ${
         isDashboardRoute ? "lg:ml-[var(--sp-sidebar-width,256px)]" : "w-full"
       }`}
       aria-label="Site Footer"
     >
-      {/* Top accent */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#E85D2A] to-[#E9783B]" />
-
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Main grid */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
-
-          {/* Brand column */}
-          <div className="lg:col-span-4 flex flex-col gap-4 pr-0 lg:pr-8">
-            <div className="flex items-center gap-2.5">
-              <SkillPulseLogoMark className="h-8 w-8 shrink-0" />
-              <div>
-                <span className="text-lg font-bold tracking-tight text-[#E85D2A]">SkillPulse</span>
-                <span className="block text-[10px] font-bold uppercase tracking-[0.15em] text-[#64748B]">Workforce Intelligence</span>
+      {/* ================================================================== */}
+      {/* 1. INSTITUTIONAL ECOSYSTEM / PARTNER LOGO STRIP                   */}
+      {/* ================================================================== */}
+      <section className="w-full bg-[#FFFFFF] border-t border-b border-[#E5D9D0] py-4 select-none">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-[#E5D9D0] border-t md:border-t-0 border-[#E5D9D0]">
+            {ECOSYSTEM_BADGES.map((badge, idx) => (
+              <div
+                key={badge.title + idx}
+                className="flex items-center gap-3 px-4 py-2.5 transition-colors duration-150 hover:bg-[#FFF8F2] group cursor-default"
+              >
+                <div className="p-2 rounded-xl bg-[#FFF0E8] text-[#E85D2A] group-hover:scale-105 transition-transform duration-150 shrink-0">
+                  {badge.icon}
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-semibold text-[#1F2933] group-hover:text-[#E85D2A] transition-colors truncate">
+                    {badge.title}
+                  </span>
+                  <span className="text-[0.6875rem] text-[#64748B] tracking-tight truncate">
+                    {badge.sub}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            <p className="text-sm leading-relaxed text-[#475569]">
-              Evidence-driven skill and workforce intelligence platform connecting labour-market demand, skills, training, curriculum and employment outcomes.
-            </p>
-
-            <div className="rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] p-3.5 text-xs text-[#64748B]">
-              <p className="font-semibold text-[#0F172A] mb-1">Institutional Scope</p>
-              <p className="leading-relaxed">Maharashtra serves as the initial MVP and validation environment, with an architecture designed to scale across India.</p>
-            </div>
-          </div>
-
-          {/* Platform */}
-          <div className="lg:col-span-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#1F2933] mb-4">
-              Platform Intelligence
-            </h3>
-            <ul className="flex flex-col gap-2.5">
-              {footerLinks.platform.map((link) => (
-                <li key={link.href + link.label}>
-                  <Link href={link.href} className="text-sm text-[#475569] transition-colors hover:text-[#C94A20] focus-visible:outline-2 focus-visible:outline-[#E85D2A] focus-visible:outline-offset-2">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Stakeholders */}
-          <div className="lg:col-span-2">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#1F2933] mb-4">
-              Stakeholders
-            </h3>
-            <ul className="flex flex-col gap-2.5">
-              {footerLinks.stakeholders.map((link) => (
-                <li key={link.href + link.label}>
-                  <Link href={link.href} className="text-sm text-[#475569] transition-colors hover:text-[#C94A20] focus-visible:outline-2 focus-visible:outline-[#E85D2A] focus-visible:outline-offset-2">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div className="lg:col-span-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#1F2933] mb-4">
-              Resources & Data
-            </h3>
-            <ul className="flex flex-col gap-2.5">
-              {footerLinks.resources.map((link) => (
-                <li key={link.href + link.label}>
-                  <Link href={link.href} className="text-sm text-[#475569] transition-colors hover:text-[#C94A20] focus-visible:outline-2 focus-visible:outline-[#E85D2A] focus-visible:outline-offset-2">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* Intelligence Cycle */}
-        <div className="mt-10 rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] p-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <span className="text-xs font-semibold text-[#1F2933] flex items-center gap-2">
-              <svg className="h-4 w-4 text-[#E85D2A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Continuous Intelligence Cycle
-            </span>
-            <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#475569]">
-              {["Collect", "Validate", "Analyse", "Identify", "Recommend", "Measure", "Learn"].map((step, idx, arr) => (
-                <React.Fragment key={step}>
-                  <span className="rounded-md bg-white px-2.5 py-1 font-medium text-[#E85D2A] border border-[#E2E8F0]">{step}</span>
-                  {idx < arr.length - 1 && <span className="text-[#94A3B8]">→</span>}
-                </React.Fragment>
-              ))}
+      {/* ================================================================== */}
+      {/* 2. MAIN FOOTER CONTAINER (DARK CHARCOAL #1F2933)                  */}
+      {/* ================================================================== */}
+      <div className="bg-[#1F2933] text-white relative overflow-hidden select-none">
+        {/* Subtle Horizontal Workforce Pulse SVG Data Signal Top Line */}
+        <div className="w-full h-1 relative overflow-hidden bg-slate-800">
+          <div className="h-full w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A] opacity-80" />
+        </div>
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+            
+            {/* Column A: BRAND */}
+            <div className="lg:col-span-6 flex flex-col gap-3.5 pr-0 lg:pr-6">
+              <Link href="/" className="inline-flex items-center gap-2.5 group w-fit">
+                <SkillPulseLogoMark className="h-8 w-8 shrink-0 transition-transform group-hover:scale-105" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold tracking-tight text-white leading-none">
+                    Skill<span className="text-[#E85D2A]">Pulse</span>
+                  </span>
+                  <span className="text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-[#F28C5B] leading-tight mt-0.5">
+                    Workforce Intelligence
+                  </span>
+                </div>
+              </Link>
+
+              <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed max-w-lg mt-1">
+                Evidence-driven skill and workforce intelligence for better decisions. Connecting hiring demand, skill taxonomies, qualification standards, and employment outcomes.
+              </p>
+            </div>
+
+            {/* Column B: PLATFORM */}
+            <div className="lg:col-span-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5 border-b border-slate-700/60 pb-1.5 w-fit">
+                Platform
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {PLATFORM_LINKS.map((link) => (
+                  <li key={link.href + link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-xs sm:text-sm text-[#CBD5E1] transition-colors duration-150 hover:text-[#F28C5B] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Column C: RESOURCES */}
+            <div className="lg:col-span-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5 border-b border-slate-700/60 pb-1.5 w-fit">
+                Resources
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {RESOURCE_LINKS.map((link) => (
+                  <li key={link.href + link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-xs sm:text-sm text-[#CBD5E1] transition-colors duration-150 hover:text-[#F28C5B] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </div>
 
-        {/* Disclaimer */}
-        <div className="mt-4 rounded-lg border border-[#F4B183] bg-[#FFF8F2] p-4 text-xs">
-          <p className="font-semibold text-[#C94A20]">Data & Evidence Disclaimer</p>
-          <p className="mt-1 leading-relaxed text-[#334155]">
-            SkillPulse provides evidence-driven workforce intelligence using multi-source data integration. Information may be subject to coverage, freshness, validation, and other data limitations. Users should verify important information with the relevant primary source before making decisions.
-          </p>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[#E2E8F0] pt-6 sm:flex-row text-xs text-[#64748B]">
-          <p>© {currentYear} SkillPulse. All rights reserved.</p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <span className="font-medium text-[#475569]">Missing data ≠ zero demand</span>
-            <span className="text-[#D9E1E8]">·</span>
-            <span className="font-medium text-[#475569]">Unknown status ≠ unemployed</span>
+          {/* ================================================================ */}
+          {/* 3. BOTTOM BAR                                                    */}
+          {/* ================================================================ */}
+          <div className="mt-10 pt-6 border-t border-slate-700/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#CBD5E1]">
+            <p>© {currentYear} SkillPulse. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <Link href="/settings" className="hover:text-[#F28C5B] transition-colors">
+                Privacy
+              </Link>
+              <span className="text-slate-600">|</span>
+              <Link href="/settings" className="hover:text-[#F28C5B] transition-colors">
+                Accessibility
+              </Link>
+            </div>
           </div>
-          <p className="font-mono text-[11px] text-[#94A3B8]">SkillPulse v1.0.0</p>
         </div>
       </div>
     </footer>
