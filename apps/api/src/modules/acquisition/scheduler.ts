@@ -36,6 +36,9 @@ export async function runScheduledNcsAcquisition(input: {
   referenceTime: Date;
   inputPath?: string;
   state?: string;
+  district?: string;
+  city?: string;
+  limit?: number;
   expireMissing?: boolean;
 }): Promise<ScheduledAcquisitionResult> {
   if (!isAuthorizedLiveScheduleMode(input.mode)) {
@@ -49,7 +52,7 @@ export async function runScheduledNcsAcquisition(input: {
       status: "ACCESS_DENIED",
       failureCode: "ACCESS_DENIED",
       failureMessage:
-        "Scheduled live NCS execution requires AUTHORIZED_API or AUTHORIZED_FILE",
+        "Scheduled live NCS execution requires AUTHORIZED_API or AUTHORIZED_FILE (PUBLIC_PAGE and synthetic are never auto-scheduled)",
     });
     return { ran: false, reason: "LIVE_EXECUTION_NOT_AUTHORIZED" };
   }
@@ -71,6 +74,9 @@ export async function runScheduledNcsAcquisition(input: {
     retrievalTime: input.now,
     inputPath: input.inputPath,
     state: input.state,
+    district: input.district,
+    city: input.city,
+    limit: input.limit,
     expireMissing: input.expireMissing ?? true,
   });
   return { ran: true, acquisition };

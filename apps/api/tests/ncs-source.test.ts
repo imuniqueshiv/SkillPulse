@@ -38,6 +38,10 @@ test("NCS access modes distinguish source availability from live access", () => 
     resolveNcsAccessMode({ mode: "api" }),
     NCS_ACCESS_MODE.AUTHORIZED_API,
   );
+  assert.equal(
+    resolveNcsAccessMode({ mode: "public" }),
+    NCS_ACCESS_MODE.PUBLIC_PAGE,
+  );
   assert.throws(() => resolveNcsAccessMode({ mode: "live" }));
   assert.throws(() => resolveNcsAccessMode({ liveEnabled: "true" }));
 
@@ -46,6 +50,7 @@ test("NCS access modes distinguish source availability from live access", () => 
   assert.equal(disabled.accessConfigured, false);
   assert.equal(disabled.liveAccessImplemented, false);
   assert.equal(disabled.realNcsDataIngested, false);
+  assert.equal(disabled.publicPageCollectorImplemented, false);
 
   const synthetic = describeNcsAccess(NCS_ACCESS_MODE.SYNTHETIC_FIXTURE);
   assert.equal(synthetic.accessConfigured, true);
@@ -56,6 +61,12 @@ test("NCS access modes distinguish source availability from live access", () => 
   assert.equal(api.accessConfigured, true);
   assert.equal(api.liveAccessImplemented, false);
   assert.match(api.notes.join(" "), /AUTHORIZED_API/);
+
+  const publicPage = describeNcsAccess(NCS_ACCESS_MODE.PUBLIC_PAGE);
+  assert.equal(publicPage.accessConfigured, true);
+  assert.equal(publicPage.publicPageCollectorImplemented, false);
+  assert.match(publicPage.notes.join(" "), /PUBLIC_PAGE/);
+  assert.match(publicPage.notes.join(" "), /scrape/i);
 });
 
 test("synthetic NCS fixture is labelled and is not real NCS data", () => {

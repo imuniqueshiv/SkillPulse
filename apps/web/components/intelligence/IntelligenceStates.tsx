@@ -21,11 +21,24 @@ export function formatMetric(
 
 export function StatusBadge({ status }: { status?: string }) {
   if (!status) return <Badge variant="neutral">UNKNOWN</Badge>;
-  if (status === "AVAILABLE") return <Badge variant="success">AVAILABLE</Badge>;
-  if (status === "INSUFFICIENT_DATA") {
-    return <Badge variant="warning">INSUFFICIENT_DATA</Badge>;
+  if (status === "AVAILABLE" || status === "SUCCESS") {
+    return <Badge variant="success">{status}</Badge>;
   }
-  if (status === "UNKNOWN") return <Badge variant="neutral">UNKNOWN</Badge>;
+  if (
+    status === "INSUFFICIENT_DATA" ||
+    status === "SYNTHETIC_FIXTURE" ||
+    status === "PARTIAL_SYNC" ||
+    status === "NOT_CONFIGURED"
+  ) {
+    return <Badge variant="warning">{status}</Badge>;
+  }
+  if (
+    status === "ACCESS_DENIED" ||
+    status === "SOURCE_UNAVAILABLE" ||
+    status === "UNKNOWN"
+  ) {
+    return <Badge variant={status === "UNKNOWN" ? "neutral" : "danger"}>{status}</Badge>;
+  }
   return <Badge variant="neutral">{status}</Badge>;
 }
 

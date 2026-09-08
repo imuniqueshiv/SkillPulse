@@ -1,26 +1,23 @@
 import type { IngestionAccessMethod } from "@prisma/client";
 import type { NcsAccessMode } from "../ingestion/sources/ncs-access";
+import type {
+  GovernmentAcquireRequest,
+  GovernmentAcquiredBatch,
+  GovernmentSourceConnector,
+} from "./government-connector";
 
-export type AcquireRequest = {
-  inputPath?: string;
-  state?: string;
-  observedAt: string;
-  ingestedAt: string;
+export type AcquireRequest = GovernmentAcquireRequest & {
+  /** @deprecated use district/city/limit on GovernmentAcquireRequest */
 };
 
-export type AcquiredBatch = {
-  records: Record<string, unknown>[];
-  sourceReference: string;
-  retrievalTime: Date;
-  accessMethod: IngestionAccessMethod;
-  checksum: string;
-};
+export type AcquiredBatch = GovernmentAcquiredBatch;
 
 /**
- * Future official NCS API/feed/file connector.
+ * NCS acquisition connector. Extends the provider-neutral government contract.
  * Implementations must not scrape ncs.gov.in or reverse-engineer private envelopes.
  */
-export interface NcsAcquisitionConnector {
+export interface NcsAcquisitionConnector extends GovernmentSourceConnector {
   readonly mode: NcsAccessMode;
+  readonly accessMethod: IngestionAccessMethod;
   acquire(request: AcquireRequest): Promise<AcquiredBatch>;
 }

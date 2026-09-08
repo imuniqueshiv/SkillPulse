@@ -191,6 +191,8 @@ test("synthetic NCS acquisition persists snapshot checksum and skips unchanged j
   assert.equal(first.skipped, 0);
   assert.equal(first.checksum.length, 64);
   assert.equal(first.accessMethod, "SYNTHETIC_FIXTURE");
+  assert.ok(first.runId);
+  assert.ok(first.parserVersion);
 
   const prisma = getPrisma();
   const snapshot = await prisma.ingestionSnapshot.findUnique({
@@ -200,6 +202,8 @@ test("synthetic NCS acquisition persists snapshot checksum and skips unchanged j
   assert.equal(snapshot.checksum, first.checksum);
   assert.equal(snapshot.recordCount, 2);
   assert.equal(snapshot.accessMethod, "SYNTHETIC_FIXTURE");
+  assert.equal(snapshot.parserVersion, first.parserVersion);
+  assert.equal(snapshot.acceptedCount, 2);
   assert.ok(snapshot.sourceReference.includes("batch.json"));
   assert.ok(snapshot.retrievalTime);
 
@@ -414,4 +418,73 @@ test("repeated synthetic acquisition is idempotent", async (t) => {
     where: { externalId: `${PREFIX}E` },
   });
   assert.equal(raw, 1);
+});
+
+test("district filter, PUBLIC_PAGE safety, and explicit WITHDRAWN lifecycle", async (t) => {
+  assert.equal(isAuthorizedLiveScheduleMode(NCS_ACCESS_MODE.PUBLIC_PAGE), false);
+  await assert.rejects(
+    () =>
+      connectorForMode(NCS_ACCESS_MODE.PUBLIC_PAGE).acquire({
+        observedAt: OBSERVED_AT,
+        ingestedAt: INGESTED_AT,
+      }),
+    (error: unknown) =>
+      error instanceof AcquisitionError &&
+      error.code === ACQUISITION_FAILURE.ACCESS_DENIED,
+  );
+
+  if (!env.DATABASE_URL) {
+    t.skip("DATABASE_URL is not configured");
+    return;
+  }
+
+  const publicDenied = await runNcsAcquisition({
+    mode: NCS_ACCESS_MODE.PUBLIC_PAGE,
+    observedAt: OBSERVED_AT,
+    ingestedAt: INGESTED_AT,
+    referenceTime: REFERENCE,
+    processDownstream: false,
+  });
+  snapshotIds.push(publicDenied.snapshotId);
+  assert.equal(publicDenied.status, "ACCESS_DENIED");
+  assert.equal(publicDenied.created, 0);
+
+  const path = writeFixture([
+    ncsRecord("F", { district: "Pune", city: "Pune" }),
+    ncsRecord("G", { district: "Nagpur", city: "Nagpur" }),
+    ncsRecord("H", {
+      district: "Pune",
+      city: "Pune",
+      status: "withdrawn",
+      title: "Withdrawn Welder",
+    }),
+  ]);
+
+  const filtered = await runNcsAcquisition({
+    mode: NCS_ACCESS_MODE.SYNTHETIC_FIXTURE,
+    observedAt: OBSERVED_AT,
+    ingestedAt: INGESTED_AT,
+    referenceTime: REFERENCE,
+    inputPath: path,
+    state: "Maharashtra",
+    district: "Pune",
+    expireMissing: false,
+    processDownstream: false,
+  });
+  track(filtered);
+  assert.equal(filtered.total, 2);
+  assert.equal(filtered.created, 2);
+  assert.ok(filtered.withdrawn >= 1);
+
+  const prisma = getPrisma();
+  const withdrawnJob = await prisma.job.findFirst({
+    where: { source: { code: NCS_SOURCE_CODE }, externalId: `${PREFIX}H` },
+  });
+  assert.ok(withdrawnJob);
+  assert.equal(withdrawnJob.lifecycleStatus, "WITHDRAWN");
+
+  const nagpur = await prisma.job.findFirst({
+    where: { source: { code: NCS_SOURCE_CODE }, externalId: `${PREFIX}G` },
+  });
+  assert.equal(nagpur, null);
 });

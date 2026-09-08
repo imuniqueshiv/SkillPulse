@@ -40,6 +40,7 @@ import {
 import { JOB_QUALITY_ASSESSMENT_VERSION } from "../quality/contract";
 import { metaEnvelope } from "./access";
 import { MAX_INTELLIGENCE_LIMIT } from "./policy";
+import { getNcsDemandSourceStatus } from "../acquisition/demand-source-status";
 
 export type IntelligenceQueryFilters = {
   from: Date;
@@ -235,7 +236,13 @@ function summarizeSignalRow(s: DecisionSignal) {
 export async function getOverviewIntelligence(
   filters: IntelligenceQueryFilters,
 ) {
-  const bundle = await loadUpstreamIntelligence(filters);
+  const [bundle, demandSource] = await Promise.all([
+    loadUpstreamIntelligence(filters),
+    getNcsDemandSourceStatus({
+      state: filters.geography?.state ?? "Maharashtra",
+      district: filters.geography?.district ?? null,
+    }),
+  ]);
   const highDemand = bundle.demand.skills.filter(
     (s) => s.trend.direction === "RISING" || s.weightedDemand >= 1,
   );
@@ -248,6 +255,7 @@ export async function getOverviewIntelligence(
 
   return {
     data: {
+      demandSource,
       demand: {
         status:
           bundle.demand.qualityCoverage.included +
@@ -336,7 +344,10 @@ export async function getOverviewIntelligence(
     meta: metaEnvelope({
       period: periodMeta(bundle),
       phaseVersions: phaseVersions(bundle),
-      limitations: bundle.limitations,
+      limitations: [
+        ...bundle.limitations,
+        ...demandSource.notes,
+      ],
       dataQuality:
         bundle.quality.total > 0
           ? `${bundle.quality.eligibility.INCLUDE} INCLUDE / ${bundle.quality.eligibility.INCLUDE_WITH_CAUTION} CAUTION / ${bundle.quality.eligibility.EXCLUDE} EXCLUDE`

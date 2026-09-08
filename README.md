@@ -288,11 +288,11 @@ Synthetic evaluation datasets live under `data/sample/evaluation/`. Ingestion fi
 
 ### NCS job-demand ingestion (Phase 17.2)
 
-Registered source: `sp.source.ncs` (National Career Service). File/synthetic adapter: `skillpulse-ncs`. Acquisition layer: snapshots, change detection, job lifecycle. Live NCS website scraping is **not** implemented. `AUTHORIZED_API` requires an official feed URL and token.
+Registered source: `sp.source.ncs` (National Career Service). File/synthetic adapter: `skillpulse-ncs`. Acquisition layer: snapshots, change detection, job lifecycle, Maharashtra filters. Live NCS website scraping is **not** implemented. `AUTHORIZED_API` requires an official feed URL and token. `PUBLIC_PAGE` is permission-gated and has no collector yet.
 
 ```bash
-pnpm --filter api ncs:ingest -- --mode synthetic --dry-run
-pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra
+pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --dry-run
+pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --district Pune
 ```
 
 Synthetic fixture: `data/sample/ingestion/ncs-maharashtra.sample.json` — **not real NCS data**. Details: [docs/ncs-ingestion.md](docs/ncs-ingestion.md).

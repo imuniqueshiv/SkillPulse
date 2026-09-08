@@ -343,10 +343,10 @@ Missing source fields stay omitted/null. Skills are never extracted from title o
 | DataSource | `sp.source.ncs` (registered, `geographicScope=INDIA`, `accessMethod=WEB_REFERENCE`) |
 | Adapter | `skillpulse-ncs` (`sources/ncs.ts`) |
 | Acquisition | `apps/api/src/modules/acquisition/` (snapshots, change detection, lifecycle) |
-| Access states | `DISABLED` / `SYNTHETIC_FIXTURE` / `AUTHORIZED_FILE` / `AUTHORIZED_API` |
-| Live scrape | **Rejected.** `AUTHORIZED_API` requires `NCS_API_BASE_URL` + `NCS_API_TOKEN` from an official feed. Does not scrape ncs.gov.in. |
+| Access states | `DISABLED` / `SYNTHETIC_FIXTURE` / `AUTHORIZED_FILE` / `AUTHORIZED_API` / `PUBLIC_PAGE` |
+| Live scrape | **Rejected.** `AUTHORIZED_API` requires official feed credentials. `PUBLIC_PAGE` requires terms flag and has no collector yet. |
 | What tests ingest | Synthetic fixture `data/sample/ingestion/ncs-maharashtra.sample.json` (`SYNTHETIC` — **not real NCS data**) |
-| CLI | `pnpm --filter api ncs:ingest -- --mode synthetic\|file\|api [--state Maharashtra] [--dry-run]` |
+| CLI | `pnpm --filter api ncs:ingest -- --mode synthetic\|file\|api\|public [--state Maharashtra] [--district …] [--limit N] [--dry-run]` |
 
 Source `functional_role` / `sector` remain in `sourceMetadata` and are **not** Phase 6 occupation/sector.
 

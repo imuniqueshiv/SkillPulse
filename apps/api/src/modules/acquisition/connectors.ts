@@ -5,25 +5,50 @@ import { AcquisitionError, ACQUISITION_FAILURE } from "./errors";
 import { computeBatchChecksum } from "./hash";
 import {
   NCS_ACCESS_MODE,
+  NCS_SOURCE_CODE,
+  NCS_SOURCE_URL,
+  isPublicPagePermitted,
   type NcsAccessMode,
 } from "../ingestion/sources/ncs-access";
+import { NCS_ADAPTER_VERSION } from "../ingestion/sources/ncs";
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function filterByState(
-  records: Record<string, unknown>[],
-  state?: string,
-): Record<string, unknown>[] {
-  if (!state || state.trim() === "") {
-    return records;
+function matchField(
+  record: Record<string, unknown>,
+  field: "state" | "district" | "city",
+  needle?: string,
+): boolean {
+  if (!needle || needle.trim() === "") {
+    return true;
   }
-  const needle = state.trim().toLowerCase();
-  return records.filter((row) => {
-    const value = row.state;
-    return typeof value === "string" && value.trim().toLowerCase() === needle;
-  });
+  const value = record[field];
+  return (
+    typeof value === "string" &&
+    value.trim().toLowerCase() === needle.trim().toLowerCase()
+  );
+}
+
+function filterRecords(
+  records: Record<string, unknown>[],
+  request: AcquireRequest,
+): Record<string, unknown>[] {
+  let filtered = records.filter(
+    (row) =>
+      matchField(row, "state", request.state) &&
+      matchField(row, "district", request.district) &&
+      matchField(row, "city", request.city),
+  );
+  if (
+    typeof request.limit === "number" &&
+    Number.isFinite(request.limit) &&
+    request.limit >= 0
+  ) {
+    filtered = filtered.slice(0, Math.floor(request.limit));
+  }
+  return filtered;
 }
 
 function parseNcsShapedFile(path: string): {
@@ -52,6 +77,14 @@ function parseNcsShapedFile(path: string): {
   };
 }
 
+function ncsIdentity() {
+  return {
+    sourceCode: NCS_SOURCE_CODE,
+    sourceName: "National Career Service",
+    sourceUrl: NCS_SOURCE_URL,
+  };
+}
+
 export function defaultSyntheticFixturePath(): string {
   const relative = "data/sample/ingestion/ncs-maharashtra.sample.json";
   const candidates = [
@@ -73,6 +106,8 @@ export function defaultSyntheticFixturePath(): string {
 export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
   return {
     mode: NCS_ACCESS_MODE.SYNTHETIC_FIXTURE,
+    accessMethod: "SYNTHETIC_FIXTURE",
+    identity: ncsIdentity(),
     async acquire(request: AcquireRequest): Promise<AcquiredBatch> {
       const path = request.inputPath ?? defaultSyntheticFixturePath();
       const file = parseNcsShapedFile(path);
@@ -82,13 +117,14 @@ export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
           "Synthetic mode requires acquisition=synthetic-fixture",
         );
       }
-      const records = filterByState(file.records, request.state);
+      const records = filterRecords(file.records, request);
       return {
         records,
         sourceReference: path,
         retrievalTime: new Date(request.observedAt),
         accessMethod: "SYNTHETIC_FIXTURE",
         checksum: computeBatchChecksum(records),
+        parserVersion: NCS_ADAPTER_VERSION,
       };
     },
   };
@@ -97,6 +133,8 @@ export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
 export function createAuthorizedFileConnector(): NcsAcquisitionConnector {
   return {
     mode: NCS_ACCESS_MODE.AUTHORIZED_FILE,
+    accessMethod: "AUTHORIZED_FILE",
+    identity: ncsIdentity(),
     async acquire(request: AcquireRequest): Promise<AcquiredBatch> {
       if (!request.inputPath) {
         throw new AcquisitionError(
@@ -105,13 +143,14 @@ export function createAuthorizedFileConnector(): NcsAcquisitionConnector {
         );
       }
       const file = parseNcsShapedFile(request.inputPath);
-      const records = filterByState(file.records, request.state);
+      const records = filterRecords(file.records, request);
       return {
         records,
         sourceReference: request.inputPath,
         retrievalTime: new Date(request.observedAt),
         accessMethod: "AUTHORIZED_FILE",
         checksum: computeBatchChecksum(records),
+        parserVersion: NCS_ADAPTER_VERSION,
       };
     },
   };
@@ -127,6 +166,8 @@ export function createAuthorizedApiConnector(config: {
 }): NcsAcquisitionConnector {
   return {
     mode: NCS_ACCESS_MODE.AUTHORIZED_API,
+    accessMethod: "AUTHORIZED_API",
+    identity: ncsIdentity(),
     async acquire(request: AcquireRequest): Promise<AcquiredBatch> {
       const baseUrl = config.baseUrl?.trim();
       const token = config.token?.trim();
@@ -188,14 +229,41 @@ export function createAuthorizedApiConnector(config: {
         );
       }
 
-      const records = filterByState(recordsRaw.filter(isPlainObject), request.state);
+      const records = filterRecords(recordsRaw.filter(isPlainObject), request);
       return {
         records,
         sourceReference: baseUrl,
         retrievalTime: new Date(request.observedAt),
         accessMethod: "AUTHORIZED_API",
         checksum: computeBatchChecksum(records),
+        parserVersion: NCS_ADAPTER_VERSION,
       };
+    },
+  };
+}
+
+/**
+ * PUBLIC_PAGE connector — permission-gated stub.
+ * Never scrapes ncs.gov.in, never calls undocumented APIs, never bypasses controls.
+ * Even when NCS_PUBLIC_PAGE_PERMITTED=true, collection is refused until a
+ * documented compliant collector is implemented.
+ */
+export function createPublicPageConnector(): NcsAcquisitionConnector {
+  return {
+    mode: NCS_ACCESS_MODE.PUBLIC_PAGE,
+    accessMethod: "PUBLIC_PAGE",
+    identity: ncsIdentity(),
+    async acquire(_request: AcquireRequest): Promise<AcquiredBatch> {
+      if (!isPublicPagePermitted()) {
+        throw new AcquisitionError(
+          ACQUISITION_FAILURE.ACCESS_DENIED,
+          "PUBLIC_PAGE requires documented terms review and NCS_PUBLIC_PAGE_PERMITTED=true",
+        );
+      }
+      throw new AcquisitionError(
+        ACQUISITION_FAILURE.ACCESS_DENIED,
+        "PUBLIC_PAGE collector is not implemented: SkillPulse will not scrape or reverse-engineer NCS. Use AUTHORIZED_FILE or AUTHORIZED_API.",
+      );
     },
   };
 }
@@ -212,6 +280,9 @@ export function connectorForMode(
   }
   if (mode === NCS_ACCESS_MODE.AUTHORIZED_API) {
     return createAuthorizedApiConnector(config ?? {});
+  }
+  if (mode === NCS_ACCESS_MODE.PUBLIC_PAGE) {
+    return createPublicPageConnector();
   }
   throw new AcquisitionError(
     ACQUISITION_FAILURE.ACCESS_DENIED,

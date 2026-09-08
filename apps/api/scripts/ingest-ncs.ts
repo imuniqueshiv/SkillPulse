@@ -1,21 +1,14 @@
 /**
  * Phase 17.2 — NCS acquisition CLI.
  *
- * Usage (from repo root or apps/api):
- *   npx tsx apps/api/scripts/ingest-ncs.ts --mode synthetic --dry-run
- *   npx tsx apps/api/scripts/ingest-ncs.ts --mode file --input path/to/file.json
- *   npx tsx apps/api/scripts/ingest-ncs.ts --mode synthetic --state Maharashtra
- *   npx tsx apps/api/scripts/ingest-ncs.ts --mode api
+ * Usage:
+ *   pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --dry-run
+ *   pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --district Pune
+ *   pnpm --filter api ncs:ingest -- --mode file --input path/to/file.json --limit 100
+ *   pnpm --filter api ncs:ingest -- --mode api
+ *   pnpm --filter api ncs:ingest -- --mode public   # refused unless permitted + collector exists
  *
- * Modes:
- *   disabled   — refuse (ACCESS_NOT_CONFIGURED); persists ACCESS_DENIED snapshot
- *   synthetic  — SYNTHETIC_FIXTURE (default sample under data/sample/ingestion/)
- *   file       — AUTHORIZED_FILE (operator-supplied NCS-shaped JSON)
- *   api        — AUTHORIZED_API (official feed URL + token; never scrapes)
- *   live       — refused (no scraping client)
- *
- * Does not print secrets. Dry-run does not write snapshots or canonical Jobs.
- * Does not retrain ML models.
+ * Does not print secrets. Does not retrain ML models. Does not scrape NCS.
  */
 
 import { readFileSync } from "node:fs";
@@ -34,6 +27,9 @@ type CliArgs = {
   mode: string;
   input?: string;
   state?: string;
+  district?: string;
+  city?: string;
+  limit?: number;
   dryRun: boolean;
   expireMissing?: boolean;
   observedAt: string;
@@ -70,6 +66,15 @@ function parseArgs(argv: string[]): CliArgs {
     } else if (flag === "--state" && next) {
       args.state = next;
       i += 1;
+    } else if (flag === "--district" && next) {
+      args.district = next;
+      i += 1;
+    } else if (flag === "--city" && next) {
+      args.city = next;
+      i += 1;
+    } else if (flag === "--limit" && next) {
+      args.limit = Number(next);
+      i += 1;
     } else if (flag === "--dry-run") {
       args.dryRun = true;
     } else if (flag === "--expire-missing") {
@@ -85,7 +90,7 @@ function parseArgs(argv: string[]): CliArgs {
       i += 1;
     } else if (flag === "--help" || flag === "-h") {
       console.log(
-        "Usage: ingest-ncs.ts --mode synthetic|file|api|disabled [--input file] [--state Name] [--dry-run]",
+        "Usage: ingest-ncs.ts --mode synthetic|file|api|public|disabled [--input file] [--state Name] [--district Name] [--city Name] [--limit N] [--dry-run]",
       );
       process.exit(0);
     }
@@ -105,18 +110,29 @@ function loadFixture(path: string): FixtureFile {
   return JSON.parse(raw) as FixtureFile;
 }
 
-function filterByState(
+function filterRecords(
   records: Record<string, unknown>[],
-  state?: string,
+  args: CliArgs,
 ): Record<string, unknown>[] {
-  if (!state || state.trim() === "") {
-    return records;
-  }
-  const needle = state.trim().toLowerCase();
-  return records.filter((row) => {
-    const value = row.state;
-    return typeof value === "string" && value.trim().toLowerCase() === needle;
+  let filtered = records.filter((row) => {
+    const stateOk =
+      !args.state ||
+      (typeof row.state === "string" &&
+        row.state.trim().toLowerCase() === args.state.trim().toLowerCase());
+    const districtOk =
+      !args.district ||
+      (typeof row.district === "string" &&
+        row.district.trim().toLowerCase() === args.district.trim().toLowerCase());
+    const cityOk =
+      !args.city ||
+      (typeof row.city === "string" &&
+        row.city.trim().toLowerCase() === args.city.trim().toLowerCase());
+    return stateOk && districtOk && cityOk;
   });
+  if (typeof args.limit === "number" && Number.isFinite(args.limit) && args.limit >= 0) {
+    filtered = filtered.slice(0, Math.floor(args.limit));
+  }
+  return filtered;
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -203,6 +219,9 @@ async function main(): Promise<void> {
         access,
         dryRun: args.dryRun,
         stateFilter: args.state ?? null,
+        districtFilter: args.district ?? null,
+        cityFilter: args.city ?? null,
+        limit: args.limit ?? null,
       },
       null,
       2,
@@ -210,13 +229,14 @@ async function main(): Promise<void> {
   );
 
   if (args.dryRun) {
-    if (mode === NCS_ACCESS_MODE.DISABLED) {
-      console.error("ACCESS_NOT_CONFIGURED: pass --mode synthetic, file, or api");
-      process.exitCode = 1;
-      return;
-    }
-    if (mode === NCS_ACCESS_MODE.AUTHORIZED_API) {
-      console.error("Dry-run is file/synthetic only; AUTHORIZED_API is not fetched in dry-run");
+    if (
+      mode === NCS_ACCESS_MODE.DISABLED ||
+      mode === NCS_ACCESS_MODE.AUTHORIZED_API ||
+      mode === NCS_ACCESS_MODE.PUBLIC_PAGE
+    ) {
+      console.error(
+        "Dry-run supports synthetic|file only. AUTHORIZED_API/PUBLIC_PAGE are not fetched in dry-run.",
+      );
       process.exitCode = 1;
       return;
     }
@@ -232,12 +252,13 @@ async function main(): Promise<void> {
     }
 
     const fixture = loadFixture(inputPath);
-    if (mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE) {
-      if (fixture.acquisition !== "synthetic-fixture") {
-        console.error("Synthetic mode requires acquisition=synthetic-fixture");
-        process.exitCode = 1;
-        return;
-      }
+    if (
+      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE &&
+      fixture.acquisition !== "synthetic-fixture"
+    ) {
+      console.error("Synthetic mode requires acquisition=synthetic-fixture");
+      process.exitCode = 1;
+      return;
     }
     if (!Array.isArray(fixture.records)) {
       console.error("Fixture must contain a records array");
@@ -246,17 +267,17 @@ async function main(): Promise<void> {
     }
 
     const preview = await dryRunIngest(
-      filterByState(fixture.records.filter(isPlainObject), args.state),
+      filterRecords(fixture.records.filter(isPlainObject), args),
       args.observedAt,
       args.ingestedAt,
     );
     console.log(
       JSON.stringify(
         {
+          source: "sp.source.ncs",
           mode,
-          inputPath,
-          acquisition: fixture.acquisition ?? null,
-          accessClass: fixture.accessClass ?? null,
+          state: args.state ?? null,
+          district: args.district ?? null,
           durationMs: Date.now() - started,
           ...preview,
           note: "dry-run: no snapshot or canonical Job writes",
@@ -278,6 +299,9 @@ async function main(): Promise<void> {
         ? (args.input ?? defaultSyntheticPath())
         : args.input,
     state: args.state,
+    district: args.district,
+    city: args.city,
+    limit: args.limit,
     expireMissing: args.expireMissing,
     processDownstream: true,
   });
@@ -285,21 +309,31 @@ async function main(): Promise<void> {
   console.log(
     JSON.stringify(
       {
-        mode,
+        source: "sp.source.ncs",
+        accessMode: result.mode,
+        state: result.state,
+        district: result.district,
+        city: result.city,
+        runId: result.runId,
         snapshotId: result.snapshotId,
         checksum: result.checksum,
-        sourceReference: result.sourceReference,
-        accessMethod: result.accessMethod,
+        parserVersion: result.parserVersion,
         status: result.status,
         failureCode: result.failureCode,
-        durationMs: Date.now() - started,
-        total: result.total,
-        created: result.created,
+        durationMs: result.durationMs,
+        totalObserved: result.total,
+        valid: result.accepted,
+        invalid: result.rejected,
+        duplicates: result.duplicates,
+        unchanged: result.skipped,
         changed: result.changed,
-        skipped: result.skipped,
+        persisted: result.created + result.changed,
         expired: result.expired,
-        rejected: result.rejected,
+        withdrawn: result.withdrawn,
         failed: result.failed,
+        unresolvedSkills: result.unresolvedSkillTerms,
+        qualityIncluded: result.qualityIncluded,
+        qualityExcluded: result.qualityExcluded,
         realNcsDataIngested: false,
         note:
           mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE

@@ -71,6 +71,16 @@ function TargetIcon() {
 }
 
 type OverviewData = {
+  demandSource?: {
+    source?: { name?: string; code?: string; url?: string };
+    scope?: { state?: string | null; district?: string | null };
+    dataStatus?: string;
+    liveNcsData?: boolean;
+    observationCount?: number;
+    lastObservedAt?: string | null;
+    lastSnapshot?: { id?: string; accessMethod?: string; status?: string } | null;
+    notes?: string[];
+  };
   demand?: {
     status?: string;
     highDemandSkillCount?: number;
@@ -248,6 +258,63 @@ export function RoleDashboard() {
         title={`SkillPulse ${title} Overview`}
         subtitle="Bounded dashboard over Phase 7–13 intelligence. Values are not fabricated placeholders."
       />
+
+      <Card>
+        <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Job demand source</h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+            gap: "0.75rem",
+            fontSize: "0.875rem",
+          }}
+        >
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Source</div>
+            <div>{overview.demandSource?.source?.name ?? "National Career Service"}</div>
+          </div>
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Scope</div>
+            <div>
+              {overview.demandSource?.scope?.state ?? "Maharashtra"}
+              {overview.demandSource?.scope?.district
+                ? ` / ${overview.demandSource.scope.district}`
+                : ""}
+            </div>
+          </div>
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Observations</div>
+            <div>{overview.demandSource?.observationCount ?? 0}</div>
+          </div>
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Data status</div>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <StatusBadge status={overview.demandSource?.dataStatus} />
+              {overview.demandSource?.liveNcsData ? null : (
+                <span style={{ color: "var(--sp-text-secondary)", fontSize: "0.75rem" }}>
+                  not live NCS
+                </span>
+              )}
+            </div>
+          </div>
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Last observed</div>
+            <div>
+              {overview.demandSource?.lastObservedAt
+                ? new Date(overview.demandSource.lastObservedAt).toLocaleString()
+                : "INSUFFICIENT_DATA"}
+            </div>
+          </div>
+          <div>
+            <div style={{ color: "var(--sp-text-secondary)" }}>Evidence</div>
+            <div>
+              {overview.demandSource?.lastSnapshot?.id
+                ? `snapshot ${overview.demandSource.lastSnapshot.id.slice(0, 8)}… (${overview.demandSource.lastSnapshot.accessMethod ?? "—"})`
+                : "INSUFFICIENT_DATA"}
+            </div>
+          </div>
+        </div>
+      </Card>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         <StatCard

@@ -64,5 +64,16 @@
     "domain": "EMPLOYMENT",
     "geographicScope": "STATE",
     "active": true
+  },
+  {
+    "code": "sp.source.mssds",
+    "name": "Maharashtra State Skill Development Society",
+    "type": "TRAINING",
+    "url": "https://www.mssds.in/",
+    "description": "Prepared for a future training-supply acquisition phase (district/provider/centre/course/scheme/job-role). Homepage reference only. No MSSDS API, bulk dump, scraping permission, or executable connector is registered in this phase. Do not invent training capacity or placement rates from this stub.",
+    "accessMethod": "WEB_REFERENCE",
+    "domain": "TRAINING",
+    "geographicScope": "STATE",
+    "active": true
   }
 ]
