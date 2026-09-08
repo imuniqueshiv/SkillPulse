@@ -196,62 +196,66 @@ export async function persistCanonicalJob(input: CanonicalJobPersistenceInput) {
     }
   }
 
-  return prisma.$transaction(async (tx) => {
-    const existing = await tx.job.findFirst({
-      where: { sourceId: source.id, externalId: plan.externalId },
-      select: { id: true },
-    });
-
-    if (existing) {
-      await syncJobSkills(tx, existing.id, plan.skillIds);
-      return {
-        job: await loadJob(tx, existing.id),
-        created: false,
-        observationId: plan.observationId,
-      };
-    }
-
-    try {
-      const created = await tx.job.create({
-        data: {
-          title: plan.title,
-          description: plan.description,
-          companyName: plan.companyName,
-          sourceId: source.id,
-          externalId: plan.externalId,
-          postedAt: plan.postedAt,
-          expiresAt: plan.expiresAt,
-          sourceUrl: plan.sourceUrl,
-          isDemo: source.isDemo,
-        },
+  // Neon remote latency can exceed Prisma's default 5s interactive timeout.
+  return prisma.$transaction(
+    async (tx) => {
+      const existing = await tx.job.findFirst({
+        where: { sourceId: source.id, externalId: plan.externalId },
         select: { id: true },
       });
-      await syncJobSkills(tx, created.id, plan.skillIds);
-      return {
-        job: await loadJob(tx, created.id),
-        created: true,
-        observationId: plan.observationId,
-      };
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2002"
-      ) {
-        const raced = await tx.job.findFirst({
-          where: { sourceId: source.id, externalId: plan.externalId },
-          select: { id: true },
-        });
-        if (!raced) {
-          throw error;
-        }
-        await syncJobSkills(tx, raced.id, plan.skillIds);
+
+      if (existing) {
+        await syncJobSkills(tx, existing.id, plan.skillIds);
         return {
-          job: await loadJob(tx, raced.id),
+          job: await loadJob(tx, existing.id),
           created: false,
           observationId: plan.observationId,
         };
       }
-      throw error;
-    }
-  });
+
+      try {
+        const created = await tx.job.create({
+          data: {
+            title: plan.title,
+            description: plan.description,
+            companyName: plan.companyName,
+            sourceId: source.id,
+            externalId: plan.externalId,
+            postedAt: plan.postedAt,
+            expiresAt: plan.expiresAt,
+            sourceUrl: plan.sourceUrl,
+            isDemo: source.isDemo,
+          },
+          select: { id: true },
+        });
+        await syncJobSkills(tx, created.id, plan.skillIds);
+        return {
+          job: await loadJob(tx, created.id),
+          created: true,
+          observationId: plan.observationId,
+        };
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          const raced = await tx.job.findFirst({
+            where: { sourceId: source.id, externalId: plan.externalId },
+            select: { id: true },
+          });
+          if (!raced) {
+            throw error;
+          }
+          await syncJobSkills(tx, raced.id, plan.skillIds);
+          return {
+            job: await loadJob(tx, raced.id),
+            created: false,
+            observationId: plan.observationId,
+          };
+        }
+        throw error;
+      }
+    },
+    { maxWait: 10_000, timeout: 20_000 },
+  );
 }

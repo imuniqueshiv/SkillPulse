@@ -16,9 +16,19 @@ flowchart TD
     Prisma --> DB[Neon PostgreSQL]
 ```
 
+End-to-end intelligence data flow (Phases 5–14):
+
+```text
+Sources → Ingestion + Provenance → Job Intelligence → Quality/Trust
+→ Demand → Skill Gap → Training → Institute → Employment → Decision
+→ Product API → Dashboard
+```
+
 The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://localhost:4000`). Prisma is used only from `apps/api`.
 
 A FastAPI service exists at `services/intelligence` (`:8000`). It is optional for local web + API development and is not called by Express today.
+
+SIH demo docs: [maharashtra-demo.md](maharashtra-demo.md), [demo-script.md](demo-script.md), [judge-qa.md](judge-qa.md). Docker is **not required** for the current Node + Neon + Clerk deployment path ([deployment.md](deployment.md)).
 
 Phases 1–3 provide local processes, Neon/Prisma, and Clerk authentication with Express RBAC. Phase 4 adds the canonical skill taxonomy. Phases 5.1–5.12 provide source registry through state-agnostic job ingestion. Phase 6 derives **per-job** intelligence from a canonical Job. It does not score market demand, forecast, recommend, or aggregate across jobs.
 

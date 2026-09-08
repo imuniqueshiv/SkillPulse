@@ -1,6 +1,10 @@
 # SkillPulse
 
-India-wide skill-development and labour-market intelligence platform.
+India-wide skill-development and labour-market intelligence platform (SIH PS 26134).
+
+**Problem:** Skill programs are hard to align with industry demand when job, curriculum, institute, and placement evidence live in silos — and dashboards often hide uncertainty as zeros.
+
+**Solution:** SkillPulse turns observable labour-market evidence into explainable **government decision signals**, with explicit `INSUFFICIENT_DATA` / UNKNOWN when evidence is missing. It is not a job portal, LLM chatbot, or forecasting engine.
 
 Clerk authenticates identity. Express authorizes application roles and organization scope. Neon stores SkillPulse data via Prisma. See [docs/authentication.md](docs/authentication.md), [docs/data-model.md](docs/data-model.md), and [docs/taxonomy.md](docs/taxonomy.md).
 
@@ -23,6 +27,16 @@ flowchart TD
     API --> Prisma[Prisma]
     Prisma --> DB[Neon PostgreSQL]
 ```
+
+### Intelligence pipeline
+
+```text
+Sources → Ingestion + Provenance → Job Intelligence → Quality/Trust
+→ Demand → Skill Gap → Training → Institute → Employment → Decision
+→ Product API → Dashboard
+```
+
+Detail: [docs/architecture.md](docs/architecture.md). Maharashtra SIH walkthrough: [docs/maharashtra-demo.md](docs/maharashtra-demo.md), [docs/demo-script.md](docs/demo-script.md), [docs/judge-qa.md](docs/judge-qa.md).
 
 A Python FastAPI process exists at `services/intelligence` (`pnpm dev:intelligence`, [http://localhost:8000/health](http://localhost:8000/health)). It is **not** required for daily web + API work. The Express API does not currently call it.
 
@@ -80,6 +94,9 @@ Fill in placeholders only. Never put real secrets in Git or in documentation.
 | `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | Next.js | `/dashboard` |
 | `INTELLIGENCE_SERVICE_URL` | `.env.example` | Intelligence URL; not read by the Express API today |
 | `INTELLIGENCE_PORT` | Intelligence | Default `8000` |
+| `CORS_ORIGINS` | API | Comma-separated browser origins. Production must not use `*` |
+| `JSON_BODY_LIMIT` | API | Request body size limit (default `100kb`) |
+| `TRUST_PROXY` | API | Set when behind a reverse proxy |
 
 Do not set `NEXT_PUBLIC_DATABASE_URL` or `NEXT_PUBLIC_CLERK_SECRET_KEY`.
 
@@ -250,9 +267,37 @@ From the repo root: `pnpm install`. Python packages are not part of the pnpm wor
 2. Web is opened at an origin listed in `CORS_ORIGINS` (default `http://localhost:3000`).
 3. Dashboard user load calls `http://localhost:4000/api/v1/auth/me` with a Clerk session token. Unauthenticated API calls return 401.
 
+### SIH demo workflow
+
+1. `pnpm install` → configure `.env` → `pnpm db:migrate` → `pnpm db:seed`
+2. `pnpm typecheck && pnpm build && pnpm --filter api test`
+3. `pnpm dev` → sign in (Clerk) → Overview → Skills → Programs → Decisions → Quality
+4. Present using [docs/demo-script.md](docs/demo-script.md). Label synthetic fixtures as **not** official labour statistics.
+
+Seed and sample JSON under `data/sample/` are **SYNTHETIC / DEMO / EVALUATION**. Do not present them as government statistics. Evaluation fixtures must not be treated as live production jobs.
+
+### API
+
+Product intelligence (auth + RBAC): `/api/v1/intelligence/*` — see [docs/api.md](docs/api.md).
+
+Liveness / readiness: `GET /health`, `GET /ready` (DB), `GET /health/db`.
+
+### Evaluation & provenance
+
+Synthetic evaluation datasets live under `data/sample/evaluation/`. Ingestion fixtures under `data/sample/ingestion/` carry acquisition/provenance fields. Phase 7 quality eligibility gates demand and downstream signals.
+
+### Limitations
+
+- No durable learner/supply registry in MVP; gap and employment need caller-provided observations.
+- Course location may be UNKNOWN; never invent institute capacity or placement rates.
+- No LLM / forecasting / autonomous policy execution.
+- Rate limiting deferred for authenticated single-instance MVP ([docs/deployment.md](docs/deployment.md)).
+- Cloud deployment is documented but **not verified in-repo** without an operator-chosen host and credentials.
+- Authenticated browser smoke requires a live Clerk session (`SMOKE_BEARER_TOKEN` for API smoke).
+
 ### Production deploy
 
-Provider-neutral steps, health/readiness, migrations, smoke test, and Neon recovery notes: [docs/deployment.md](docs/deployment.md).
+Provider-neutral steps, health/readiness, migrations, smoke test, and Neon recovery notes: [docs/deployment.md](docs/deployment.md). Docker is optional and **not required** for the current Node + Neon + Clerk path.
 
 ### Checks
 
@@ -261,6 +306,8 @@ pnpm test
 pnpm lint
 pnpm typecheck
 pnpm build
-# with API running:
+# with API running (anonymous + optional token):
 npx tsx apps/api/scripts/smoke-production.ts
+# optional local baseline (not production capacity):
+npx tsx apps/api/scripts/perf-baseline.ts
 ```

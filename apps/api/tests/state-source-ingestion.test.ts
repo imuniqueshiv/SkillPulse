@@ -236,6 +236,20 @@ describe("Phase 5.12 state-source ingestion", { concurrency: false }, () => {
     assert.ok(maharashtra);
     assert.equal(maharashtra.geographicScope, "STATE");
 
+    // Shared Neon DBs retain MH-ROJ-* jobs from other suite files; reset before counting creates.
+    const priorJobs = await prisma.job.findMany({
+      where: {
+        sourceId: maharashtra.id,
+        externalId: { startsWith: "MH-ROJ-" },
+      },
+      select: { id: true },
+    });
+    if (priorJobs.length > 0) {
+      await prisma.job.deleteMany({
+        where: { id: { in: priorJobs.map((row) => row.id) } },
+      });
+    }
+
     assert.equal(sample.records.length, 12);
     const ingestRecords = [
       sample.records[0],

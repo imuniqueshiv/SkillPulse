@@ -224,27 +224,28 @@ test("persists Job and JobSkill idempotently without taxonomy or evidence writes
   Object.freeze(validation.record);
   Object.freeze(validation.record!.payload);
 
+  const observationId = `obs-persist-a-${stamp}`;
   const skills = await normalizeJobObservationSkills({
-    observationId: "obs-persist-a",
+    observationId,
     validation,
     skills: ["Python", "python", "React.js", "java scriptt"],
   });
   Object.freeze(skills);
 
   const evidenceRefBefore = await prisma.evidence.count({
-    where: { reference: "raw-ingestion:obs-persist-a" },
+    where: { reference: `raw-ingestion:${observationId}` },
   });
   assert.equal(evidenceRefBefore, 0);
 
   const first = await persistCanonicalJob({
-    observationId: "obs-persist-a",
+    observationId,
     validation,
     skills,
   });
   createdJobIds.push(first.job.id);
 
   assert.equal(first.created, true);
-  assert.equal(first.observationId, "obs-persist-a");
+  assert.equal(first.observationId, observationId);
   assert.equal(first.job.title, "Machine Operator");
   assert.equal(first.job.description, "Canonical operator description");
   assert.equal(first.job.companyName, "Acme Tools");
@@ -264,13 +265,13 @@ test("persists Job and JobSkill idempotently without taxonomy or evidence writes
   assert.equal(JSON.stringify(first.job).includes("must not appear on Job"), false);
 
   const evidence = await recordJobPostingEvidence({
-    observationId: "obs-persist-a",
+    observationId,
     validation,
   });
   createdEvidenceIds.push(evidence.evidence.id);
 
   const repeat = await persistCanonicalJob({
-    observationId: "obs-persist-a",
+    observationId,
     validation: validated(
       basePayload({
         sourceCode: source.code,
@@ -286,7 +287,7 @@ test("persists Job and JobSkill idempotently without taxonomy or evidence writes
   assert.equal(repeat.job.skills.length, 2);
 
   const review = await persistCanonicalJob({
-    observationId: "obs-review",
+    observationId: `obs-review-${stamp}`,
     validation: validated(
       basePayload({
         sourceCode: source.code,
@@ -300,7 +301,7 @@ test("persists Job and JobSkill idempotently without taxonomy or evidence writes
   assert.equal(review.job.title, "N/A");
 
   const stale = await persistCanonicalJob({
-    observationId: "obs-stale",
+    observationId: `obs-stale-${stamp}`,
     validation: validated(
       basePayload({
         sourceCode: source.code,
@@ -329,7 +330,7 @@ test("persists Job and JobSkill idempotently without taxonomy or evidence writes
 
   assert.equal(
     await prisma.evidence.count({
-      where: { reference: "raw-ingestion:obs-persist-a" },
+      where: { reference: `raw-ingestion:${observationId}` },
     }),
     1,
   );
