@@ -116,7 +116,7 @@ const insightTabs = [
           <div><span className="text-sm font-semibold text-[#0F172A]">Labour Market Demand</span><p className="text-xs text-[#64748B]">Strong hiring frequency in IT sector across multiple districts</p></div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="shrink-0 rounded-md bg-[#E0F2FE] px-3 py-1.5 text-xs font-bold text-[#0369A1]">HIGH</span>
+          <span className="shrink-0 rounded-md bg-[#FFF0E8] px-3 py-1.5 text-xs font-bold text-[#C94A20]">HIGH</span>
           <div><span className="text-sm font-semibold text-[#0F172A]">Training Capacity</span><p className="text-xs text-[#64748B]">Institute seats available and partially underutilized</p></div>
         </div>
         <div className="flex items-center gap-3">
@@ -146,16 +146,16 @@ const insightTabs = [
     label: "What To Do",
     content: (
       <div className="space-y-4">
-        <div className="rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] p-5">
-          <span className="inline-block rounded-md bg-[#005A9C] px-3 py-1.5 text-sm font-bold text-white mb-3">UPDATE CURRICULUM</span>
+        <div className="rounded-xl bg-[#FFF0E8] border border-[#E5D9D0] p-5">
+          <span className="inline-block rounded-md bg-[#E85D2A] px-3 py-1.5 text-sm font-bold text-white mb-3">UPDATE CURRICULUM</span>
           <p className="text-sm text-[#334155] leading-relaxed">
             Improve existing practical training modules rather than creating additional seats. Focus curriculum revision on employer-identified skill gaps in the IT sector.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#003B73]">Confidence</strong><p className="text-[#64748B] mt-0.5">Medium–High</p></div>
-          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#003B73]">Coverage</strong><p className="text-[#64748B] mt-0.5">3 districts verified</p></div>
-          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#003B73]">Limitation</strong><p className="text-[#64748B] mt-0.5">Regional concentration</p></div>
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Confidence</strong><p className="text-[#64748B] mt-0.5">Medium–High</p></div>
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Coverage</strong><p className="text-[#64748B] mt-0.5">3 districts verified</p></div>
+          <div className="rounded-lg border border-[#E2E8F0] p-3"><strong className="text-[#1F2933]">Limitation</strong><p className="text-[#64748B] mt-0.5">Regional concentration</p></div>
         </div>
       </div>
     ),
@@ -198,21 +198,21 @@ export default function Home() {
           S1 — HERO
           ═══════════════════════════════════════════════════════ */}
       <section ref={heroRef.ref} className="relative overflow-hidden bg-white">
-        <div className="h-[3px] w-full bg-gradient-to-r from-[#003B73] via-[#005A9C] to-[#E9783B]" />
+        <div className="h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
 
             {/* Left */}
             <div className={`flex flex-col gap-5 transition-all duration-700 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#005A9C]">
-                <span className="h-px w-8 bg-[#005A9C]" />
+              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
+                <span className="h-px w-8 bg-[#E85D2A]" />
                 Skill &amp; Workforce Intelligence
               </span>
 
-              <h1 className="text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-[#0B1F33] sm:text-5xl lg:text-[3.25rem]">
+              <h1 className="text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-[#1F2933] sm:text-5xl lg:text-[3.25rem]">
                 Turn Workforce Data Into{" "}
-                <span className="text-[#005A9C]">Better Decisions</span>
+                <span className="text-[#E85D2A]">Better Decisions</span>
               </h1>
 
               <p className="max-w-lg text-base leading-relaxed text-[#475569] lg:text-lg">
@@ -228,29 +228,29 @@ export default function Home() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search skills, roles, courses..."
-                    className="w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-3 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#005A9C] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#005A9C]/10"
+                    className="w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-3 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#E85D2A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/10"
                   />
                 </div>
-                <button type="submit" className="rounded-r-lg bg-[#005A9C] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#003B73] cursor-pointer">
+                <button type="submit" className="rounded-r-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer">
                   Search
                 </button>
               </form>
 
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#003B73] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0B1F33] hover:shadow-md">
+                <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
                   Explore Skill Intelligence <ArrowRight />
                 </Link>
-                <a href="#feature-section" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#003B73] transition-all hover:border-[#005A9C] hover:bg-[#EFF6FF]">
+                <a href="#feature-section" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
                   View Workforce Insights
                 </a>
                 <Show when="signed-out">
                   <SignInButton>
-                    <button className="rounded-lg border border-[#D9E1E8] px-5 py-3 text-sm font-semibold text-[#475569] transition-all hover:border-[#005A9C] hover:text-[#003B73] cursor-pointer">Sign In</button>
+                    <button className="rounded-lg border border-[#D9E1E8] px-5 py-3 text-sm font-semibold text-[#475569] transition-all hover:border-[#E85D2A] hover:text-[#1F2933] cursor-pointer">Sign In</button>
                   </SignInButton>
                 </Show>
                 <Show when="signed-in">
-                  <Link href="/dashboard" className="rounded-lg bg-[#005A9C] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#003B73]">Open Dashboard</Link>
+                  <Link href="/dashboard" className="rounded-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
                 </Show>
               </div>
             </div>
@@ -260,21 +260,21 @@ export default function Home() {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
                 <Image src="/assets/hero-workforce.png" alt="Indian workforce training in modern industrial facility" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 50vw" />
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F33]/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1F2933]/70 via-transparent to-transparent" />
                 {/* Floating info panel */}
                 <div className="absolute bottom-4 left-4 right-4 rounded-xl bg-white/95 backdrop-blur-sm p-4 shadow-lg border border-white/50">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="h-2 w-2 rounded-full bg-[#005A9C]" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#005A9C]">SkillPulse Intelligence</span>
+                    <span className="h-2 w-2 rounded-full bg-[#E85D2A]" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">SkillPulse Intelligence</span>
                   </div>
                   <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#475569]">
-                    <span className="font-semibold text-[#003B73]">Demand</span>
+                    <span className="font-semibold text-[#1F2933]">Demand</span>
                     <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#003B73]">Skills</span>
+                    <span className="font-semibold text-[#1F2933]">Skills</span>
                     <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#003B73]">Training</span>
+                    <span className="font-semibold text-[#1F2933]">Training</span>
                     <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#003B73]">Outcomes</span>
+                    <span className="font-semibold text-[#1F2933]">Outcomes</span>
                   </div>
                 </div>
               </div>
@@ -286,10 +286,10 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════
           S2 — AT A GLANCE
           ═══════════════════════════════════════════════════════ */}
-      <section className="border-y border-[#E2E8F0] bg-[#F5F7FA]">
+      <section className="border-y border-[#E2E8F0] bg-[#FFF8F2]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs">
-            <span className="font-bold uppercase tracking-[0.15em] text-[#003B73]">SkillPulse at a Glance</span>
+            <span className="font-bold uppercase tracking-[0.15em] text-[#1F2933]">SkillPulse at a Glance</span>
             <span className="hidden sm:block h-4 w-px bg-[#D9E1E8]" />
             {["Maharashtra MVP", "Evidence-Driven", "Multi-Source Intelligence", "Confidence-Aware", "Decision Support"].map((item, i) => (
               <React.Fragment key={item}>
@@ -312,10 +312,10 @@ export default function Home() {
             <div className={`relative transition-all duration-700 ${featureRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}>
               <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
                 <Image src="/assets/skills-training.png" alt="Indian students learning technical skills in a modern classroom" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#003B73]/30 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1F2933]/30 via-transparent to-transparent" />
               </div>
               {/* Floating accent card */}
-              <div className="absolute -bottom-4 -right-4 sm:bottom-6 sm:-right-6 rounded-xl bg-[#003B73] p-4 text-white shadow-xl max-w-[200px]">
+              <div className="absolute -bottom-4 -right-4 sm:bottom-6 sm:-right-6 rounded-xl bg-[#E85D2A] p-4 text-white shadow-xl max-w-[200px]">
                 <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">Key Principle</span>
                 <p className="text-sm font-semibold mt-1 leading-snug">Identify the gap.<br />Understand the cause.<br />Recommend action.</p>
               </div>
@@ -323,14 +323,14 @@ export default function Home() {
 
             {/* Content side */}
             <div className={`flex flex-col gap-6 transition-all duration-700 delay-200 ${featureRef.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
-              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E9783B]">
-                <span className="h-px w-6 bg-[#E9783B]" />
+              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
+                <span className="h-px w-6 bg-[#E85D2A]" />
                 Featured Intelligence
               </span>
 
-              <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl leading-[1.15]">
+              <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl leading-[1.15]">
                 Where Skills Meet{" "}
-                <span className="text-[#005A9C]">Demand</span>
+                <span className="text-[#E85D2A]">Demand</span>
               </h2>
 
               <p className="text-base text-[#475569] leading-relaxed">
@@ -340,10 +340,10 @@ export default function Home() {
               {/* Vertical chain */}
               <div className="space-y-0">
                 {[
-                  { label: "Industry Demand", desc: "What employers need", color: "#003B73" },
-                  { label: "Required Skills", desc: "What candidates must learn", color: "#005A9C" },
-                  { label: "Training Supply", desc: "What institutions teach", color: "#0369A1" },
-                  { label: "Employment Outcomes", desc: "What happens after training", color: "#E9783B" },
+                  { label: "Industry Demand", desc: "What employers need", color: "#1F2933" },
+                  { label: "Required Skills", desc: "What candidates must learn", color: "#E85D2A" },
+                  { label: "Training Supply", desc: "What institutions teach", color: "#C94A20" },
+                  { label: "Employment Outcomes", desc: "What happens after training", color: "#E85D2A" },
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 group">
                     <div className="flex flex-col items-center">
@@ -358,7 +358,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link href="/gaps" className="inline-flex items-center gap-2 self-start text-sm font-semibold text-[#005A9C] hover:text-[#003B73] transition-colors">
+              <Link href="/gaps" className="inline-flex items-center gap-2 self-start text-sm font-semibold text-[#E85D2A] hover:text-[#C94A20] transition-colors">
                 Explore Demand vs Supply <ArrowRight />
               </Link>
             </div>
@@ -369,16 +369,16 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════
           S4 — FROM EVIDENCE TO ACTION (Timeline)
           ═══════════════════════════════════════════════════════ */}
-      <section id="how-it-works" ref={timelineRef.ref} className="py-16 lg:py-24 bg-[#F5F7FA]">
+      <section id="how-it-works" ref={timelineRef.ref} className="py-16 lg:py-24 bg-[#FFFCF9]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${timelineRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#005A9C] mb-4">
-              <span className="h-px w-6 bg-[#005A9C]" />
+            <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
+              <span className="h-px w-6 bg-[#E85D2A]" />
               Intelligence Pipeline
-              <span className="h-px w-6 bg-[#005A9C]" />
+              <span className="h-px w-6 bg-[#E85D2A]" />
             </span>
-            <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl">
-              From Evidence to <span className="text-[#005A9C]">Action</span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
+              From Evidence to <span className="text-[#E85D2A]">Action</span>
             </h2>
             <p className="mt-3 text-base text-[#64748B]">Six rigorous stages transform fragmented workforce signals into evidence-based decisions.</p>
           </div>
@@ -398,12 +398,12 @@ export default function Home() {
                 >
                   <div className={`relative z-10 w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                     activeStep === idx
-                      ? "bg-[#005A9C] text-white shadow-lg shadow-[#005A9C]/25 scale-110"
-                      : "bg-white text-[#64748B] border-2 border-[#D9E1E8] group-hover:border-[#005A9C] group-hover:text-[#005A9C]"
+                      ? "bg-[#E85D2A] text-white shadow-lg shadow-[#E85D2A]/25 scale-110"
+                      : "bg-white text-[#64748B] border-2 border-[#D9E1E8] group-hover:border-[#E85D2A] group-hover:text-[#E85D2A]"
                   }`}>
                     {step.num}
                   </div>
-                  <span className={`text-xs font-semibold transition-colors ${activeStep === idx ? "text-[#003B73]" : "text-[#64748B]"}`}>
+                  <span className={`text-xs font-semibold transition-colors ${activeStep === idx ? "text-[#1F2933]" : "text-[#64748B]"}`}>
                     {step.name}
                   </span>
                 </button>
@@ -413,11 +413,11 @@ export default function Home() {
             {/* Active detail */}
             <div className="mx-auto max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm transition-all">
               <div className="flex items-start gap-4">
-                <span className="shrink-0 w-10 h-10 rounded-lg bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-[#005A9C]">
+                <span className="shrink-0 w-10 h-10 rounded-lg bg-[#FFF0E8] flex items-center justify-center text-sm font-bold text-[#E85D2A]">
                   {timelineSteps[activeStep].num}
                 </span>
                 <div>
-                  <h3 className="text-base font-bold text-[#003B73]">{timelineSteps[activeStep].title}</h3>
+                  <h3 className="text-base font-bold text-[#1F2933]">{timelineSteps[activeStep].title}</h3>
                   <p className="text-sm text-[#475569] mt-1 leading-relaxed">{timelineSteps[activeStep].detail}</p>
                 </div>
               </div>
@@ -432,9 +432,9 @@ export default function Home() {
       <section ref={dataFlowRef.ref} className="py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-14 transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
               Understanding the{" "}
-              <span className="text-[#005A9C]">Workforce Gap</span>
+              <span className="text-[#E85D2A]">Workforce Gap</span>
             </h2>
             <p className="mt-3 text-base text-[#64748B]">A high-demand occupation does not automatically mean more training seats are required.</p>
           </div>
@@ -443,12 +443,12 @@ export default function Home() {
           <div className={`grid grid-cols-1 lg:grid-cols-3 gap-0 rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* DATA */}
             <div className="bg-[#F5F7FA] p-8 border-b lg:border-b-0 lg:border-r border-[#E2E8F0]">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#005A9C]">Data Sources</span>
-              <h3 className="text-lg font-bold text-[#0B1F33] mt-2 mb-4">Collect</h3>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E85D2A]">Data Sources</span>
+              <h3 className="text-lg font-bold text-[#1F2933] mt-2 mb-4">Collect</h3>
               <div className="space-y-2">
                 {["Labour Market", "Employer Surveys", "Training Records", "Curriculum Data", "Outcome Reports"].map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-[#475569]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#005A9C]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E85D2A]" />
                     {item}
                   </div>
                 ))}
@@ -456,13 +456,13 @@ export default function Home() {
             </div>
 
             {/* INTELLIGENCE */}
-            <div className="bg-[#EFF6FF] p-8 border-b lg:border-b-0 lg:border-r border-[#BFDBFE]">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#003B73]">Intelligence Engine</span>
-              <h3 className="text-lg font-bold text-[#0B1F33] mt-2 mb-4">Analyse</h3>
+            <div className="bg-[#FFF0E8] p-8 border-b lg:border-b-0 lg:border-r border-[#E5D9D0]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1F2933]">Intelligence Engine</span>
+              <h3 className="text-lg font-bold text-[#1F2933] mt-2 mb-4">Analyse</h3>
               <div className="space-y-2">
                 {["Skill Mapping", "Demand vs Supply", "Gap Classification", "Evidence Confidence", "Root Cause Analysis"].map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-[#334155]">
-                    <CheckIcon className="w-3.5 h-3.5 text-[#005A9C]" />
+                    <CheckIcon className="w-3.5 h-3.5 text-[#E85D2A]" />
                     {item}
                   </div>
                 ))}
@@ -470,17 +470,17 @@ export default function Home() {
             </div>
 
             {/* ACTION */}
-            <div className="bg-[#003B73] p-8 text-white">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#BFDBFE]">Decision Support</span>
+            <div className="bg-[#1F2933] p-8 text-white">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FAD5C2]">Decision Support</span>
               <h3 className="text-lg font-bold mt-2 mb-4">Act</h3>
               <div className="grid grid-cols-2 gap-2">
                 {["Update", "Expand", "Reduce", "Pilot", "Train", "Monitor"].map((item) => (
-                  <div key={item} className="rounded-md border border-[#005A9C] bg-[#005A9C]/30 px-3 py-2 text-xs font-semibold text-center">
+                  <div key={item} className="rounded-md border border-[#E85D2A] bg-[#E85D2A]/30 px-3 py-2 text-xs font-semibold text-center">
                     {item}
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-[#93C5FD] mt-4 leading-relaxed">Each recommendation includes confidence score, evidence sources, and known limitations.</p>
+              <p className="text-xs text-[#F4B183] mt-4 leading-relaxed">Each recommendation includes confidence score, evidence sources, and known limitations.</p>
             </div>
           </div>
 
@@ -489,7 +489,7 @@ export default function Home() {
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#64748B] block mb-3">Gap types SkillPulse identifies</span>
             <div className="flex flex-wrap gap-2">
               {["Skill Mismatch", "Curriculum Gap", "Capacity Limitation", "Trainer Shortage", "Geographic Mismatch", "Insufficient Evidence"].map((gap) => (
-                <span key={gap} className="rounded-full border border-[#D9E1E8] bg-white px-3.5 py-1.5 text-xs font-medium text-[#475569] transition-colors hover:border-[#005A9C] hover:text-[#005A9C]">
+                <span key={gap} className="rounded-full border border-[#D9E1E8] bg-white px-3.5 py-1.5 text-xs font-medium text-[#475569] transition-colors hover:border-[#E85D2A] hover:text-[#E85D2A]">
                   {gap}
                 </span>
               ))}
@@ -501,17 +501,17 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════
           S6 — INTERACTIVE INSIGHT
           ═══════════════════════════════════════════════════════ */}
-      <section ref={insightRef.ref} className="py-16 lg:py-24 bg-[#F5F7FA]">
+      <section ref={insightRef.ref} className="py-16 lg:py-24 bg-[#FFF8F2]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className={`mb-10 transition-all duration-700 ${insightRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E9783B] mb-3">
-                  <span className="h-px w-6 bg-[#E9783B]" />
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-3">
+                  <span className="h-px w-6 bg-[#E85D2A]" />
                   Interactive Example
                 </span>
-                <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33]">
-                  See What the Evidence <span className="text-[#005A9C]">Means</span>
+                <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
+                  See What the Evidence <span className="text-[#E85D2A]">Means</span>
                 </h2>
               </div>
               <span className="rounded-full border border-[#FED7AA] bg-[#FFF7ED] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9A3412] shrink-0">
@@ -530,8 +530,8 @@ export default function Home() {
                   onClick={() => setActiveInsight(idx)}
                   className={`flex-1 px-4 py-3.5 text-sm font-semibold transition-all cursor-pointer ${
                     activeInsight === idx
-                      ? "bg-[#003B73] text-white"
-                      : "bg-[#F5F7FA] text-[#64748B] hover:bg-[#EFF6FF] hover:text-[#005A9C]"
+                      ? "bg-[#1F2933] text-white"
+                      : "bg-[#F5F7FA] text-[#64748B] hover:bg-[#FFF0E8] hover:text-[#E85D2A]"
                   }`}
                 >
                   {tab.label}
@@ -551,9 +551,9 @@ export default function Home() {
       <section ref={stakeholderRef.ref} className="py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${stakeholderRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
               One Platform.{" "}
-              <span className="text-[#005A9C]">Multiple Stakeholders.</span>
+              <span className="text-[#E85D2A]">Multiple Stakeholders.</span>
             </h2>
             <p className="mt-3 text-base text-[#64748B]">Tailored intelligence for every participant in the workforce ecosystem.</p>
           </div>
@@ -567,8 +567,8 @@ export default function Home() {
                 onClick={() => setActiveStakeholder(idx)}
                 className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all cursor-pointer ${
                   activeStakeholder === idx
-                    ? "bg-[#003B73] text-white shadow-md"
-                    : "bg-[#F5F7FA] text-[#475569] border border-[#E2E8F0] hover:border-[#005A9C] hover:text-[#005A9C]"
+                    ? "bg-[#1F2933] text-white shadow-md"
+                    : "bg-[#F5F7FA] text-[#475569] border border-[#E2E8F0] hover:border-[#E85D2A] hover:text-[#E85D2A]"
                 }`}
               >
                 {sh.role}
@@ -581,9 +581,9 @@ export default function Home() {
             {/* Image */}
             <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-lg aspect-[4/3] relative">
               <Image src={stakeholders[activeStakeholder].image} alt={stakeholders[activeStakeholder].role} fill className="object-cover transition-all duration-500" sizes="(max-width: 768px) 100vw, 40vw" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F33]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1F2933]/60 to-transparent" />
               <div className="absolute bottom-4 left-4">
-                <span className="rounded-md bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-bold text-[#003B73]">
+                <span className="rounded-md bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-bold text-[#1F2933]">
                   {stakeholders[activeStakeholder].role}
                 </span>
               </div>
@@ -592,19 +592,19 @@ export default function Home() {
             {/* Content */}
             <div className="lg:col-span-3">
               <p className="text-sm font-medium text-[#64748B] mb-1">{stakeholders[activeStakeholder].subtitle}</p>
-              <h3 className="text-xl font-bold text-[#0B1F33] mb-2">{stakeholders[activeStakeholder].role}</h3>
+              <h3 className="text-xl font-bold text-[#1F2933] mb-2">{stakeholders[activeStakeholder].role}</h3>
               <p className="text-base text-[#475569] italic mb-6">&ldquo;{stakeholders[activeStakeholder].question}&rdquo;</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {stakeholders[activeStakeholder].items.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5 rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] p-3.5 transition-colors hover:bg-white hover:border-[#BFDBFE]">
-                    <CheckIcon className="w-4 h-4 text-[#005A9C] shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-2.5 rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] p-3.5 transition-colors hover:bg-white hover:border-[#E5D9D0]">
+                    <CheckIcon className="w-4 h-4 text-[#E85D2A] shrink-0 mt-0.5" />
                     <span className="text-sm text-[#334155]">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <Link href={stakeholders[activeStakeholder].href} className="inline-flex items-center gap-2 rounded-lg bg-[#005A9C] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#003B73]">
+              <Link href={stakeholders[activeStakeholder].href} className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">
                 {stakeholders[activeStakeholder].linkText} <ArrowRight />
               </Link>
             </div>
@@ -615,11 +615,11 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════
           S8 — EVIDENCE & TRUST
           ═══════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-[#F5F7FA] border-y border-[#E2E8F0]">
+      <section className="py-16 lg:py-20 bg-[#FFFCF9] border-y border-[#E2E8F0]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33]">
-              Evidence Before <span className="text-[#005A9C]">Assumptions</span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
+              Evidence Before <span className="text-[#E85D2A]">Assumptions</span>
             </h2>
           </div>
 
@@ -632,7 +632,7 @@ export default function Home() {
               { label: "Confidence", desc: "0–100 composite index" },
             ].map((item) => (
               <div key={item.label} className="rounded-xl border border-[#E2E8F0] bg-white p-4 text-center transition-all hover:shadow-md hover:-translate-y-0.5">
-                <span className="text-sm font-bold text-[#003B73]">{item.label}</span>
+                <span className="text-sm font-bold text-[#1F2933]">{item.label}</span>
                 <p className="text-[11px] text-[#64748B] mt-1">{item.desc}</p>
               </div>
             ))}
@@ -640,9 +640,9 @@ export default function Home() {
 
           <div className="mx-auto max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-5 text-center">
             <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm">
-              <span className="font-semibold text-[#003B73]">Missing data ≠ zero demand</span>
+              <span className="font-semibold text-[#1F2933]">Missing data ≠ zero demand</span>
               <span className="text-[#D9E1E8]">·</span>
-              <span className="font-semibold text-[#003B73]">Unknown employment status ≠ unemployed</span>
+              <span className="font-semibold text-[#1F2933]">Unknown employment status ≠ unemployed</span>
             </div>
           </div>
         </div>
@@ -657,16 +657,16 @@ export default function Home() {
             {/* Image */}
             <div className={`relative rounded-2xl overflow-hidden shadow-xl aspect-[16/10] transition-all duration-700 ${maharashtraRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}>
               <Image src="/assets/maharashtra-cityscape.png" alt="Maharashtra industrial and commercial landscape" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0B1F33]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#1F2933]/60 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
-                <span className="rounded-md bg-[#E9783B] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">Pilot Scope</span>
+                <span className="rounded-md bg-[#E85D2A] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">Pilot Scope</span>
               </div>
             </div>
 
             {/* Content */}
             <div className={`transition-all duration-700 delay-200 ${maharashtraRef.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
-              <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl mb-4">
-                Starting in <span className="text-[#005A9C]">Maharashtra</span>. Built for India.
+              <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl mb-4">
+                Starting in <span className="text-[#E85D2A]">Maharashtra</span>. Built for India.
               </h2>
               <p className="text-base text-[#475569] leading-relaxed mb-6">
                 Maharashtra serves as the initial MVP and validation environment, with an architecture designed for future expansion across India&apos;s diverse labour markets.
@@ -676,13 +676,13 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[#475569] mb-6">
                 {["Maharashtra", "Districts", "Institutions", "Employers", "Skills"].map((item, idx, arr) => (
                   <React.Fragment key={item}>
-                    <span className="rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] px-3.5 py-2 transition-colors hover:border-[#005A9C] hover:text-[#005A9C]">{item}</span>
+                    <span className="rounded-lg border border-[#E2E8F0] bg-[#F5F7FA] px-3.5 py-2 transition-colors hover:border-[#E85D2A] hover:text-[#E85D2A]">{item}</span>
                     {idx < arr.length - 1 && <span className="text-[#D9E1E8]">→</span>}
                   </React.Fragment>
                 ))}
               </div>
 
-              <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-[#005A9C] hover:text-[#003B73] transition-colors">
+              <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-[#E85D2A] hover:text-[#C94A20] transition-colors">
                 View Executive Dashboard <ArrowRight />
               </Link>
             </div>
@@ -694,25 +694,25 @@ export default function Home() {
           S10 — FINAL CTA BANNER
           ═══════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
-        <div className="bg-gradient-to-br from-[#FFF8EF] via-[#FFF1E0] to-[#FFF8EF] py-16 lg:py-20">
+        <div className="bg-gradient-to-br from-[#FFF0E8] via-[#FFF8F2] to-[#FFF0E8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
-                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E9783B] mb-4">
-                  <span className="h-px w-6 bg-[#E9783B]" />
+                <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
+                  <span className="h-px w-6 bg-[#E85D2A]" />
                   Get Started
                 </span>
-                <h2 className="text-3xl font-extrabold tracking-tight text-[#0B1F33] sm:text-4xl mb-4">
+                <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl mb-4">
                   Better Workforce Decisions Start With Better Evidence
                 </h2>
                 <p className="text-base text-[#475569] leading-relaxed mb-6 max-w-lg">
                   SkillPulse brings labour-market, skills, training and employment signals together to support informed workforce decisions.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#003B73] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0B1F33] hover:shadow-md">
+                  <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
                     Explore Skill Intelligence <ArrowRight />
                   </Link>
-                  <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#003B73] transition-all hover:border-[#005A9C] hover:bg-[#EFF6FF]">
+                  <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
                     Open Dashboard
                   </Link>
                 </div>

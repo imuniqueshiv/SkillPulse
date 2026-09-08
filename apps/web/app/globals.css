@@ -23,10 +23,10 @@
   --sp-text-tertiary: #9CA3AF;
 
   /* Accent — Government of India official blue */
-  --sp-accent: #005A9C;
-  --sp-accent-hover: #003B73;
-  --sp-accent-muted: hsla(207 100% 30% / 0.08);
-  --sp-accent-text: #003B73;
+  --sp-accent: #E85D2A;
+  --sp-accent-hover: #C94A20;
+  --sp-accent-muted: hsla(15 80% 54% / 0.08);
+  --sp-accent-text: #C94A20;
 
   /* Semantic */
   --sp-success: #15803D;

@@ -48,7 +48,7 @@ declare global {
 function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <rect width="32" height="32" rx="6" fill="#003B73" />
+      <rect width="32" height="32" rx="6" fill="#E85D2A" />
       {/* Waveform / Network nodes representing skill intelligence */}
       <path
         d="M6 18H10L13 9L17 23L21 14L23 18H26"
@@ -57,9 +57,9 @@ function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="13" cy="9" r="2" fill="#60A5FA" />
-      <circle cx="17" cy="23" r="2" fill="#93C5FD" />
-      <circle cx="21" cy="14" r="2" fill="#60A5FA" />
+      <circle cx="13" cy="9" r="2" fill="#F28C5B" />
+      <circle cx="17" cy="23" r="2" fill="#FAD5C2" />
+      <circle cx="21" cy="14" r="2" fill="#F28C5B" />
     </svg>
   );
 }
@@ -516,7 +516,7 @@ export function Navbar() {
       className="sticky top-0 z-50 w-full bg-[#FFFFFF] border-b border-[#D1D5DB] shadow-sm select-none"
     >
       {/* Official Government Portal Style Top Accent Stripe */}
-      <div className="h-[3px] w-full bg-[#003B73]" />
+      <div className="h-[3px] w-full bg-[#E85D2A]" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[60px] gap-4">
@@ -526,13 +526,13 @@ export function Navbar() {
           <div className="flex items-center gap-6 shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005A9C] rounded-md py-1"
+              className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-md py-1"
               aria-label="SkillPulse Home"
             >
               <LogoIcon className="w-8 h-8 shrink-0 transition-transform group-hover:scale-105 duration-150" />
               <div className="flex flex-col">
                 <span className="text-[1.125rem] font-bold tracking-tight text-[#111827] leading-none">
-                  Skill<span className="text-[#005A9C]">Pulse</span>
+                  Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
                 <span className="text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#6B7280] leading-tight mt-0.5 hidden sm:block">
                   Workforce Intelligence
@@ -554,13 +554,13 @@ export function Navbar() {
               href="/"
               className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                 pathname === "/"
-                  ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                  : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
               }`}
             >
               Home
               {pathname === "/" && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
               )}
             </Link>
 
@@ -575,8 +575,8 @@ export function Navbar() {
                 onClick={() => handleDropdownToggle("intelligence")}
                 className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                   isIntelligenceActive || activeDropdown === "intelligence"
-                    ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                    : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
                 }`}
                 aria-expanded={activeDropdown === "intelligence"}
                 aria-haspopup="true"
@@ -584,7 +584,7 @@ export function Navbar() {
                 Intelligence
                 <ChevronDownIcon className={activeDropdown === "intelligence" ? "rotate-180" : ""} />
                 {isIntelligenceActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
                 )}
               </button>
 
@@ -605,12 +605,12 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#F0F5FA] text-[#003B73]" : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
                         }`}
                       >
                         <span
                           className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#005A9C] text-white" : "bg-[#F3F4F6] text-[#005A9C]"
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
@@ -641,8 +641,8 @@ export function Navbar() {
                 onClick={() => handleDropdownToggle("training")}
                 className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                   isTrainingActive || activeDropdown === "training"
-                    ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                    : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
                 }`}
                 aria-expanded={activeDropdown === "training"}
                 aria-haspopup="true"
@@ -650,7 +650,7 @@ export function Navbar() {
                 Training & Curriculum
                 <ChevronDownIcon className={activeDropdown === "training" ? "rotate-180" : ""} />
                 {isTrainingActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
                 )}
               </button>
 
@@ -671,12 +671,12 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#F0F5FA] text-[#003B73]" : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
                         }`}
                       >
                         <span
                           className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#005A9C] text-white" : "bg-[#F3F4F6] text-[#005A9C]"
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
@@ -701,13 +701,13 @@ export function Navbar() {
               href="/outcomes"
               className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                 pathname.startsWith("/outcomes")
-                  ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                  : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
               }`}
             >
               Outcomes
               {pathname.startsWith("/outcomes") && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
               )}
             </Link>
 
@@ -716,13 +716,13 @@ export function Navbar() {
               href="/recommendations"
               className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                 pathname.startsWith("/recommendations")
-                  ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                  : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
               }`}
             >
               Recommendations
               {pathname.startsWith("/recommendations") && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
               )}
             </Link>
 
@@ -737,8 +737,8 @@ export function Navbar() {
                 onClick={() => handleDropdownToggle("dashboards")}
                 className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
                   isDashboardsActive || activeDropdown === "dashboards"
-                    ? "text-[#003B73] font-semibold bg-[#F0F5FA]"
-                    : "text-[#1F2937] hover:text-[#003B73] hover:bg-[#F5F7FA]"
+                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
+                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
                 }`}
                 aria-expanded={activeDropdown === "dashboards"}
                 aria-haspopup="true"
@@ -746,7 +746,7 @@ export function Navbar() {
                 Dashboards
                 <ChevronDownIcon className={activeDropdown === "dashboards" ? "rotate-180" : ""} />
                 {isDashboardsActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#005A9C] rounded-full" />
+                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
                 )}
               </button>
 
@@ -767,12 +767,12 @@ export function Navbar() {
                         href={item.href}
                         role="menuitem"
                         className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#F0F5FA] text-[#003B73]" : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
                         }`}
                       >
                         <span
                           className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#005A9C] text-white" : "bg-[#F3F4F6] text-[#005A9C]"
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
@@ -819,9 +819,9 @@ export function Navbar() {
                   placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
                   className={`w-44 lg:w-60 pl-9 pr-9 py-1.5 text-xs bg-[#FFFFFF] border rounded-md transition-all duration-150 text-[#1F2937] placeholder-[#6B7280] ${
                     isListening
-                      ? "border-[#005A9C] ring-2 ring-[#005A9C]/30 bg-[#F0F5FA]"
+                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
                       : isSearchFocused
-                      ? "border-[#005A9C] ring-2 ring-[#005A9C]/20 w-56 lg:w-68"
+                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-56 lg:w-68"
                       : "border-[#D1D5DB] hover:border-[#9CA3AF]"
                   }`}
                 />
@@ -835,7 +835,7 @@ export function Navbar() {
                   className={`absolute right-2 p-1 rounded-full transition-all duration-150 ${
                     isListening
                       ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                      : "text-[#6B7280] hover:text-[#003B73] hover:bg-[#F3F4F6]"
+                      : "text-[#6B7280] hover:text-[#E85D2A] hover:bg-[#F3F4F6]"
                   }`}
                 >
                   <MicIcon className="w-3.5 h-3.5" />
@@ -866,7 +866,7 @@ export function Navbar() {
                 <SignInButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-[#005A9C] border border-[#005A9C] bg-white hover:bg-[#F0F5FA] rounded-md transition-colors duration-150 cursor-pointer shrink-0"
+                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-md transition-colors duration-150 cursor-pointer shrink-0"
                   >
                     Sign In
                   </button>
@@ -874,7 +874,7 @@ export function Navbar() {
                 <SignUpButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-white bg-[#005A9C] hover:bg-[#003B73] rounded-md transition-colors duration-150 shadow-sm cursor-pointer shrink-0 hidden sm:block"
+                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors duration-150 shadow-sm cursor-pointer shrink-0 hidden sm:block"
                   >
                     Register
                   </button>
@@ -891,14 +891,14 @@ export function Navbar() {
                   aria-label="View notifications"
                 >
                   <BellIcon className="w-4 h-4" />
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#005A9C] rounded-full ring-2 ring-white" />
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#E85D2A] rounded-full ring-2 ring-white" />
                 </button>
 
                 {/* Quick Dashboard Shortcut (if not on dashboard) */}
                 {!pathname.startsWith("/dashboard") && (
                   <Link
                     href="/dashboard"
-                    className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#005A9C] hover:bg-[#003B73] rounded-md transition-colors shadow-sm whitespace-nowrap"
+                    className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors shadow-sm whitespace-nowrap"
                   >
                     <LayoutDashboardIcon />
                     Dashboard
@@ -922,7 +922,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-[#1F2937] hover:bg-[#F3F4F6] rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#005A9C]"
+              className="xl:hidden p-2 text-[#1F2937] hover:bg-[#F3F4F6] rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A]"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -950,8 +950,8 @@ export function Navbar() {
                 autoFocus
                 className={`w-full pl-9 pr-14 py-2 text-xs bg-[#FFFFFF] border rounded-md text-[#1F2937] focus:outline-none ${
                   isListening
-                    ? "border-[#005A9C] ring-2 ring-[#005A9C]/30 bg-[#F0F5FA]"
-                    : "border-[#D1D5DB] focus:border-[#005A9C] focus:ring-2 focus:ring-[#005A9C]/20"
+                    ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
+                    : "border-[#D1D5DB] focus:border-[#E85D2A] focus:ring-2 focus:ring-[#E85D2A]/20"
                 }`}
               />
               
@@ -963,7 +963,7 @@ export function Navbar() {
                 className={`absolute right-3 p-1 rounded-full transition-all ${
                   isListening
                     ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                    : "text-[#6B7280] hover:text-[#003B73]"
+                    : "text-[#6B7280] hover:text-[#E85D2A]"
                 }`}
               >
                 <MicIcon className="w-4 h-4" />
@@ -998,7 +998,7 @@ export function Navbar() {
               <div className="flex items-center gap-2">
                 <LogoIcon className="w-7 h-7 shrink-0" />
                 <span className="font-bold text-base text-[#111827]">
-                  Skill<span className="text-[#005A9C]">Pulse</span>
+                  Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
               </div>
               <button
@@ -1018,7 +1018,7 @@ export function Navbar() {
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
-                  pathname === "/" ? "bg-[#F0F5FA] text-[#003B73] font-semibold" : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                  pathname === "/" ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold" : "text-[#1F2937] hover:bg-[#FFFCF9]"
                 }`}
               >
                 Home
@@ -1031,9 +1031,9 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "intelligence" ? null : "intelligence"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#F5F7FA] rounded-md"
+                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
                 >
-                  <span className={isIntelligenceActive ? "font-semibold text-[#003B73]" : ""}>
+                  <span className={isIntelligenceActive ? "font-semibold text-[#E85D2A]" : ""}>
                     Intelligence
                   </span>
                   <ChevronDownIcon
@@ -1041,7 +1041,7 @@ export function Navbar() {
                   />
                 </button>
                 {mobileAccordion === "intelligence" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#005A9C] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
                     {INTELLIGENCE_ITEMS.map((item) => (
                       <Link
                         key={item.href}
@@ -1049,11 +1049,11 @@ export function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
                           pathname === item.href
-                            ? "bg-[#F0F5FA] text-[#003B73] font-semibold"
+                            ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
                             : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
                         }`}
                       >
-                        <span className="text-[#005A9C]">{item.icon}</span>
+                        <span className="text-[#E85D2A]">{item.icon}</span>
                         {item.label}
                       </Link>
                     ))}
@@ -1068,9 +1068,9 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "training" ? null : "training"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#F5F7FA] rounded-md"
+                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
                 >
-                  <span className={isTrainingActive ? "font-semibold text-[#003B73]" : ""}>
+                  <span className={isTrainingActive ? "font-semibold text-[#E85D2A]" : ""}>
                     Training & Curriculum
                   </span>
                   <ChevronDownIcon
@@ -1078,7 +1078,7 @@ export function Navbar() {
                   />
                 </button>
                 {mobileAccordion === "training" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#005A9C] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
                     {TRAINING_ITEMS.map((item) => (
                       <Link
                         key={item.href}
@@ -1086,11 +1086,11 @@ export function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
                           pathname === item.href
-                            ? "bg-[#F0F5FA] text-[#003B73] font-semibold"
+                            ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
                             : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
                         }`}
                       >
-                        <span className="text-[#005A9C]">{item.icon}</span>
+                        <span className="text-[#E85D2A]">{item.icon}</span>
                         {item.label}
                       </Link>
                     ))}
@@ -1104,8 +1104,8 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
                   pathname.startsWith("/outcomes")
-                    ? "bg-[#F0F5FA] text-[#003B73] font-semibold"
-                    : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
+                    : "text-[#1F2937] hover:bg-[#FFFCF9]"
                 }`}
               >
                 Outcomes
@@ -1117,8 +1117,8 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
                   pathname.startsWith("/recommendations")
-                    ? "bg-[#F0F5FA] text-[#003B73] font-semibold"
-                    : "text-[#1F2937] hover:bg-[#F5F7FA]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
+                    : "text-[#1F2937] hover:bg-[#FFFCF9]"
                 }`}
               >
                 Recommendations
@@ -1131,9 +1131,9 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "dashboards" ? null : "dashboards"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#F5F7FA] rounded-md"
+                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
                 >
-                  <span className={isDashboardsActive ? "font-semibold text-[#003B73]" : ""}>
+                  <span className={isDashboardsActive ? "font-semibold text-[#E85D2A]" : ""}>
                     Dashboards
                   </span>
                   <ChevronDownIcon
@@ -1141,7 +1141,7 @@ export function Navbar() {
                   />
                 </button>
                 {mobileAccordion === "dashboards" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#005A9C] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
                     {DASHBOARDS_ITEMS.map((item) => (
                       <Link
                         key={item.href}
@@ -1149,11 +1149,11 @@ export function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
                           pathname === item.href
-                            ? "bg-[#F0F5FA] text-[#003B73] font-semibold"
+                            ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
                             : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
                         }`}
                       >
-                        <span className="text-[#005A9C]">{item.icon}</span>
+                        <span className="text-[#E85D2A]">{item.icon}</span>
                         {item.label}
                       </Link>
                     ))}
@@ -1169,7 +1169,7 @@ export function Navbar() {
                   <SignInButton mode="modal">
                     <button
                       type="button"
-                      className="w-full py-2 text-xs font-semibold text-[#005A9C] border border-[#005A9C] rounded-md bg-white hover:bg-[#F0F5FA] transition-colors whitespace-nowrap"
+                      className="w-full py-2 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] rounded-md bg-white hover:bg-[#FFF0E8] transition-colors whitespace-nowrap"
                     >
                       Sign In
                     </button>
@@ -1177,7 +1177,7 @@ export function Navbar() {
                   <SignUpButton mode="modal">
                     <button
                       type="button"
-                      className="w-full py-2 text-xs font-semibold text-white bg-[#005A9C] hover:bg-[#003B73] rounded-md transition-colors shadow-sm whitespace-nowrap"
+                      className="w-full py-2 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors shadow-sm whitespace-nowrap"
                     >
                       Register
                     </button>
@@ -1194,7 +1194,7 @@ export function Navbar() {
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-3 py-1.5 text-xs font-semibold text-white bg-[#005A9C] rounded-md hover:bg-[#003B73] whitespace-nowrap"
+                    className="px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] rounded-md hover:bg-[#C94A20] whitespace-nowrap"
                   >
                     Dashboard
                   </Link>
