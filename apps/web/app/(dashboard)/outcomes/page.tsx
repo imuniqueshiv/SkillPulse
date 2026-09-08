@@ -89,33 +89,39 @@ export default function OutcomesPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
-        title="Longitudinal Outcome Tracking & Impact Verification"
-        subtitle="End-to-end evidence verification tracking job placements, wage growth, and human expert validation."
+        title="Outcomes (SAMPLE UI)"
+        subtitle="Demo SAMPLE metrics from GET /api/v1/outcomes — not Phase 12 employment-v1 intelligence. Use Decision Signals and Overview for authenticated employment adapters."
       />
+
+      <Card>
+        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+          These values are SAMPLE UI fixtures. They must not be treated as production employment evidence.
+        </p>
+      </Card>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         <StatCard
-          label="Overall Placement Rate"
-          value={summary.overallPlacementRate ? `${summary.overallPlacementRate}%` : "78.4%"}
-          trend={summary.placementRateLift || "+14.2% lift"}
+          label="Overall Placement Rate (SAMPLE)"
+          value={summary.overallPlacementRate != null ? `${summary.overallPlacementRate}%` : "Insufficient data"}
+          trend={summary.placementRateLift || "SAMPLE endpoint"}
           icon={<CheckCircleIcon />}
         />
         <StatCard
-          label="Average Wage Growth"
-          value={summary.wageGrowthPercentage || "+18.6%"}
-          trend="Post-certification"
+          label="Average Wage Growth (SAMPLE)"
+          value={summary.wageGrowthPercentage || "Insufficient data"}
+          trend="SAMPLE endpoint"
           icon={<TrendingUpIcon />}
         />
         <StatCard
-          label="Time-to-Hire"
-          value={summary.averageTimeToHireDays ? `${summary.averageTimeToHireDays} days` : "28.5 days"}
-          trend="-12 days faster"
+          label="Time-to-Hire (SAMPLE)"
+          value={summary.averageTimeToHireDays != null ? `${summary.averageTimeToHireDays} days` : "Insufficient data"}
+          trend="SAMPLE endpoint"
           icon={<ClockIcon />}
         />
         <StatCard
-          label="Skill Match Accuracy"
-          value={summary.skillMatchAccuracy ? `${summary.skillMatchAccuracy}%` : "91.2%"}
-          trend="Validated by employers"
+          label="Skill Match Accuracy (SAMPLE)"
+          value={summary.skillMatchAccuracy != null ? `${summary.skillMatchAccuracy}%` : "Insufficient data"}
+          trend="SAMPLE endpoint"
           icon={<CheckCircleIcon />}
         />
       </div>

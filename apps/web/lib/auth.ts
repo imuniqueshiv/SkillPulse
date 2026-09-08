@@ -11,6 +11,9 @@ export const protectedPathPrefixes = [
   "/employers",
   "/outcomes",
   "/settings",
+  "/decisions",
+  "/quality",
+  "/programs",
 ] as const;
 
 export function isPublicPath(pathname: string): boolean {

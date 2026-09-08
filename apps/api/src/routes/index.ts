@@ -9,6 +9,7 @@ import { skillsRouter } from "../modules/skills/skills.routes";
 import { curriculaRouter } from "../modules/curricula/curricula.routes";
 import { recommendationsRouter } from "../modules/recommendations/recommendations.routes";
 import { outcomesRouter } from "../modules/outcomes/outcomes.routes";
+import { intelligenceRouter } from "../modules/intelligence-api";
 import { logger } from "../utils/logger";
 
 export const router = Router();
@@ -57,5 +58,6 @@ v1.use("/skills", skillsRouter);
 v1.use("/curricula", curriculaRouter);
 v1.use("/recommendations", recommendationsRouter);
 v1.use("/outcomes", outcomesRouter);
+v1.use("/intelligence", intelligenceRouter);
 router.use("/api/v1", v1);
 

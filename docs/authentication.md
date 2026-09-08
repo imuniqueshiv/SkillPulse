@@ -74,7 +74,7 @@ First sign-in creates a `LEARNER`. Repeated sign-in reuses the same row (`clerkU
 
 Public: `/`, `/sign-in`, `/sign-up`
 
-Protected (Clerk session required): `/dashboard`, `/jobs`, `/skills`, `/courses`, `/curricula`, `/gaps`, `/recommendations`, `/employers`, `/outcomes`, `/settings`
+Protected (Clerk session required): `/dashboard`, `/jobs`, `/skills`, `/courses`, `/curricula`, `/gaps`, `/recommendations`, `/employers`, `/outcomes`, `/settings`, `/decisions`, `/quality`, `/programs`
 
 Next.js 16 uses `apps/web/proxy.ts` (`clerkMiddleware`). That is the request interception file (formerly `middleware.ts`).
 

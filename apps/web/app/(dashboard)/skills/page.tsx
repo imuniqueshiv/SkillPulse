@@ -1,147 +1,168 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { StatCard } from "@/components/ui/StatCard";
 import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
-import { Badge } from "@/components/ui/Badge";
-import { fetchSkills, fetchSkillDemand } from "@/lib/api";
+import {
+  fetchIntelligenceOverview,
+  IntelligenceApiError,
+  type IntelligenceMeta,
+} from "@/lib/api";
+import {
+  IntelligenceEmpty,
+  IntelligenceError,
+  IntelligenceLoading,
+  LimitationsPanel,
+  StatusBadge,
+} from "@/components/intelligence/IntelligenceStates";
 
-interface SkillRecord extends Record<string, unknown> {
-  id: string;
-  name: string;
-  category: string;
-  domain: string;
-  demandScore: number;
-  growthRate: string;
-  frequency: number;
-}
+type SkillRow = {
+  skillId: string;
+  canonicalName: string;
+  weightedDemand: string;
+  jobCount: string;
+  trend: string;
+};
 
-interface EmergingSkill {
-  name: string;
-  growth: string;
-}
-
-interface SkillDemandInfo {
-  emergingSkills?: EmergingSkill[];
-}
-
-function ZapIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-    </svg>
-  );
-}
-
-function BarChartIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="20" x2="12" y2="10" />
-      <line x1="18" y1="20" x2="18" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="16" />
-    </svg>
-  );
-}
-
-export default function SkillsPage() {
-  const [skills, setSkills] = useState<SkillRecord[]>([]);
-  const [demandInfo, setDemandInfo] = useState<SkillDemandInfo | null>(null);
+export default function SkillsIntelligencePage() {
+  const { getToken, isLoaded } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [rows, setRows] = useState<SkillRow[]>([]);
+  const [gapRows, setGapRows] = useState<SkillRow[]>([]);
+  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
+  const [status, setStatus] = useState<string | undefined>();
 
   useEffect(() => {
-    async function loadData() {
+    if (!isLoaded) return;
+    void (async () => {
       setLoading(true);
-      const [skillsRes, demandRes] = await Promise.all([
-        fetchSkills({ search: searchTerm }),
-        fetchSkillDemand()
-      ]);
-      if (skillsRes?.data) setSkills(skillsRes.data as SkillRecord[]);
-      if (demandRes?.data) setDemandInfo(demandRes.data as SkillDemandInfo);
-      setLoading(false);
-    }
-    loadData();
-  }, [searchTerm]);
+      setError(null);
+      try {
+        const token = await getToken();
+        if (!token) {
+          setError("Unable to load intelligence.");
+          return;
+        }
+        const result = await fetchIntelligenceOverview(token, { limit: 20 });
+        const demand = result.data.demand as {
+          status?: string;
+          topSkills?: Array<Record<string, unknown>>;
+        };
+        const gaps = result.data.gaps as {
+          topPriority?: Array<Record<string, unknown>>;
+        };
+        setStatus(demand?.status);
+        setRows(
+          (demand?.topSkills ?? []).map((s) => ({
+            skillId: String(s.skillId ?? ""),
+            canonicalName: String(s.canonicalName ?? ""),
+            weightedDemand: String(s.weightedDemand ?? "—"),
+            jobCount: String(s.jobCount ?? "—"),
+            trend: String(s.trend ?? "—"),
+          })),
+        );
+        setGapRows(
+          (gaps?.topPriority ?? []).map((s) => ({
+            skillId: String(s.skillId ?? ""),
+            canonicalName: String(s.canonicalName ?? ""),
+            weightedDemand: String(s.shortageQuantity ?? "—"),
+            jobCount: String(s.severity ?? "—"),
+            trend: String(s.confidence ?? "—"),
+          })),
+        );
+        setMeta(result.meta);
+      } catch (err) {
+        setError(
+          err instanceof IntelligenceApiError
+            ? err.message
+            : "Unable to load intelligence.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [getToken, isLoaded]);
 
   const columns = [
-    { key: "name", label: "Skill Name" },
-    { key: "category", label: "Category" },
-    { key: "domain", label: "Domain" },
     {
-      key: "demandScore",
-      label: "Demand Index",
-      render: (row: SkillRecord) => (
-        <Badge variant={row.demandScore > 85 ? "success" : "accent"}>
-          {row.demandScore || 85} / 100
-        </Badge>
-      ),
+      key: "canonicalName",
+      label: "Canonical skill",
+      render: (row: SkillRow) =>
+        row.skillId ? (
+          <Link
+            href={`/skills/${encodeURIComponent(row.skillId)}`}
+            className="text-[var(--sp-accent)] underline"
+          >
+            {row.canonicalName || row.skillId}
+          </Link>
+        ) : (
+          row.canonicalName
+        ),
     },
+    { key: "weightedDemand", label: "Weighted demand" },
+    { key: "jobCount", label: "Jobs" },
+    { key: "trend", label: "Trend" },
+  ];
+
+  const gapColumns = [
     {
-      key: "growthRate",
-      label: "Growth Rate",
-      render: (row: SkillRecord) => (
-        <span style={{ fontWeight: 600, color: "#16a34a" }}>
-          {row.growthRate || "+14%"}
-        </span>
-      ),
+      key: "canonicalName",
+      label: "Canonical skill",
+      render: (row: SkillRow) =>
+        row.skillId ? (
+          <Link
+            href={`/skills/${encodeURIComponent(row.skillId)}`}
+            className="text-[var(--sp-accent)] underline"
+          >
+            {row.canonicalName || row.skillId}
+          </Link>
+        ) : (
+          row.canonicalName
+        ),
     },
-    {
-      key: "frequency",
-      label: "Job Mentions",
-      render: (row: SkillRecord) => (row.frequency ? row.frequency.toLocaleString() : "1,250")
-    }
+    { key: "jobCount", label: "Severity" },
+    { key: "weightedDemand", label: "Shortage qty" },
+    { key: "trend", label: "Confidence" },
   ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
-        title="Skill Intelligence & Taxonomy"
-        subtitle="National Skill Taxonomy mapping, demand ranking, and emerging industry skills."
+        title="Skill Intelligence"
+        subtitle="Canonical Skill IDs from Phase 8–13 adapters. Display names are not identity keys."
       />
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
-        <StatCard
-          label="Tracked Skills"
-          value={skills.length > 0 ? skills.length.toString() : "450+"}
-          trend="Taxonomy Standard v1"
-          icon={<BarChartIcon />}
-        />
-        <StatCard
-          label="Top Emerging Skill"
-          value={demandInfo?.emergingSkills?.[0]?.name || "Generative AI Prompting"}
-          trend={demandInfo?.emergingSkills?.[0]?.growth || "+45% YoY"}
-          icon={<ZapIcon />}
-        />
-      </div>
-
-      <Card>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--color-neutral-900)" }}>
-            Skill Demand Directory ({skills.length})
-          </h3>
-          <input
-            type="text"
-            placeholder="Search skills or categories..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: "0.5rem 0.85rem",
-              borderRadius: "6px",
-              border: "1px solid var(--color-neutral-300)",
-              fontSize: "0.9rem",
-              minWidth: "240px"
-            }}
-          />
-        </div>
-
-        {loading ? (
-          <div style={{ padding: "2rem", textAlign: "center", color: "var(--color-neutral-500)" }}>Loading Skills Taxonomy...</div>
-        ) : (
-          <DataTable columns={columns} data={skills} />
-        )}
-      </Card>
+      {loading ? (
+        <IntelligenceLoading />
+      ) : error ? (
+        <IntelligenceError message={error} />
+      ) : rows.length === 0 && gapRows.length === 0 ? (
+        <IntelligenceEmpty />
+      ) : (
+        <>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <StatusBadge status={status} />
+          </div>
+          <Card>
+            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Market demand highlights</h3>
+            <DataTable columns={columns} rows={rows} />
+          </Card>
+          <Card>
+            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Priority skill gaps</h3>
+            {gapRows.length === 0 ? (
+              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
+                No sufficient evidence available for this view.
+              </p>
+            ) : (
+              <DataTable columns={gapColumns} rows={gapRows} />
+            )}
+          </Card>
+          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
+        </>
+      )}
     </div>
   );
 }

@@ -124,4 +124,62 @@ Phase 11 (`summarizeInstituteIntelligence`) is an internal typed service (`insti
 
 Phase 12 (`summarizeEmploymentIntelligence`) is an internal typed service (`employment-v1`). It consumes explicit employment outcome observations (no durable learner Prisma model in MVP). No HTTP routes in this phase. Distinct from the mock `GET /api/v1/outcomes` SAMPLE metrics. Not a prediction or ranking API.
 
-Phase 13 (`summarizeGovernmentDecisions`) is an internal typed service (`decision-v1`). It synthesizes Phase 7–12 summaries into explainable decision-support signals. No HTTP routes. Not autonomous government policy.
+Phase 13 (`summarizeGovernmentDecisions`) is an internal typed service (`decision-v1`). It synthesizes Phase 7–12 summaries into explainable decision-support signals. Not autonomous government policy.
+
+## Phase 14 — Intelligence product API
+
+Thin authenticated adapters over Phase 7–13. Response shape: `{ data, meta }` where `meta.generatedAt` is presentation-only and is not mixed into analytical fingerprints.
+
+All routes require `Authorization: Bearer <Clerk session token>`.
+
+### Roles
+
+| Endpoint family | Allowed roles |
+| --- | --- |
+| overview, skills, programs, institutes | `PLATFORM_ADMIN`, `GOVERNMENT_MANAGER`, `INSTITUTE_ADMIN`, `TRAINER`, `EMPLOYER` |
+| decisions (+ detail) | `PLATFORM_ADMIN`, `GOVERNMENT_MANAGER` |
+| quality | `PLATFORM_ADMIN`, `GOVERNMENT_MANAGER`, `INSTITUTE_ADMIN` |
+
+`LEARNER` receives 403. Scoped roles (`INSTITUTE_ADMIN`, `TRAINER`, `EMPLOYER`) may only access programs/institutes within `resolveOrganizationScope` — URL `organizationId` / `courseId` is not trusted.
+
+### Endpoints
+
+`GET /api/v1/intelligence/overview`
+
+Purpose: bounded executive highlights (demand, gaps, training, employment status, decision signals, quality snapshot).
+
+Query: `from`, `to` (ISO), `state`, `district`, `country`, `skillId`, `occupationId`, `sectorId`, `limit` (default 20, max 50).
+
+Errors: 401, 403, 400.
+
+Limitations: without caller-supplied Phase 9 supply / Phase 12 employment observations, employment and many gap metrics are `INSUFFICIENT_DATA` (not fabricated zeros).
+
+`GET /api/v1/intelligence/skills/:skillId`
+
+Purpose: skill-level adapter over demand, gap, training, institute capability, employment status, related decisions.
+
+Path: canonical Skill `id` (also resolves `code` / `canonicalName`).
+
+`GET /api/v1/intelligence/programs/:courseId`
+
+Purpose: program/course adapter (curriculum skills, alignment, institute relevance, employment status, decisions). Course location is `UNKNOWN` when no location evidence exists.
+
+`GET /api/v1/intelligence/institutes/:organizationId`
+
+Purpose: institute/provider adapter. Resource-scope enforced for non–cross-org roles.
+
+`GET /api/v1/intelligence/decisions`
+
+Purpose: bounded Phase 13 signal list.
+
+Query: overview filters plus `priority`, `category`, `confidence`, `offset`. Limit max 50.
+
+`GET /api/v1/intelligence/decisions/:signalId`
+
+Purpose: full explainable signal (rationale, contributing metrics, evidence, phase versions, limitations). `signalId` is URL-encoded composite key.
+
+`GET /api/v1/intelligence/quality`
+
+Purpose: Phase 7 `summarizeQualityAssessments` product view.
+
+Known limitations: Phase 14 does not load durable labour-supply or learner outcome registries (none in MVP schema). SAMPLE `GET /api/v1/outcomes` is not used as Phase 12 evidence.

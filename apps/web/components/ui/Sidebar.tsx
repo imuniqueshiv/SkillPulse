@@ -46,30 +46,24 @@ const navGroups = [
   {
     group: "Overview",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: IconDashboard },
+      { label: "Overview", href: "/dashboard", icon: IconDashboard },
     ],
   },
   {
-    group: "Talent",
+    group: "Intelligence",
+    items: [
+      { label: "Skill Intelligence", href: "/skills", icon: IconSkills },
+      { label: "Programs & Institutes", href: "/programs", icon: IconCourses },
+      { label: "Decision Signals", href: "/decisions", icon: IconRecommendations },
+      { label: "Data Quality", href: "/quality", icon: IconGaps },
+    ],
+  },
+  {
+    group: "Catalogue",
     items: [
       { label: "Jobs", href: "/jobs", icon: IconJobs },
-      { label: "Skills", href: "/skills", icon: IconSkills },
-      { label: "Gaps", href: "/gaps", icon: IconGaps },
-    ],
-  },
-  {
-    group: "Learning",
-    items: [
-      { label: "Courses", href: "/courses", icon: IconCourses },
-      { label: "Curricula", href: "/curricula", icon: IconCurricula },
-      { label: "Recommendations", href: "/recommendations", icon: IconRecommendations },
-    ],
-  },
-  {
-    group: "Network",
-    items: [
-      { label: "Employers", href: "/employers", icon: IconEmployers },
-      { label: "Outcomes", href: "/outcomes", icon: IconOutcomes },
+      { label: "Courses", href: "/courses", icon: IconCurricula },
+      { label: "Outcomes (SAMPLE)", href: "/outcomes", icon: IconOutcomes },
     ],
   },
 ];

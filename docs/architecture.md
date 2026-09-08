@@ -182,6 +182,22 @@ GovernmentDecisionSummary (DecisionSignals)
 
 Phase 13 synthesizes demand, gaps, training, institute capability, employment, and quality into **explainable decision-support signals** (investigation/review/monitor). It does **not** allocate budgets, close programs, rank institutes, predict, or execute government policy. Missing evidence → `INSUFFICIENT_DATA` (not “no problem”).
 
+### Phase 14 — Product, dashboard & API integration
+
+```text
+Phase 7–13 typed intelligence services
+        ↓
+Thin authenticated API adapters (/api/v1/intelligence/*)
+        ↓
+Next.js product UI (Overview, Skill Intelligence, Programs & Institutes, Decision Signals, Data Quality)
+        ↓
+Authenticated users (Clerk + Express RBAC + organization scope)
+```
+
+Phase 14 **exposes** existing SkillPulse intelligence through authenticated APIs and a usable product interface. It does **not** introduce a second intelligence engine, recompute Phase 7–13 formulas, invent employment rates, infer Course geography, or autonomously make government policy decisions.
+
+`GET /api/v1/outcomes` SAMPLE metrics remain distinct from Phase 12 `employment-v1` and are labeled as SAMPLE in the UI.
+
 See [data-model.md](data-model.md).
 
 ```text

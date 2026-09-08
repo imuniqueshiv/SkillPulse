@@ -169,6 +169,12 @@ No new Prisma models. Signals are decision-support only.
 
 **SYNTHETIC EVALUATION DATA**: `data/sample/evaluation/decision-intelligence.json`.
 
+## Product / dashboard API (Phase 14)
+
+`apps/api/src/modules/intelligence-api/` mounts authenticated HTTP adapters under `/api/v1/intelligence/*`. Methodology presentation version: **`product-v1`**.
+
+Adapters call existing Phase 7–13 summarizers. No new Prisma models. No recomputation of demand/gap/training/institute/employment/decision formulas. `meta.generatedAt` is request metadata only.
+
 ## Commands
 
 From the repo root (Prisma uses `DATABASE_URL` from `.env`):
