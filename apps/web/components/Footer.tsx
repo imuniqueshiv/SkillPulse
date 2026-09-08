@@ -23,122 +23,119 @@ function SkillPulseLogoMark({ className = "h-7 w-7" }: { className?: string }) {
   );
 }
 
-/* Layered Indian Landmark Architectural Skyline Illustration */
-function IndianLandmarkSkyline() {
+/* Compact Integrated Indian Landmark Architectural Skyline Base Graphic */
+function CompactIndianLandmarkBase() {
   return (
-    <div className="w-full relative overflow-hidden select-none pt-4 bg-[#FFF7EF]" aria-hidden="true">
+    <div className="absolute bottom-0 inset-x-0 w-full pointer-events-none z-0 overflow-hidden select-none" aria-hidden="true">
       <svg
-        className="w-full h-28 sm:h-36 md:h-44 lg:h-48 block text-[#A94F3D]"
-        viewBox="0 0 1440 180"
+        className="w-full h-16 sm:h-20 md:h-24 block opacity-65 transition-opacity"
+        viewBox="0 0 1440 120"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMax slice"
       >
         {/* ================================================================== */}
-        {/* BACK LAYER: Light Warm Beige Monuments & Distant Domes (#F4E2D2)   */}
+        {/* BACK LAYER: Warm Beige Distant Domes & Minarets (#F4E2D2)          */}
         {/* ================================================================== */}
-        <g fill="#F4E2D2" opacity="0.85">
+        <g fill="#F4E2D2" opacity="0.8">
           {/* Qutub Minar Silhouette (Far Left) */}
-          <path d="M60 180 L66 40 L70 40 L76 180 Z" />
-          <rect x="63" y="70" width="10" height="3" rx="1" />
-          <rect x="64" y="100" width="8" height="3" rx="1" />
-          <rect x="65" y="130" width="6" height="3" rx="1" />
-          <polygon points="68 30, 66 40, 70 40" />
+          <path d="M50 120 L55 20 L59 20 L64 120 Z" />
+          <rect x="53" y="45" width="8" height="2" rx="0.5" />
+          <rect x="54" y="70" width="6" height="2" rx="0.5" />
+          <rect x="54.5" y="95" width="5" height="2" rx="0.5" />
+          <polygon points="57 10, 55 20, 59 20" />
 
           {/* Distant Heritage Domes & Cupolas (Left-Center) */}
-          <path d="M160 180 V110 Q180 85 200 110 V180 Z" />
-          <path d="M230 180 V120 Q245 100 260 120 V180 Z" />
+          <path d="M140 120 V75 Q160 55 180 75 V120 Z" />
+          <path d="M210 120 V85 Q222 70 234 85 V120 Z" />
 
           {/* India Gate Silhouette (Center-Left) */}
-          <rect x="360" y="70" width="100" height="110" />
-          <rect x="348" y="60" width="124" height="12" rx="2" />
-          <rect x="370" y="48" width="80" height="14" rx="2" />
-          <path d="M390 180 V120 A20 20 0 0 1 430 120 V180 Z" fill="#FFF7EF" />
+          <rect x="360" y="45" width="80" height="75" />
+          <rect x="350" y="37" width="100" height="10" rx="1.5" />
+          <rect x="368" y="28" width="64" height="10" rx="1.5" />
+          <path d="M384 120 V80 A16 16 0 0 1 416 80 V120 Z" fill="#FFF7EF" />
 
-          {/* Parliament / Classical Colonnade Dome (Center-Right) */}
-          <path d="M720 180 V110 A50 50 0 0 1 820 110 V180 Z" />
-          <rect x="710" y="110" width="120" height="8" rx="2" />
-          <polygon points="770 75, 765 110, 775 110" />
+          {/* Parliament / Classical Colonnade Dome (Center) */}
+          <path d="M680 120 V75 A40 40 0 0 1 760 75 V120 Z" />
+          <rect x="672" y="75" width="96" height="6" rx="1" />
+          <polygon points="720 50, 716 75, 724 75" />
 
           {/* Taj Mahal Central Dome & Side Minarets (Right-Center) */}
-          <path d="M1020 180 V105 Q1060 65 1100 105 V180 Z" />
-          <polygon points="1060 50, 1055 68, 1065 68" />
-          <path d="M980 180 L983 75 L987 75 L990 180 Z" />
-          <path d="M1130 180 L1133 75 L1137 75 L1140 180 Z" />
+          <path d="M960 120 V70 Q995 40 1030 70 V120 Z" />
+          <polygon points="995 28, 991 42, 999 42" />
+          <path d="M925 120 L927 50 L931 50 L933 120 Z" />
+          <path d="M1057 120 L1059 50 L1063 50 L1065 120 Z" />
 
           {/* Heritage Fort Towers (Far Right) */}
-          <path d="M1300 180 V115 Q1320 95 1340 115 V180 Z" />
+          <path d="M1240 120 V78 Q1258 60 1276 78 V120 Z" />
         </g>
 
         {/* ================================================================== */}
         {/* MIDDLE LAYER: Muted Terracotta Silhouettes (#C8705C)                */}
         {/* ================================================================== */}
-        <g fill="#C8705C" opacity="0.9">
+        <g fill="#C8705C" opacity="0.85">
           {/* Heritage Chhatri / Pavilion (Left) */}
-          <rect x="110" y="130" width="30" height="50" />
-          <path d="M105 130 Q125 110 145 130 Z" />
-          <polygon points="125 100, 122 112, 128 112" />
+          <rect x="95" y="85" width="24" height="35" />
+          <path d="M91 85 Q107 70 123 85 Z" />
+          <polygon points="107 60, 104 70, 110 70" />
 
           {/* Gateway Arch (Center-Left) */}
-          <rect x="490" y="100" width="70" height="80" />
-          <path d="M510 180 V130 A15 15 0 0 1 540 130 V180 Z" fill="#FFF7EF" />
-          <rect x="482" y="90" width="86" height="10" rx="1" />
+          <rect x="470" y="65" width="56" height="55" />
+          <path d="M486 120 V85 A12 12 0 0 1 510 85 V120 Z" fill="#FFF7EF" />
+          <rect x="464" y="58" width="68" height="8" rx="1" />
 
           {/* Taj Mahal Main Facade & Side Domes (Right-Center) */}
-          <rect x="1030" y="125" width="60" height="55" />
-          <path d="M1045 180 V140 A15 15 0 0 1 1075 140 V180 Z" fill="#FFF7EF" />
-          <path d="M1015 135 Q1030 118 1045 135 Z" />
-          <path d="M1075 135 Q1090 118 1105 135 Z" />
+          <rect x="970" y="82" width="50" height="38" />
+          <path d="M983 120 V95 A12 12 0 0 1 1007 95 V120 Z" fill="#FFF7EF" />
+          <path d="M958 90 Q970 76 982 90 Z" />
+          <path d="M1008 90 Q1020 76 1032 90 Z" />
 
           {/* Fort Battlement Wall (Far Right) */}
-          <rect x="1220" y="120" width="140" height="60" />
-          {/* Crenellations */}
-          <rect x="1225" y="112" width="12" height="10" />
-          <rect x="1245" y="112" width="12" height="10" />
-          <rect x="1265" y="112" width="12" height="10" />
-          <rect x="1285" y="112" width="12" height="10" />
-          <rect x="1305" y="112" width="12" height="10" />
-          <rect x="1325" y="112" width="12" height="10" />
-          <rect x="1345" y="112" width="12" height="10" />
+          <rect x="1160" y="80" width="120" height="40" />
+          <rect x="1164" y="73" width="10" height="8" />
+          <rect x="1180" y="73" width="10" height="8" />
+          <rect x="1196" y="73" width="10" height="8" />
+          <rect x="1212" y="73" width="10" height="8" />
+          <rect x="1228" y="73" width="10" height="8" />
+          <rect x="1244" y="73" width="10" height="8" />
+          <rect x="1260" y="73" width="10" height="8" />
         </g>
 
         {/* ================================================================== */}
         {/* FRONT LAYER: Primary Terracotta Monuments (#A94F3D)                 */}
         {/* ================================================================== */}
-        <g fill="#A94F3D">
-          {/* Base Horizon Line */}
-          <rect x="0" y="176" width="1440" height="4" />
+        <g fill="#A94F3D" opacity="0.95">
+          {/* Base Line */}
+          <rect x="0" y="117" width="1440" height="3" />
 
-          {/* Red Fort Central Gate & Towers (Left Side) */}
-          <rect x="0" y="145" width="90" height="35" />
-          {/* Crenellations */}
-          <rect x="5" y="137" width="10" height="10" />
-          <rect x="23" y="137" width="10" height="10" />
-          <rect x="41" y="137" width="10" height="10" />
-          <rect x="59" y="137" width="10" height="10" />
-          <rect x="77" y="137" width="10" height="10" />
+          {/* Red Fort Front Wall (Left) */}
+          <rect x="0" y="98" width="75" height="22" />
+          <rect x="4" y="92" width="8" height="8" />
+          <rect x="18" y="92" width="8" height="8" />
+          <rect x="32" y="92" width="8" height="8" />
+          <rect x="46" y="92" width="8" height="8" />
+          <rect x="60" y="92" width="8" height="8" />
 
           {/* India Gate Foreground Arch (Center-Left) */}
-          <rect x="375" y="85" width="70" height="95" />
-          <rect x="365" y="75" width="90" height="12" rx="2" />
-          <rect x="382" y="65" width="56" height="12" rx="2" />
-          <path d="M395 180 V130 A15 15 0 0 1 425 130 V180 Z" fill="#FFF7EF" />
+          <rect x="372" y="55" width="56" height="65" />
+          <rect x="364" y="47" width="72" height="9" rx="1" />
+          <rect x="378" y="39" width="44" height="9" rx="1" />
+          <path d="M388 120 V84 A12 12 0 0 1 412 84 V120 Z" fill="#FFF7EF" />
 
-          {/* High Heritage Dome (Center) */}
-          <path d="M620 180 V135 Q645 110 670 135 V180 Z" />
-          <polygon points="645 92, 642 110, 648 110" />
-          <rect x="612" y="135" width="56" height="6" rx="1" />
+          {/* High Central Heritage Dome (Center) */}
+          <path d="M590 120 V90 Q610 70 630 90 V120 Z" />
+          <polygon points="610 56, 607 70, 613 70" />
 
           {/* Classical Columned Monument (Center-Right) */}
-          <rect x="850" y="130" width="110" height="50" />
-          <rect x="840" y="122" width="130" height="10" rx="1" />
-          <path d="M880 180 V145 A12 12 0 0 1 904 145 V180 Z" fill="#FFF7EF" />
-          <path d="M916 180 V145 A12 12 0 0 1 940 145 V180 Z" fill="#FFF7EF" />
+          <rect x="800" y="88" width="90" height="32" />
+          <rect x="792" y="82" width="106" height="7" rx="1" />
+          <path d="M824 120 V98 A9 9 0 0 1 842 98 V120 Z" fill="#FFF7EF" />
+          <path d="M854 120 V98 A9 9 0 0 1 872 98 V120 Z" fill="#FFF7EF" />
 
           {/* Gateway Turret (Far Right) */}
-          <rect x="1370" y="135" width="70" height="45" />
-          <path d="M1385 135 Q1405 115 1425 135 Z" />
-          <polygon points="1405 102, 1402 116, 1408 116" />
+          <rect x="1330" y="90" width="55" height="30" />
+          <path d="M1342 90 Q1357 74 1372 90 Z" />
+          <polygon points="1357 64, 1354 75, 1360 75" />
         </g>
       </svg>
     </div>
@@ -171,48 +168,49 @@ export function Footer() {
 
   return (
     <footer
-      className={`w-full bg-[#FFF7EF] border-t border-[#E8D4C5] transition-all duration-150 text-[#3A2A25] select-none ${
+      className={`w-full bg-[#FFF7EF] border-t border-[#E8D4C5] relative overflow-hidden select-none text-[#3A2A25] transition-all duration-150 ${
         isDashboardRoute ? "lg:ml-[var(--sp-sidebar-width,256px)]" : "w-full"
       }`}
       aria-label="Site Footer"
     >
-      {/* 1. Top Terracotta/Orange Line */}
-      <div className="h-[2px] w-full bg-[#E85D2A]" />
+      {/* 1. Top Terracotta/Orange Accent Bar */}
+      <div className="h-[2px] w-full bg-[#E85D2A] relative z-10" />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
-        {/* 2. Main Content Grid (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 pb-8">
+      {/* 2. Main Content Container (Compact Padding & Height) */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-3 relative z-10">
+        {/* 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-10 pb-5">
           
           {/* Column 1: BRAND */}
-          <div className="lg:col-span-6 flex flex-col gap-3 pr-0 lg:pr-8">
-            <Link href="/" className="inline-flex items-center gap-2.5 group w-fit">
-              <SkillPulseLogoMark className="h-8 w-8 shrink-0 transition-transform group-hover:scale-105" />
+          <div className="lg:col-span-6 flex flex-col gap-2.5 pr-0 lg:pr-8">
+            <Link href="/" className="inline-flex items-center gap-2 group w-fit">
+              <SkillPulseLogoMark className="h-7 w-7 shrink-0 transition-transform group-hover:scale-105" />
               <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-[#3A2A25] leading-none">
+                <span className="text-base sm:text-lg font-bold tracking-tight text-[#3A2A25] leading-none">
                   Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
-                <span className="text-[0.625rem] font-bold uppercase tracking-[0.14em] text-[#A94F3D] leading-tight mt-0.5">
+                <span className="text-[0.5625rem] font-bold uppercase tracking-[0.14em] text-[#A94F3D] leading-tight mt-0.5">
                   Workforce Intelligence
                 </span>
               </div>
             </Link>
 
-            <p className="text-xs sm:text-sm text-[#75645D] leading-relaxed max-w-md mt-1">
+            <p className="text-xs text-[#75645D] leading-relaxed max-w-md">
               Evidence-driven skill and workforce intelligence for better decisions.
             </p>
           </div>
 
           {/* Column 2: PLATFORM */}
           <div className="lg:col-span-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#A94F3D] mb-3.5 border-b border-[#E8D4C5] pb-1.5 w-fit">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#A94F3D] mb-2.5 border-b border-[#E8D4C5] pb-1 w-fit">
               Platform
             </h3>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-1.5">
               {PLATFORM_LINKS.map((link) => (
                 <li key={link.href + link.label}>
                   <Link
                     href={link.href}
-                    className="text-xs sm:text-sm text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    className="text-xs text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
                   >
                     {link.label}
                   </Link>
@@ -223,15 +221,15 @@ export function Footer() {
 
           {/* Column 3: RESOURCES */}
           <div className="lg:col-span-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#A94F3D] mb-3.5 border-b border-[#E8D4C5] pb-1.5 w-fit">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#A94F3D] mb-2.5 border-b border-[#E8D4C5] pb-1 w-fit">
               Resources
             </h3>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-1.5">
               {RESOURCE_LINKS.map((link) => (
                 <li key={link.href + link.label}>
                   <Link
                     href={link.href}
-                    className="text-xs sm:text-sm text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
+                    className="text-xs text-[#3A2A25] transition-colors duration-150 hover:text-[#E85D2A] focus-visible:outline-2 focus-visible:outline-[#E85D2A]"
                   >
                     {link.label}
                   </Link>
@@ -241,10 +239,10 @@ export function Footer() {
           </div>
         </div>
 
-        {/* 3. Copyright & Utility Links Bar */}
-        <div className="border-t border-[#E8D4C5] pt-4 pb-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#75645D]">
+        {/* 3. Copyright & Utility Links Bar (Integrated on top of the skyline base) */}
+        <div className="border-t border-[#E8D4C5]/80 pt-3 pb-1 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#75645D]">
           <p>© {currentYear} SkillPulse. All rights reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 font-medium">
             <Link href="/settings" className="hover:text-[#E85D2A] transition-colors">
               Privacy
             </Link>
@@ -260,8 +258,8 @@ export function Footer() {
         </div>
       </div>
 
-      {/* 4. Indian Landmark Architectural Skyline Illustration Strip */}
-      <IndianLandmarkSkyline />
+      {/* 4. Integrated Compact Indian Landmark Architectural Skyline Base */}
+      <CompactIndianLandmarkBase />
     </footer>
   );
 }
