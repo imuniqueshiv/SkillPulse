@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Show, SignInButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { IndiaScrollMap } from "@/components/landing/IndiaScrollMap";
 
 /* ═══════════════════════════════════════════════════════
    Utility Hooks
@@ -284,75 +285,92 @@ function SkillPulseHeroArtwork() {
   };
 
   return (
-    <div className="flex flex-1 flex-col bg-white font-sans text-[#1F2937] antialiased">
+    <div className="flex flex-1 flex-col font-sans text-[#1F2937] antialiased relative">
+
+      {/* Global Scroll-Driven India SVG Map Background */}
+      <IndiaScrollMap />
 
       {/* ═══════════════════════════════════════════════════════
-          S1 — HERO (Compact height & Editorial Vector Artwork)
+          S1 — HERO (Full-Bleed High HD Heritage Background)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef.ref} className="relative overflow-hidden bg-white">
-        <div className="h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
+      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B]/30 min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
+        {/* Top Brand Accent Line */}
+        <div className="absolute top-0 left-0 right-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
+        {/* Full-Bleed HD Background Image (No card/box container, no crop, no quality degradation) */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          <Image
+            src="/assets/hero-sun-temple-4k.png"
+            alt="Konark Sun Temple Indian Heritage Architecture 4K"
+            fill
+            priority
+            quality={100}
+            unoptimized
+            sizes="100vw"
+            className="object-cover object-center sm:object-[70%_50%]"
+          />
 
-            {/* Left Column */}
+          {/* Intelligently balanced dark gradient backdrops behind text for WCAG AA readability without washing out original heritage image */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#160E0B]/75 via-[#160E0B]/50 to-transparent z-10" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#160E0B] to-transparent opacity-60" />
+        </div>
+
+        {/* Content Container */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full">
+          <div className="max-w-2xl">
+
+            {/* Content Block */}
             <div className={`flex flex-col gap-4 transition-all duration-700 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
-                <span className="h-px w-8 bg-[#E85D2A]" />
+              <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#F28C5B]">
+                <span className="h-px w-8 bg-[#F28C5B]" />
                 Skill &amp; Workforce Intelligence
               </span>
 
-              <h1 className="text-[2.25rem] font-extrabold leading-[1.12] tracking-tight text-[#1F2933] sm:text-4xl lg:text-[3rem]">
+              <h1 className="text-[2.25rem] font-extrabold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-[3.25rem]">
                 Turn Workforce Data Into{" "}
-                <span className="text-[#E85D2A]">Better Decisions</span>
+                <span className="text-[#F28C5B]">Better Decisions</span>
               </h1>
 
-              <p className="max-w-lg text-sm leading-relaxed text-[#475569] sm:text-base lg:text-base">
+              <p className="max-w-xl text-sm leading-relaxed text-[#E5DCD6] sm:text-base lg:text-lg">
                 SkillPulse connects labour-market demand, skills, training and employment outcomes to identify workforce gaps and support evidence-based decisions.
               </p>
 
               {/* Search Form */}
-              <form onSubmit={handleSearchSubmit} className="flex max-w-md mt-1">
+              <form onSubmit={handleSearchSubmit} className="flex max-w-md mt-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]"><SearchIcon /></span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A89C94]"><SearchIcon /></span>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search skills, roles, courses..."
-                    className="sp-interactive-glow w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-2.5 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#E85D2A] focus:bg-white focus:outline-none"
+                    className="sp-interactive-glow w-full rounded-l-lg border border-[#4A3B35] bg-[#221612]/90 py-3 pl-11 pr-4 text-sm text-white placeholder-[#A89C94] backdrop-blur-md transition-colors focus:border-[#E85D2A] focus:bg-[#2A1D18] focus:outline-none"
                   />
                 </div>
-                <button type="submit" className="sp-interactive-glow rounded-r-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer">
+                <button type="submit" className="sp-interactive-glow rounded-r-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer shadow-md">
                   Search
                 </button>
               </form>
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link href="/skills" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link href="/skills" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
                   Explore Skill Intelligence <ArrowRight />
                 </Link>
-                <a href="#feature-section" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-5 py-2.5 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
+                <a href="#feature-section" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg border border-[#4A3B35] bg-[#221612]/80 px-5 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-[#E85D2A] hover:bg-[#34221C]">
                   View Workforce Insights
                 </a>
                 <Show when="signed-out">
                   <SignInButton>
-                    <button className="sp-interactive-glow rounded-lg border border-[#D9E1E8] px-4 py-2.5 text-sm font-semibold text-[#475569] transition-all hover:border-[#E85D2A] hover:text-[#1F2933] cursor-pointer">Sign In</button>
+                    <button className="sp-interactive-glow rounded-lg border border-[#4A3B35] bg-[#221612]/60 px-4 py-3 text-sm font-semibold text-[#D5C9C0] backdrop-blur-md transition-all hover:border-[#E85D2A] hover:text-white cursor-pointer">Sign In</button>
                   </SignInButton>
                 </Show>
                 <Show when="signed-in">
-                  <Link href="/dashboard" className="sp-interactive-glow rounded-lg bg-[#E85D2A] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
+                  <Link href="/dashboard" className="sp-interactive-glow rounded-lg bg-[#E85D2A] px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
                 </Show>
               </div>
             </div>
 
-            {/* Right Column — Editorial Vector Artwork Container (Scaled down by 20-25%) */}
-            <div className={`relative w-full max-w-md mx-auto transition-all duration-700 delay-200 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div className="relative aspect-[16/11] w-full">
-                <SkillPulseHeroArtwork />
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -360,7 +378,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S3 — WHERE SKILLS MEET DEMAND (Feature)
           ═══════════════════════════════════════════════════════ */}
-      <section id="feature-section" ref={featureRef.ref} className="py-16 lg:py-24 bg-white">
+      <section id="feature-section" ref={featureRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
 
@@ -425,7 +443,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S4 — FROM EVIDENCE TO ACTION (Timeline)
           ═══════════════════════════════════════════════════════ */}
-      <section id="how-it-works" ref={timelineRef.ref} className="py-16 lg:py-24 bg-[#FFFCF9]">
+      <section id="how-it-works" ref={timelineRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFFCF9]/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${timelineRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
@@ -485,7 +503,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S5 — DATA → INTELLIGENCE → ACTION (Infographic)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={dataFlowRef.ref} className="py-16 lg:py-24 bg-white">
+      <section ref={dataFlowRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-14 transition-all duration-700 ${dataFlowRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
@@ -557,7 +575,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S6 — INTERACTIVE INSIGHT
           ═══════════════════════════════════════════════════════ */}
-      <section ref={insightRef.ref} className="py-16 lg:py-24 bg-[#FFF8F2]">
+      <section ref={insightRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFF8F2]/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className={`mb-10 transition-all duration-700 ${insightRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -604,7 +622,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S7 — STAKEHOLDERS
           ═══════════════════════════════════════════════════════ */}
-      <section ref={stakeholderRef.ref} className="py-16 lg:py-24 bg-white">
+      <section ref={stakeholderRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${stakeholderRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933] sm:text-4xl">
@@ -671,7 +689,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S8 — EVIDENCE & TRUST
           ═══════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-[#FFFCF9] border-y border-[#E2E8F0]">
+      <section className="relative z-[2] py-16 lg:py-20 bg-[#FFFCF9]/20 backdrop-blur-[1px] border-y border-[#E2E8F0]/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1F2933]">
@@ -707,7 +725,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S9 — MAHARASHTRA MVP
           ═══════════════════════════════════════════════════════ */}
-      <section ref={maharashtraRef.ref} className="py-16 lg:py-24 bg-white">
+      <section ref={maharashtraRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             {/* Image */}
@@ -749,7 +767,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S10 — FINAL CTA BANNER
           ═══════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden">
+      <section className="relative z-[2] overflow-hidden">
         <div className="bg-gradient-to-br from-[#FFF0E8] via-[#FFF8F2] to-[#FFF0E8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
