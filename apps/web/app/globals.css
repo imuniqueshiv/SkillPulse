@@ -307,12 +307,41 @@ body {
   transition: transform var(--sp-transition), background var(--sp-transition);
 }
 
-.sp-toggle[data-active="true"] {
-  background: var(--sp-accent);
-  border-color: var(--sp-accent);
-}
-
 .sp-toggle[data-active="true"]::after {
   transform: translateX(18px);
   background: white;
 }
+
+/* ============================================================
+   SkillPulse Global Interaction Glow
+   ============================================================ */
+
+.sp-interactive-glow {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sp-interactive-glow:hover {
+  box-shadow: 0 0 14px rgba(232, 93, 42, 0.22), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: rgba(232, 93, 42, 0.4);
+}
+
+.sp-interactive-glow:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(232, 93, 42, 0.3), 0 0 16px rgba(232, 93, 42, 0.2);
+  border-color: #E85D2A;
+}
+
+.sp-interactive-glow:active {
+  box-shadow: 0 0 18px rgba(232, 93, 42, 0.35);
+  transform: translateY(1px);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .sp-interactive-glow {
+    transition: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
+

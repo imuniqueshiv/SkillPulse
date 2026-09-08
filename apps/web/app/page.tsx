@@ -181,6 +181,98 @@ export default function Home() {
   const stakeholderRef = useInView(0.15);
   const maharashtraRef = useInView(0.15);
 
+/* ═══════════════════════════════════════════════════════
+   SkillPulse Hero Editorial Vector Artwork
+   ═══════════════════════════════════════════════════════ */
+
+function SkillPulseHeroArtwork() {
+  return (
+    <div className="relative w-full h-full min-h-[260px] sm:min-h-[290px] flex items-center justify-center select-none overflow-hidden rounded-2xl border border-[#E8D4C5] bg-gradient-to-br from-[#FFF7EF] via-[#FCEFE4] to-[#F4E2D2] p-4 sm:p-5 shadow-md shadow-[#A94F3D]/5">
+      {/* Subtle background dot grid pattern */}
+      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#A94F3D_0.75px,transparent_0.75px)] [background-size:14px_14px]" />
+
+      {/* Ambient background glows */}
+      <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#E85D2A]/10 blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-[#A94F3D]/10 blur-2xl pointer-events-none" />
+
+      {/* Main Vector Illustration Canvas */}
+      <svg className="relative w-full h-full max-h-[270px]" viewBox="0 0 520 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Industry / Tech Facilities Silhouette Background */}
+        <path d="M30 260 L30 195 L65 195 L65 220 L95 220 L95 175 L135 175 L135 260 Z" fill="#E8D4C5" opacity="0.45" />
+        <path d="M370 260 L370 165 L410 165 L410 185 L445 185 L445 145 L485 145 L485 260 Z" fill="#E8D4C5" opacity="0.4" />
+
+        {/* Data flow connections (Curved dashed vector paths) */}
+        <path d="M95 175 Q 180 110, 260 160 T 425 145" stroke="#E85D2A" strokeWidth="2" strokeDasharray="4 4" strokeOpacity="0.65" />
+        <path d="M125 220 Q 220 270, 335 205 T 435 215" stroke="#A94F3D" strokeWidth="1.5" strokeDasharray="3 3" strokeOpacity="0.55" />
+
+        {/* Central Pulse / Synergy Hub */}
+        <circle cx="260" cy="160" r="44" fill="url(#hero-hub-grad)" stroke="#FFFFFF" strokeWidth="3" />
+        <circle cx="260" cy="160" r="56" stroke="#E85D2A" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.45" />
+
+        {/* Central Pulse Wave Icon */}
+        <path d="M234 160 L246 160 L252 147 L260 175 L267 153 L273 163 L278 160 L286 160" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+        {/* Network Nodes with Icons */}
+        {/* Node 1: Industry / Demand (Top Left) */}
+        <g transform="translate(95, 110)">
+          <circle cx="0" cy="0" r="21" fill="#FFFFFF" stroke="#E8D4C5" strokeWidth="2" />
+          <rect x="-8" y="-8" width="16" height="16" rx="3" fill="#A94F3D" opacity="0.15" />
+          <path d="M-5 5 L-5 -2 L-1 -4 L-1 0 L3 -2 L3 5 Z" fill="#A94F3D" />
+        </g>
+
+        {/* Node 2: Skills / Training (Bottom Left) */}
+        <g transform="translate(125, 220)">
+          <circle cx="0" cy="0" r="19" fill="#FFFFFF" stroke="#E8D4C5" strokeWidth="2" />
+          <path d="M-6 -2 L0 -6 L6 -2 L0 2 Z M-4 1 L-4 4 Q0 7 4 4 L4 1" stroke="#E85D2A" strokeWidth="1.5" fill="none" />
+        </g>
+
+        {/* Node 3: Workforce / People (Top Right) */}
+        <g transform="translate(425, 110)">
+          <circle cx="0" cy="0" r="21" fill="#FFFFFF" stroke="#E8D4C5" strokeWidth="2" />
+          <circle cx="0" cy="-4" r="5" fill="#3A2A25" />
+          <path d="M-7 7 C-7 3, -4 2, 0 2 C4 2, 7 3, 7 7" fill="#3A2A25" />
+        </g>
+
+        {/* Node 4: Employment Outcomes (Bottom Right) */}
+        <g transform="translate(395, 215)">
+          <circle cx="0" cy="0" r="19" fill="#FFFFFF" stroke="#E8D4C5" strokeWidth="2" />
+          <path d="M-5 3 L-1 -1 L2 1 L5 -4" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M2 -4 H5 V-1" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+
+        {/* Vector Bar Chart Dashboard Component */}
+        <g transform="translate(205, 230)">
+          <rect x="0" y="0" width="110" height="44" rx="8" fill="#FFFFFF" fillOpacity="0.95" stroke="#E8D4C5" strokeWidth="1.5" />
+          <rect x="14" y="20" width="10" height="15" rx="2" fill="#F4E2D2" />
+          <rect x="30" y="14" width="10" height="21" rx="2" fill="#A94F3D" />
+          <rect x="46" y="8" width="10" height="27" rx="2" fill="#E85D2A" />
+          <rect x="62" y="16" width="10" height="19" rx="2" fill="#3A2A25" />
+          <rect x="78" y="6" width="10" height="29" rx="2" fill="#10B981" />
+        </g>
+
+        {/* Gradient Definitions */}
+        <defs>
+          <linearGradient id="hero-hub-grad" x1="216" y1="116" x2="304" y2="204" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#E85D2A" />
+            <stop offset="1" stopColor="#A94F3D" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {/* Floating Info Pills / Badges over Vector Artwork */}
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 rounded-xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-sm border border-[#E8D4C5] flex items-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-[#E85D2A] animate-pulse" />
+        <span className="text-[10px] font-bold tracking-wider text-[#3A2A25] uppercase">Workforce Intelligence</span>
+      </div>
+
+      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 rounded-xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-sm border border-[#E8D4C5] flex items-center gap-2">
+        <span className="text-[10px] font-semibold text-[#3A2A25]">Evidence Synergy</span>
+        <span className="text-[10px] font-bold text-[#E85D2A] bg-[#FFF0E8] px-1.5 py-0.5 rounded-[#sp-radius-sm]">+94.2%</span>
+      </div>
+    </div>
+  );
+}
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -195,32 +287,32 @@ export default function Home() {
     <div className="flex flex-1 flex-col bg-white font-sans text-[#1F2937] antialiased">
 
       {/* ═══════════════════════════════════════════════════════
-          S1 — HERO
+          S1 — HERO (Compact height & Editorial Vector Artwork)
           ═══════════════════════════════════════════════════════ */}
       <section ref={heroRef.ref} className="relative overflow-hidden bg-white">
         <div className="h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
 
-            {/* Left */}
-            <div className={`flex flex-col gap-5 transition-all duration-700 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            {/* Left Column */}
+            <div className={`flex flex-col gap-4 transition-all duration-700 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
               <span className="inline-flex items-center gap-2 self-start text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">
                 <span className="h-px w-8 bg-[#E85D2A]" />
                 Skill &amp; Workforce Intelligence
               </span>
 
-              <h1 className="text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-[#1F2933] sm:text-5xl lg:text-[3.25rem]">
+              <h1 className="text-[2.25rem] font-extrabold leading-[1.12] tracking-tight text-[#1F2933] sm:text-4xl lg:text-[3rem]">
                 Turn Workforce Data Into{" "}
                 <span className="text-[#E85D2A]">Better Decisions</span>
               </h1>
 
-              <p className="max-w-lg text-base leading-relaxed text-[#475569] lg:text-lg">
+              <p className="max-w-lg text-sm leading-relaxed text-[#475569] sm:text-base lg:text-base">
                 SkillPulse connects labour-market demand, skills, training and employment outcomes to identify workforce gaps and support evidence-based decisions.
               </p>
 
-              {/* Search */}
-              <form onSubmit={handleSearchSubmit} className="flex max-w-md">
+              {/* Search Form */}
+              <form onSubmit={handleSearchSubmit} className="flex max-w-md mt-1">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]"><SearchIcon /></span>
                   <input
@@ -228,75 +320,39 @@ export default function Home() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search skills, roles, courses..."
-                    className="w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-3 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#E85D2A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/10"
+                    className="sp-interactive-glow w-full rounded-l-lg border border-[#D9E1E8] bg-[#F5F7FA] py-2.5 pl-10 pr-4 text-sm text-[#1F2937] placeholder-[#94A3B8] transition-colors focus:border-[#E85D2A] focus:bg-white focus:outline-none"
                   />
                 </div>
-                <button type="submit" className="rounded-r-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer">
+                <button type="submit" className="sp-interactive-glow rounded-r-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#C94A20] cursor-pointer">
                   Search
                 </button>
               </form>
 
-              {/* CTAs */}
+              {/* CTA Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link href="/skills" className="inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
+                <Link href="/skills" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg bg-[#E85D2A] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#C94A20] hover:shadow-md">
                   Explore Skill Intelligence <ArrowRight />
                 </Link>
-                <a href="#feature-section" className="inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-6 py-3 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
+                <a href="#feature-section" className="sp-interactive-glow inline-flex items-center gap-2 rounded-lg border border-[#D9E1E8] bg-white px-5 py-2.5 text-sm font-semibold text-[#1F2933] transition-all hover:border-[#E85D2A] hover:bg-[#FFF0E8]">
                   View Workforce Insights
                 </a>
                 <Show when="signed-out">
                   <SignInButton>
-                    <button className="rounded-lg border border-[#D9E1E8] px-5 py-3 text-sm font-semibold text-[#475569] transition-all hover:border-[#E85D2A] hover:text-[#1F2933] cursor-pointer">Sign In</button>
+                    <button className="sp-interactive-glow rounded-lg border border-[#D9E1E8] px-4 py-2.5 text-sm font-semibold text-[#475569] transition-all hover:border-[#E85D2A] hover:text-[#1F2933] cursor-pointer">Sign In</button>
                   </SignInButton>
                 </Show>
                 <Show when="signed-in">
-                  <Link href="/dashboard" className="rounded-lg bg-[#E85D2A] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
+                  <Link href="/dashboard" className="sp-interactive-glow rounded-lg bg-[#E85D2A] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#C94A20]">Open Dashboard</Link>
                 </Show>
               </div>
             </div>
 
-            {/* Right — Editorial Image */}
-            <div className={`relative transition-all duration-700 delay-200 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <Image src="/assets/hero-workforce.png" alt="Indian workforce training in modern industrial facility" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 50vw" />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1F2933]/70 via-transparent to-transparent" />
-                {/* Floating info panel */}
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl bg-white/95 backdrop-blur-sm p-4 shadow-lg border border-white/50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="h-2 w-2 rounded-full bg-[#E85D2A]" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#E85D2A]">SkillPulse Intelligence</span>
-                  </div>
-                  <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#475569]">
-                    <span className="font-semibold text-[#1F2933]">Demand</span>
-                    <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#1F2933]">Skills</span>
-                    <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#1F2933]">Training</span>
-                    <span className="text-[#D9E1E8]">·</span>
-                    <span className="font-semibold text-[#1F2933]">Outcomes</span>
-                  </div>
-                </div>
+            {/* Right Column — Editorial Vector Artwork Container (Scaled down by 20-25%) */}
+            <div className={`relative w-full max-w-md mx-auto transition-all duration-700 delay-200 ${heroRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <div className="relative aspect-[16/11] w-full">
+                <SkillPulseHeroArtwork />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════
-          S2 — AT A GLANCE
-          ═══════════════════════════════════════════════════════ */}
-      <section className="border-y border-[#E2E8F0] bg-[#FFF8F2]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs">
-            <span className="font-bold uppercase tracking-[0.15em] text-[#1F2933]">SkillPulse at a Glance</span>
-            <span className="hidden sm:block h-4 w-px bg-[#D9E1E8]" />
-            {["Maharashtra MVP", "Evidence-Driven", "Multi-Source Intelligence", "Confidence-Aware", "Decision Support"].map((item, i) => (
-              <React.Fragment key={item}>
-                <span className="text-[#64748B] font-medium">{item}</span>
-                {i < 4 && <span className="hidden sm:block h-4 w-px bg-[#D9E1E8]" />}
-              </React.Fragment>
-            ))}
           </div>
         </div>
       </section>
