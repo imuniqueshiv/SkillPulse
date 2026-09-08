@@ -459,8 +459,13 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle Dropdown Hover / Focus
-  const handleDropdownToggle = (key: string) => {
+  // Handle Dropdown Toggle & Hover
+  const handleDropdownToggle = (key: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
     setActiveDropdown((prev) => (prev === key ? null : key));
   };
 
@@ -474,7 +479,7 @@ export function Navbar() {
   const handleMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 150);
+    }, 200);
   };
 
   // Search Submit
@@ -569,7 +574,7 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-3.5 pt-2.5 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-hidden"
+      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-3.5 pt-2.5 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
     >
       {/* ------------------------------------------------------------------ */}
       {/* BACKGROUND DECORATIONS (Soft arcs, wave background & pulse line)  */}
@@ -611,8 +616,8 @@ export function Navbar() {
       {/* ------------------------------------------------------------------ */}
       {/* FLOATING SOFT NAVBAR CONTAINER                                    */}
       {/* ------------------------------------------------------------------ */}
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
-        <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E5D9D0] rounded-full sm:rounded-[32px] px-4 sm:px-6 py-2 flex items-center justify-between gap-3 shadow-[0_8px_25px_-4px_rgba(232,93,42,0.06),0_3px_10px_rgba(0,0,0,0.03)] h-[62px] transition-all duration-200">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 relative z-10 overflow-visible">
+        <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E5D9D0] rounded-full sm:rounded-[32px] px-4 sm:px-6 py-2 flex items-center justify-between gap-3 shadow-[0_8px_25px_-4px_rgba(232,93,42,0.06),0_3px_10px_rgba(0,0,0,0.03)] h-[62px] transition-all duration-200 overflow-visible">
           
           {/* ================================================================ */}
           {/* Left: SkillPulse Logo & Institutional Brand                      */}
@@ -646,7 +651,7 @@ export function Navbar() {
           {/* Center: Desktop Navigation Links & Dropdowns                    */}
           {/* ================================================================ */}
           <nav
-            className="hidden xl:flex items-center gap-1.5"
+            className="hidden xl:flex items-center gap-1.5 relative overflow-visible"
             role="navigation"
             aria-label="Main Navigation"
           >
@@ -668,14 +673,14 @@ export function Navbar() {
 
             {/* 2. Intelligence Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("intelligence")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("intelligence")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("intelligence", e)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isIntelligenceActive || activeDropdown === "intelligence"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -693,7 +698,7 @@ export function Navbar() {
 
               {activeDropdown === "intelligence" && (
                 <div
-                  className="absolute left-0 mt-2 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.1),0_4px_12px_rgba(0,0,0,0.05)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Intelligence menu"
                 >
@@ -707,6 +712,7 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
+                        onClick={() => setActiveDropdown(null)}
                         className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
@@ -735,14 +741,14 @@ export function Navbar() {
 
             {/* 3. Training & Curriculum Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("training")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("training")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("training", e)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isTrainingActive || activeDropdown === "training"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -760,7 +766,7 @@ export function Navbar() {
 
               {activeDropdown === "training" && (
                 <div
-                  className="absolute left-0 mt-2 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.1),0_4px_12px_rgba(0,0,0,0.05)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Training menu"
                 >
@@ -774,6 +780,7 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
+                        onClick={() => setActiveDropdown(null)}
                         className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
@@ -834,14 +841,14 @@ export function Navbar() {
 
             {/* 6. Dashboards Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("dashboards")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("dashboards")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("dashboards", e)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isDashboardsActive || activeDropdown === "dashboards"
                     ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
                     : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
@@ -859,7 +866,7 @@ export function Navbar() {
 
               {activeDropdown === "dashboards" && (
                 <div
-                  className="absolute right-0 mt-2 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.1),0_4px_12px_rgba(0,0,0,0.05)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute right-0 top-full mt-3 w-80 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_12px_30px_-5px_rgba(232,93,42,0.14),0_6px_16px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Dashboards menu"
                 >
@@ -873,6 +880,7 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
+                        onClick={() => setActiveDropdown(null)}
                         className={`flex items-start gap-3 px-3.5 py-2.5 text-xs rounded-xl mx-1 transition-colors duration-150 ${
                           isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
@@ -903,7 +911,7 @@ export function Navbar() {
           {/* ================================================================ */}
           {/* Right: Search + Auth + Actions                                  */}
           {/* ================================================================ */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap">
             {/* Desktop Search Bar with Voice Microphone */}
             <div className="relative hidden md:flex flex-col items-end">
               <form
@@ -924,11 +932,11 @@ export function Navbar() {
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
                   placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
-                  className={`w-40 lg:w-56 xl:w-64 pl-9 pr-10 py-1.5 text-xs bg-[#FFFFFF] border rounded-full transition-all duration-150 text-[#1F2933] placeholder-[#64748B] shadow-2xs ${
+                  className={`w-36 lg:w-52 xl:w-60 pl-9 pr-10 py-1.5 text-xs bg-[#FFFFFF] border rounded-full transition-all duration-150 text-[#1F2933] placeholder-[#64748B] shadow-2xs ${
                     isListening
                       ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
                       : isSearchFocused
-                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-52 lg:w-64 xl:w-72 bg-[#FFFCF9]"
+                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-48 lg:w-60 xl:w-68 bg-[#FFFCF9]"
                       : "border-[#E5D9D0] hover:border-[#F28C5B]"
                   }`}
                 />
@@ -941,7 +949,7 @@ export function Navbar() {
                     onClick={toggleVoiceSearch}
                     aria-label={isListening ? "Stop voice search" : "Start voice search"}
                     title={isListening ? "Listening... Click to stop" : "Start voice search"}
-                    className={`p-1 rounded-full transition-all duration-150 ${
+                    className={`p-1 rounded-full transition-all duration-150 cursor-pointer ${
                       isListening
                         ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
                         : "text-[#E85D2A] hover:bg-[#FFF0E8]"
@@ -964,19 +972,19 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors"
+              className="md:hidden p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
               aria-label="Toggle search input"
             >
               <SearchIcon className="w-5 h-5" />
             </button>
 
-            {/* Authentication States via Clerk */}
-            {isLoaded && !isSignedIn && (
-              <div className="flex items-center gap-2 shrink-0">
+            {/* Authentication States via Clerk — Visible Sign In and Register Buttons */}
+            {(!isLoaded || !isSignedIn) && (
+              <div className="flex items-center gap-2 shrink-0 flex-nowrap">
                 <SignInButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-full transition-all duration-150 cursor-pointer shrink-0 shadow-2xs"
+                    className="whitespace-nowrap px-3.5 sm:px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-full transition-all duration-150 cursor-pointer shrink-0 shadow-2xs"
                   >
                     Sign In
                   </button>
@@ -984,7 +992,7 @@ export function Navbar() {
                 <SignUpButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-all duration-150 shadow-xs cursor-pointer shrink-0"
+                    className="whitespace-nowrap px-3.5 sm:px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-all duration-150 shadow-xs cursor-pointer shrink-0"
                   >
                     Register
                   </button>
@@ -997,7 +1005,7 @@ export function Navbar() {
                 {/* Notification Bell */}
                 <button
                   type="button"
-                  className="relative p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors"
+                  className="relative p-2 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
                   aria-label="View notifications"
                 >
                   <BellIcon className="w-4 h-4" />
@@ -1032,7 +1040,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A]"
+              className="xl:hidden p-2 text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A] cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -1280,7 +1288,7 @@ export function Navbar() {
 
             {/* Mobile Auth Bottom Section */}
             <div className="p-4 border-t border-[#E5D9D0] bg-[#FFF8F2]">
-              {isLoaded && !isSignedIn && (
+              {(!isLoaded || !isSignedIn) && (
                 <div className="flex flex-row gap-2">
                   <SignInButton mode="modal">
                     <button
