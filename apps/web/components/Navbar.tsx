@@ -47,19 +47,77 @@ declare global {
 
 function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <rect width="32" height="32" rx="6" fill="#E85D2A" />
-      {/* Waveform / Network nodes representing skill intelligence */}
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <rect width="36" height="36" rx="10" fill="#E85D2A" />
+      {/* Abstract SkillPulse Signal & Network Nodes */}
       <path
-        d="M6 18H10L13 9L17 23L21 14L23 18H26"
+        d="M7 20H11L14.5 10L19 26L23.5 15L26 20H29"
         stroke="#FFFFFF"
-        strokeWidth="2.2"
+        strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="13" cy="9" r="2" fill="#F28C5B" />
-      <circle cx="17" cy="23" r="2" fill="#FAD5C2" />
-      <circle cx="21" cy="14" r="2" fill="#F28C5B" />
+      <circle cx="14.5" cy="10" r="2.2" fill="#F28C5B" />
+      <circle cx="19" cy="26" r="2.2" fill="#FFF0E8" />
+      <circle cx="23.5" cy="15" r="2.2" fill="#F28C5B" />
+    </svg>
+  );
+}
+
+function HomeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
+
+function BarChartNavIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="3" y="12" width="4" height="9" rx="1" />
+      <rect x="10" y="7" width="4" height="14" rx="1" />
+      <rect x="17" y="3" width="4" height="18" rx="1" />
+    </svg>
+  );
+}
+
+function GraduationCapIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+    </svg>
+  );
+}
+
+function TrendingUpNavIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  );
+}
+
+function LightbulbNavIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+      <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.55.6 2.97 1.5 4 .76.76 1.23 1.52 1.41 2.5" />
+    </svg>
+  );
+}
+
+function GridNavIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
     </svg>
   );
 }
@@ -67,7 +125,7 @@ function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
 function ChevronDownIcon({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`w-3.5 h-3.5 transition-transform duration-200 ${className}`}
+      className={`w-3 h-3 transition-transform duration-200 ${className}`}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -177,7 +235,7 @@ function BellIcon(props: React.SVGProps<SVGSVGElement>) {
 // Section Item Icons
 function BriefcaseIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
     </svg>
@@ -186,7 +244,7 @@ function BriefcaseIcon() {
 
 function ZapIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
   );
@@ -194,7 +252,7 @@ function ZapIcon() {
 
 function BarChartIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="20" x2="12" y2="10" />
       <line x1="18" y1="20" x2="18" y2="4" />
       <line x1="6" y1="20" x2="6" y2="16" />
@@ -204,7 +262,7 @@ function BarChartIcon() {
 
 function BuildingIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
       <path d="M9 22v-4h6v4" />
     </svg>
@@ -213,7 +271,7 @@ function BuildingIcon() {
 
 function BookOpenIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
@@ -222,7 +280,7 @@ function BookOpenIcon() {
 
 function LayersIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
       <polyline points="2 17 12 22 22 17" />
       <polyline points="2 12 12 17 22 12" />
@@ -232,7 +290,7 @@ function LayersIcon() {
 
 function LayoutDashboardIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" />
       <rect x="14" y="3" width="7" height="7" />
       <rect x="14" y="14" width="7" height="7" />
@@ -243,7 +301,7 @@ function LayoutDashboardIcon() {
 
 function SettingsIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
@@ -369,14 +427,12 @@ export function Navbar() {
   // Global keyboard shortcuts (⌘K or Ctrl+K for search, Escape to close)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // ⌘K or Ctrl+K
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         if (searchInputRef.current) {
           searchInputRef.current.focus();
         }
       }
-      // Escape closes dropdowns and mobile menus
       if (e.key === "Escape") {
         setActiveDropdown(null);
         setMobileMenuOpen(false);
@@ -403,8 +459,13 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle Dropdown Hover / Focus
-  const handleDropdownToggle = (key: string) => {
+  // Handle Dropdown Toggle & Hover
+  const handleDropdownToggle = (key: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
     setActiveDropdown((prev) => (prev === key ? null : key));
   };
 
@@ -418,7 +479,7 @@ export function Navbar() {
   const handleMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 150);
+    }, 200);
   };
 
   // Search Submit
@@ -513,28 +574,66 @@ export function Navbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-50 w-full bg-[#FFFFFF] border-b border-[#D1D5DB] shadow-sm select-none"
+      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-2.5 pt-2 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
     >
-      {/* Official Government Portal Style Top Accent Stripe */}
-      <div className="h-[3px] w-full bg-[#E85D2A]" />
+      {/* ------------------------------------------------------------------ */}
+      {/* BACKGROUND DECORATIONS (Soft arcs, wave background & pulse line)  */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Soft pale orange bottom-left arc */}
+        <div className="absolute -left-16 -bottom-20 w-64 h-64 rounded-full bg-gradient-to-tr from-[#FFF0E8] via-[#FAD5C2]/40 to-transparent blur-2xl opacity-80" />
+        
+        {/* Soft top-right cream/orange wave circle */}
+        <div className="absolute -right-12 -top-16 w-80 h-80 rounded-full bg-gradient-to-bl from-[#FFF0E8] via-[#FAD5C2]/30 to-transparent blur-3xl opacity-80" />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[60px] gap-4">
+        {/* Integrated SkillPulse Workforce Pulse / Data Signal Line */}
+        <svg
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-12 opacity-20 pointer-events-none"
+          viewBox="0 0 1440 48"
+          fill="none"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 24 H400 L420 14 L440 34 L460 6 L480 40 L500 18 L520 28 L540 24 H900 L920 12 L940 36 L960 16 L980 32 L1000 24 H1440"
+            stroke="#E85D2A"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+
+        {/* Subtle Institutional Watermark Backdrop (Right side) */}
+        <div className="hidden xl:flex flex-col items-end absolute right-6 top-2 pointer-events-none opacity-25 select-none">
+          <span className="text-[0.5625rem] font-serif italic tracking-wider text-[#64748B] uppercase">
+            Empowering
+          </span>
+          <span className="text-[0.625rem] font-medium tracking-tight text-[#E85D2A]">
+            Maharashtra&apos;s Workforce
+          </span>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* FLOATING SOFT NAVBAR CONTAINER                                    */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-6 relative z-10 overflow-visible">
+        <div className="bg-[#FFFFFF]/95 backdrop-blur-md border border-[#E5D9D0] rounded-full px-3.5 sm:px-5 py-1.5 flex items-center justify-between gap-2 lg:gap-2.5 shadow-[0_6px_20px_-4px_rgba(232,93,42,0.06),0_2px_8px_rgba(0,0,0,0.03)] h-[54px] transition-all duration-200 overflow-visible">
+          
           {/* ================================================================ */}
           {/* Left: SkillPulse Logo & Institutional Brand                      */}
           {/* ================================================================ */}
-          <div className="flex items-center gap-6 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-md py-1"
+              className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-full py-0.5 pr-1"
               aria-label="SkillPulse Home"
             >
-              <LogoIcon className="w-8 h-8 shrink-0 transition-transform group-hover:scale-105 duration-150" />
+              <LogoIcon className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 transition-transform group-hover:scale-105 duration-200 shadow-xs" />
               <div className="flex flex-col">
-                <span className="text-[1.125rem] font-bold tracking-tight text-[#111827] leading-none">
+                <span className="text-[1rem] sm:text-[1.125rem] font-bold tracking-tight text-[#1F2933] leading-none">
                   Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
-                <span className="text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#6B7280] leading-tight mt-0.5 hidden sm:block">
+                <span className="text-[0.5rem] sm:text-[0.5625rem] font-semibold uppercase tracking-[0.08em] text-[#64748B] leading-tight mt-0.5 hidden sm:block">
                   Workforce Intelligence
                 </span>
               </div>
@@ -545,56 +644,58 @@ export function Navbar() {
           {/* Center: Desktop Navigation Links & Dropdowns                    */}
           {/* ================================================================ */}
           <nav
-            className="hidden xl:flex items-center gap-1"
+            className="hidden xl:flex items-center gap-1 relative overflow-visible"
             role="navigation"
             aria-label="Main Navigation"
           >
             {/* 1. Home */}
             <Link
               href="/"
-              className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname === "/"
-                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                  ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2] shadow-2xs"
+                  : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
+              <HomeIcon className={`w-3.5 h-3.5 ${pathname === "/" ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Home
               {pathname === "/" && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
             {/* 2. Intelligence Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("intelligence")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("intelligence")}
-                className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("intelligence", e)}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isIntelligenceActive || activeDropdown === "intelligence"
-                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                    : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
                 }`}
                 aria-expanded={activeDropdown === "intelligence"}
                 aria-haspopup="true"
               >
+                <BarChartNavIcon className={`w-3.5 h-3.5 ${isIntelligenceActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Intelligence
-                <ChevronDownIcon className={activeDropdown === "intelligence" ? "rotate-180" : ""} />
+                <ChevronDownIcon className={activeDropdown === "intelligence" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isIntelligenceActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "intelligence" && (
                 <div
-                  className="absolute left-0 mt-1 w-80 bg-white border border-[#D1D5DB] rounded-lg shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Intelligence menu"
                 >
-                  <div className="px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-wider text-[#6B7280] border-b border-[#E5E7EB] mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Workforce & Skill Intelligence
                   </div>
                   {INTELLIGENCE_ITEMS.map((item) => {
@@ -604,22 +705,23 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
-                        className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                        onClick={() => setActiveDropdown(null)}
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#111827] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#6B7280] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -632,35 +734,36 @@ export function Navbar() {
 
             {/* 3. Training & Curriculum Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("training")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("training")}
-                className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("training", e)}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isTrainingActive || activeDropdown === "training"
-                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                    : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
                 }`}
                 aria-expanded={activeDropdown === "training"}
                 aria-haspopup="true"
               >
+                <GraduationCapIcon className={`w-3.5 h-3.5 ${isTrainingActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Training & Curriculum
-                <ChevronDownIcon className={activeDropdown === "training" ? "rotate-180" : ""} />
+                <ChevronDownIcon className={activeDropdown === "training" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isTrainingActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "training" && (
                 <div
-                  className="absolute left-0 mt-1 w-80 bg-white border border-[#D1D5DB] rounded-lg shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Training menu"
                 >
-                  <div className="px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-wider text-[#6B7280] border-b border-[#E5E7EB] mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Learning Pathways & Standards
                   </div>
                   {TRAINING_ITEMS.map((item) => {
@@ -670,22 +773,23 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
-                        className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                        onClick={() => setActiveDropdown(null)}
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#111827] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#6B7280] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -699,64 +803,67 @@ export function Navbar() {
             {/* 4. Outcomes */}
             <Link
               href="/outcomes"
-              className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname.startsWith("/outcomes")
-                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                  ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                  : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
+              <TrendingUpNavIcon className={`w-3.5 h-3.5 ${pathname.startsWith("/outcomes") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Outcomes
               {pathname.startsWith("/outcomes") && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
             {/* 5. Recommendations */}
             <Link
               href="/recommendations"
-              className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+              className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative inline-flex items-center gap-1 ${
                 pathname.startsWith("/recommendations")
-                  ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                  : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                  ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                  : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
               }`}
             >
+              <LightbulbNavIcon className={`w-3.5 h-3.5 ${pathname.startsWith("/recommendations") ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
               Recommendations
               {pathname.startsWith("/recommendations") && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
               )}
             </Link>
 
             {/* 6. Dashboards Dropdown */}
             <div
-              className="relative"
+              className="relative overflow-visible"
               onMouseEnter={() => handleMouseEnter("dashboards")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
-                onClick={() => handleDropdownToggle("dashboards")}
-                className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150 relative ${
+                onClick={(e) => handleDropdownToggle("dashboards", e)}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-all duration-150 relative cursor-pointer ${
                   isDashboardsActive || activeDropdown === "dashboards"
-                    ? "text-[#E85D2A] font-semibold bg-[#FFF0E8]"
-                    : "text-[#1F2937] hover:text-[#E85D2A] hover:bg-[#FFFCF9]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                    : "text-[#1F2933] hover:text-[#E85D2A] hover:bg-[#FFF0E8]/60"
                 }`}
                 aria-expanded={activeDropdown === "dashboards"}
                 aria-haspopup="true"
               >
+                <GridNavIcon className={`w-3.5 h-3.5 ${isDashboardsActive ? "text-[#E85D2A]" : "text-[#64748B]"}`} />
                 Dashboards
-                <ChevronDownIcon className={activeDropdown === "dashboards" ? "rotate-180" : ""} />
+                <ChevronDownIcon className={activeDropdown === "dashboards" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"} />
                 {isDashboardsActive && (
-                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#E85D2A] rounded-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-[2.5px] bg-[#E85D2A] rounded-full shadow-xs" />
                 )}
               </button>
 
               {activeDropdown === "dashboards" && (
                 <div
-                  className="absolute right-0 mt-1 w-80 bg-white border border-[#D1D5DB] rounded-lg shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute right-0 top-full mt-2 w-76 bg-[#FFFFFF] border border-[#E5D9D0] rounded-2xl shadow-[0_10px_25px_-5px_rgba(232,93,42,0.14),0_4px_12px_rgba(0,0,0,0.08)] py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-label="Dashboards menu"
                 >
-                  <div className="px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-wider text-[#6B7280] border-b border-[#E5E7EB] mb-1">
+                  <div className="px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#64748B] border-b border-[#E5D9D0]/60 mb-1">
                     Stakeholder Views & Control
                   </div>
                   {DASHBOARDS_ITEMS.map((item) => {
@@ -766,22 +873,23 @@ export function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
-                        className={`flex items-start gap-3 px-3 py-2.5 text-xs transition-colors duration-150 ${
-                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                        onClick={() => setActiveDropdown(null)}
+                        className={`flex items-start gap-2.5 px-3 py-2 text-xs rounded-xl mx-1 transition-colors duration-150 ${
+                          isItemActive ? "bg-[#FFF0E8] text-[#E85D2A]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                         }`}
                       >
                         <span
-                          className={`p-1.5 rounded-md mt-0.5 shrink-0 ${
-                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#F3F4F6] text-[#E85D2A]"
+                          className={`p-1 rounded-md mt-0.5 shrink-0 transition-colors ${
+                            isItemActive ? "bg-[#E85D2A] text-white" : "bg-[#FFF0E8] text-[#E85D2A]"
                           }`}
                         >
                           {item.icon}
                         </span>
                         <div>
-                          <p className="font-semibold text-sm text-[#111827] leading-snug">
+                          <p className="font-semibold text-xs text-[#1F2933] leading-snug">
                             {item.label}
                           </p>
-                          <p className="text-[0.75rem] text-[#6B7280] mt-0.5 leading-normal">
+                          <p className="text-[0.7rem] text-[#64748B] mt-0.5 leading-normal">
                             {item.description}
                           </p>
                         </div>
@@ -796,9 +904,9 @@ export function Navbar() {
           {/* ================================================================ */}
           {/* Right: Search + Auth + Actions                                  */}
           {/* ================================================================ */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-nowrap">
             {/* Desktop Search Bar with Voice Microphone */}
-            <div className="relative hidden md:flex flex-col items-end">
+            <div className="relative hidden lg:flex flex-col items-end">
               <form
                 onSubmit={handleSearchSubmit}
                 className="relative flex items-center"
@@ -807,7 +915,7 @@ export function Navbar() {
                 <label htmlFor="nav-search-input" className="sr-only">
                   Search skills, roles, courses
                 </label>
-                <SearchIcon className="absolute left-3 w-4 h-4 text-[#6B7280] pointer-events-none" />
+                <SearchIcon className="absolute left-3 w-3.5 h-3.5 text-[#64748B] pointer-events-none" />
                 <input
                   id="nav-search-input"
                   ref={searchInputRef}
@@ -816,35 +924,38 @@ export function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
-                  placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
-                  className={`w-44 lg:w-60 pl-9 pr-9 py-1.5 text-xs bg-[#FFFFFF] border rounded-md transition-all duration-150 text-[#1F2937] placeholder-[#6B7280] ${
+                  placeholder={isListening ? "Listening..." : "Search skills..."}
+                  className={`w-28 xl:w-44 pl-8 pr-8 py-1 text-[0.75rem] bg-[#FFFFFF] border rounded-full transition-all duration-150 text-[#1F2933] placeholder-[#64748B] shadow-2xs ${
                     isListening
                       ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
                       : isSearchFocused
-                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-56 lg:w-68"
-                      : "border-[#D1D5DB] hover:border-[#9CA3AF]"
+                      ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/20 w-40 xl:w-52 bg-[#FFFCF9]"
+                      : "border-[#E5D9D0] hover:border-[#F28C5B]"
                   }`}
                 />
                 
-                {/* Voice Search Microphone Button inside Search Bar */}
-                <button
-                  type="button"
-                  onClick={toggleVoiceSearch}
-                  aria-label={isListening ? "Stop voice search" : "Start voice search"}
-                  title={isListening ? "Listening... Click to stop" : "Start voice search"}
-                  className={`absolute right-2 p-1 rounded-full transition-all duration-150 ${
-                    isListening
-                      ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                      : "text-[#6B7280] hover:text-[#E85D2A] hover:bg-[#F3F4F6]"
-                  }`}
-                >
-                  <MicIcon className="w-3.5 h-3.5" />
-                </button>
+                {/* Micro vertical divider & Voice Search Microphone Button */}
+                <div className="absolute right-1.5 flex items-center gap-0.5">
+                  <span className="h-3 w-[1px] bg-[#E5D9D0]" />
+                  <button
+                    type="button"
+                    onClick={toggleVoiceSearch}
+                    aria-label={isListening ? "Stop voice search" : "Start voice search"}
+                    title={isListening ? "Listening... Click to stop" : "Start voice search"}
+                    className={`p-0.5 rounded-full transition-all duration-150 cursor-pointer ${
+                      isListening
+                        ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
+                        : "text-[#E85D2A] hover:bg-[#FFF0E8]"
+                    }`}
+                  >
+                    <MicIcon className="w-3 h-3" />
+                  </button>
+                </div>
               </form>
 
               {/* Voice Error Notification Popup */}
               {voiceErrorMessage && (
-                <div className="absolute top-full right-0 mt-1 z-50 bg-[#1E293B] text-white text-[0.7rem] px-2.5 py-1 rounded shadow-md whitespace-nowrap animate-in fade-in">
+                <div className="absolute top-full right-0 mt-1 z-50 bg-[#1E293B] text-white text-[0.7rem] px-2 py-0.5 rounded-md shadow-md whitespace-nowrap animate-in fade-in">
                   {voiceErrorMessage}
                 </div>
               )}
@@ -854,19 +965,19 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-md transition-colors"
+              className="lg:hidden p-1.5 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
               aria-label="Toggle search input"
             >
-              <SearchIcon className="w-5 h-5" />
+              <SearchIcon className="w-4 h-4" />
             </button>
 
-            {/* Authentication States via Clerk */}
-            {isLoaded && !isSignedIn && (
-              <div className="flex items-center gap-2 shrink-0">
+            {/* Authentication States via Clerk — Visible Sign In and Register Buttons */}
+            {(!isLoaded || !isSignedIn) && (
+              <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
                 <SignInButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-md transition-colors duration-150 cursor-pointer shrink-0"
+                    className="whitespace-nowrap px-3 py-1 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] bg-white hover:bg-[#FFF0E8] rounded-full transition-all duration-150 cursor-pointer shrink-0 shadow-2xs"
                   >
                     Sign In
                   </button>
@@ -874,7 +985,7 @@ export function Navbar() {
                 <SignUpButton mode="modal">
                   <button
                     type="button"
-                    className="whitespace-nowrap px-3.5 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors duration-150 shadow-sm cursor-pointer shrink-0 hidden sm:block"
+                    className="whitespace-nowrap px-3 py-1 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-all duration-150 shadow-xs cursor-pointer shrink-0"
                   >
                     Register
                   </button>
@@ -883,22 +994,22 @@ export function Navbar() {
             )}
 
             {isLoaded && isSignedIn && (
-              <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 {/* Notification Bell */}
                 <button
                   type="button"
-                  className="relative p-2 text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] rounded-md transition-colors"
+                  className="relative p-1.5 text-[#64748B] hover:text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors cursor-pointer"
                   aria-label="View notifications"
                 >
                   <BellIcon className="w-4 h-4" />
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#E85D2A] rounded-full ring-2 ring-white" />
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#E85D2A] rounded-full ring-2 ring-white" />
                 </button>
 
                 {/* Quick Dashboard Shortcut (if not on dashboard) */}
                 {!pathname.startsWith("/dashboard") && (
                   <Link
                     href="/dashboard"
-                    className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors shadow-sm whitespace-nowrap"
+                    className="hidden xl:inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
                   >
                     <LayoutDashboardIcon />
                     Dashboard
@@ -906,11 +1017,11 @@ export function Navbar() {
                 )}
 
                 {/* Clerk User Button */}
-                <div className="flex items-center pl-1 shrink-0">
+                <div className="flex items-center pl-0.5 shrink-0">
                   <UserButton
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 border border-[#D1D5DB]",
+                        avatarBox: "w-7 h-7 border border-[#E5D9D0] rounded-full",
                       },
                     }}
                   />
@@ -922,11 +1033,11 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-[#1F2937] hover:bg-[#F3F4F6] rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A]"
+              className="xl:hidden p-1.5 text-[#1F2933] hover:bg-[#FFF0E8] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#E85D2A] cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+              {mobileMenuOpen ? <CloseIcon className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -935,12 +1046,12 @@ export function Navbar() {
         {/* Mobile Expandable Search Bar with Voice Control                  */}
         {/* ================================================================ */}
         {mobileSearchOpen && (
-          <div className="md:hidden py-2.5 border-t border-[#E5E7EB] animate-in fade-in duration-150">
+          <div className="lg:hidden mt-2 py-1.5 px-1 animate-in fade-in duration-150">
             <form onSubmit={handleSearchSubmit} className="relative flex items-center">
               <label htmlFor="mobile-search-input" className="sr-only">
                 Search skills, roles, courses
               </label>
-              <SearchIcon className="absolute left-3 w-4 h-4 text-[#6B7280] pointer-events-none" />
+              <SearchIcon className="absolute left-3.5 w-4 h-4 text-[#64748B] pointer-events-none" />
               <input
                 id="mobile-search-input"
                 type="search"
@@ -948,10 +1059,10 @@ export function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isListening ? "Listening..." : "Search skills, roles, courses..."}
                 autoFocus
-                className={`w-full pl-9 pr-14 py-2 text-xs bg-[#FFFFFF] border rounded-md text-[#1F2937] focus:outline-none ${
+                className={`w-full pl-9 pr-14 py-1.5 text-xs bg-[#FFFFFF] border rounded-full text-[#1F2933] focus:outline-none shadow-xs ${
                   isListening
                     ? "border-[#E85D2A] ring-2 ring-[#E85D2A]/30 bg-[#FFF0E8]"
-                    : "border-[#D1D5DB] focus:border-[#E85D2A] focus:ring-2 focus:ring-[#E85D2A]/20"
+                    : "border-[#E5D9D0] focus:border-[#E85D2A] focus:ring-2 focus:ring-[#E85D2A]/20"
                 }`}
               />
               
@@ -963,7 +1074,7 @@ export function Navbar() {
                 className={`absolute right-3 p-1 rounded-full transition-all ${
                   isListening
                     ? "text-[#DC2626] bg-[#FEE2E2] animate-pulse ring-2 ring-[#EF4444]"
-                    : "text-[#6B7280] hover:text-[#E85D2A]"
+                    : "text-[#E85D2A] hover:bg-[#FFF0E8]"
                 }`}
               >
                 <MicIcon className="w-4 h-4" />
@@ -971,7 +1082,7 @@ export function Navbar() {
             </form>
 
             {voiceErrorMessage && (
-              <div className="mt-1 text-[0.7rem] text-[#DC2626] px-1 font-medium">
+              <div className="mt-1 text-[0.7rem] text-[#DC2626] px-2 font-medium">
                 {voiceErrorMessage}
               </div>
             )}
@@ -986,25 +1097,25 @@ export function Navbar() {
         <div className="xl:hidden fixed inset-0 z-50 flex">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/30 transition-opacity"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
 
           {/* Drawer Content */}
-          <div className="relative flex flex-col w-full max-w-xs bg-white h-full shadow-2xl border-r border-[#D1D5DB] overflow-y-auto animate-in slide-in-from-left duration-200">
+          <div className="relative flex flex-col w-full max-w-xs bg-[#FFFFFF] h-full shadow-2xl border-r border-[#E5D9D0] overflow-y-auto animate-in slide-in-from-left duration-200">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between px-5 h-16 border-b border-[#D1D5DB]">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-[#E5D9D0] bg-[#FFF8F2]">
               <div className="flex items-center gap-2">
                 <LogoIcon className="w-7 h-7 shrink-0" />
-                <span className="font-bold text-base text-[#111827]">
+                <span className="font-bold text-base text-[#1F2933]">
                   Skill<span className="text-[#E85D2A]">Pulse</span>
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 text-[#6B7280] hover:text-[#111827] rounded-md hover:bg-[#F3F4F6]"
+                className="p-1 text-[#64748B] hover:text-[#1F2933] rounded-full hover:bg-[#FFF0E8]"
                 aria-label="Close menu"
               >
                 <CloseIcon className="w-5 h-5" />
@@ -1012,15 +1123,16 @@ export function Navbar() {
             </div>
 
             {/* Mobile Nav Links */}
-            <div className="flex-1 px-4 py-4 space-y-1">
+            <div className="flex-1 px-4 py-4 space-y-1.5">
               {/* Home */}
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
-                  pathname === "/" ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold" : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
+                  pathname === "/" ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]" : "text-[#1F2933] hover:bg-[#FFF8F2]"
                 }`}
               >
+                <HomeIcon className="w-4 h-4" />
                 Home
               </Link>
 
@@ -1031,26 +1143,27 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "intelligence" ? null : "intelligence"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
-                  <span className={isIntelligenceActive ? "font-semibold text-[#E85D2A]" : ""}>
+                  <span className={`flex items-center gap-2.5 ${isIntelligenceActive ? "font-semibold text-[#E85D2A]" : ""}`}>
+                    <BarChartNavIcon className="w-4 h-4" />
                     Intelligence
                   </span>
                   <ChevronDownIcon
-                    className={mobileAccordion === "intelligence" ? "rotate-180" : ""}
+                    className={mobileAccordion === "intelligence" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"}
                   />
                 </button>
                 {mobileAccordion === "intelligence" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-4 mt-1">
                     {INTELLIGENCE_ITEMS.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
+                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-lg ${
                           pathname === item.href
                             ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
-                            : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                            : "text-[#64748B] hover:bg-[#FFF8F2] hover:text-[#1F2933]"
                         }`}
                       >
                         <span className="text-[#E85D2A]">{item.icon}</span>
@@ -1068,26 +1181,27 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "training" ? null : "training"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
-                  <span className={isTrainingActive ? "font-semibold text-[#E85D2A]" : ""}>
+                  <span className={`flex items-center gap-2.5 ${isTrainingActive ? "font-semibold text-[#E85D2A]" : ""}`}>
+                    <GraduationCapIcon className="w-4 h-4" />
                     Training & Curriculum
                   </span>
                   <ChevronDownIcon
-                    className={mobileAccordion === "training" ? "rotate-180" : ""}
+                    className={mobileAccordion === "training" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"}
                   />
                 </button>
                 {mobileAccordion === "training" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-4 mt-1">
                     {TRAINING_ITEMS.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
+                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-lg ${
                           pathname === item.href
                             ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
-                            : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                            : "text-[#64748B] hover:bg-[#FFF8F2] hover:text-[#1F2933]"
                         }`}
                       >
                         <span className="text-[#E85D2A]">{item.icon}</span>
@@ -1102,12 +1216,13 @@ export function Navbar() {
               <Link
                 href="/outcomes"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
                   pathname.startsWith("/outcomes")
-                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
-                    : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                    : "text-[#1F2933] hover:bg-[#FFF8F2]"
                 }`}
               >
+                <TrendingUpNavIcon className="w-4 h-4" />
                 Outcomes
               </Link>
 
@@ -1115,12 +1230,13 @@ export function Navbar() {
               <Link
                 href="/recommendations"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium rounded-xl transition-colors ${
                   pathname.startsWith("/recommendations")
-                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
-                    : "text-[#1F2937] hover:bg-[#FFFCF9]"
+                    ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold border border-[#FAD5C2]"
+                    : "text-[#1F2933] hover:bg-[#FFF8F2]"
                 }`}
               >
+                <LightbulbNavIcon className="w-4 h-4" />
                 Recommendations
               </Link>
 
@@ -1131,26 +1247,27 @@ export function Navbar() {
                   onClick={() =>
                     setMobileAccordion((prev) => (prev === "dashboards" ? null : "dashboards"))
                   }
-                  className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-[#1F2937] hover:bg-[#FFFCF9] rounded-md"
+                  className="flex items-center justify-between w-full px-3.5 py-2 text-sm font-medium text-[#1F2933] hover:bg-[#FFF8F2] rounded-xl"
                 >
-                  <span className={isDashboardsActive ? "font-semibold text-[#E85D2A]" : ""}>
+                  <span className={`flex items-center gap-2.5 ${isDashboardsActive ? "font-semibold text-[#E85D2A]" : ""}`}>
+                    <GridNavIcon className="w-4 h-4" />
                     Dashboards
                   </span>
                   <ChevronDownIcon
-                    className={mobileAccordion === "dashboards" ? "rotate-180" : ""}
+                    className={mobileAccordion === "dashboards" ? "rotate-180 text-[#E85D2A]" : "text-[#64748B]"}
                   />
                 </button>
                 {mobileAccordion === "dashboards" && (
-                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-3 mt-1">
+                  <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-[#E85D2A] ml-4 mt-1">
                     {DASHBOARDS_ITEMS.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-md ${
+                        className={`flex items-center gap-2 px-3 py-2 text-xs rounded-lg ${
                           pathname === item.href
                             ? "bg-[#FFF0E8] text-[#E85D2A] font-semibold"
-                            : "text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                            : "text-[#64748B] hover:bg-[#FFF8F2] hover:text-[#1F2933]"
                         }`}
                       >
                         <span className="text-[#E85D2A]">{item.icon}</span>
@@ -1163,13 +1280,13 @@ export function Navbar() {
             </div>
 
             {/* Mobile Auth Bottom Section */}
-            <div className="p-4 border-t border-[#D1D5DB] bg-[#F9FAFB]">
-              {isLoaded && !isSignedIn && (
-                <div className="flex flex-col gap-2">
+            <div className="p-4 border-t border-[#E5D9D0] bg-[#FFF8F2]">
+              {(!isLoaded || !isSignedIn) && (
+                <div className="flex flex-row gap-2">
                   <SignInButton mode="modal">
                     <button
                       type="button"
-                      className="w-full py-2 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] rounded-md bg-white hover:bg-[#FFF0E8] transition-colors whitespace-nowrap"
+                      className="flex-1 py-1.5 text-xs font-semibold text-[#E85D2A] border border-[#E85D2A] rounded-full bg-white hover:bg-[#FFF0E8] transition-colors whitespace-nowrap shadow-2xs"
                     >
                       Sign In
                     </button>
@@ -1177,7 +1294,7 @@ export function Navbar() {
                   <SignUpButton mode="modal">
                     <button
                       type="button"
-                      className="w-full py-2 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-md transition-colors shadow-sm whitespace-nowrap"
+                      className="flex-1 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] hover:bg-[#C94A20] rounded-full transition-colors shadow-xs whitespace-nowrap"
                     >
                       Register
                     </button>
@@ -1187,14 +1304,14 @@ export function Navbar() {
 
               {isLoaded && isSignedIn && (
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <UserButton />
-                    <span className="text-xs font-medium text-[#111827]">My Account</span>
+                    <span className="text-xs font-medium text-[#1F2933]">My Account</span>
                   </div>
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] rounded-md hover:bg-[#C94A20] whitespace-nowrap"
+                    className="px-3 py-1.5 text-xs font-semibold text-white bg-[#E85D2A] rounded-full hover:bg-[#C94A20] whitespace-nowrap shadow-xs"
                   >
                     Dashboard
                   </Link>

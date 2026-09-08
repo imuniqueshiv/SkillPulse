@@ -22,11 +22,23 @@
   --sp-text-secondary: #6B7280;
   --sp-text-tertiary: #9CA3AF;
 
-  /* Accent — Government of India official blue */
+  /* Accent — Government & Institutional Orange */
   --sp-accent: #E85D2A;
   --sp-accent-hover: #C94A20;
-  --sp-accent-muted: hsla(15 80% 54% / 0.08);
+  --sp-accent-muted: hsla(15, 80%, 54%, 0.08);
   --sp-accent-text: #C94A20;
+
+  /* SkillPulse Navbar Theme System — White + Cream + Orange */
+  --sp-nav-orange-primary: #E85D2A;
+  --sp-nav-orange-dark: #C94A20;
+  --sp-nav-orange-light: #F28C5B;
+  --sp-nav-orange-pale: #FFF0E8;
+  --sp-nav-cream: #FFF8F2;
+  --sp-nav-warm-white: #FFFCF9;
+  --sp-nav-white: #FFFFFF;
+  --sp-nav-text-dark: #1F2933;
+  --sp-nav-text-muted: #64748B;
+  --sp-nav-border: #E5D9D0;
 
   /* Semantic */
   --sp-success: #15803D;
@@ -41,11 +53,13 @@
   --sp-radius-md: 8px;
   --sp-radius-lg: 10px;
   --sp-radius-xl: 14px;
+  --sp-radius-pill: 9999px;
 
-  /* Shadows — subtle for light theme */
+  /* Shadows — soft floating shadow for institutional navbar */
   --sp-shadow-sm: 0 1px 2px hsla(220 20% 20% / 0.06);
   --sp-shadow-md: 0 4px 12px hsla(220 20% 20% / 0.08);
   --sp-shadow-lg: 0 8px 24px hsla(220 20% 20% / 0.1);
+  --sp-shadow-nav: 0 10px 30px -5px rgba(232, 93, 42, 0.07), 0 4px 14px -2px rgba(0, 0, 0, 0.03);
 
   /* Transitions */
   --sp-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
