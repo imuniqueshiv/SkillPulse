@@ -84,7 +84,7 @@ Raw values are not normalized (e.g. `"React.js / React JS"` stays that string). 
 
 A source adapter maps a source-specific record into this contract and calls `parseJobIngestionRecord`. Adapters are in-process code (`adapter.ts` registry, keyed by DataSource `code`). They do **not** persist `Job` rows and do **not** replace the DataSource registry.
 
-Executable adapters live under `apps/api/src/modules/ingestion/`. The test-only fixture `skillpulse-test-fixture` (`sp.source.demo-seed`) remains for Phase 5.4–5.11 tests. Phase 5.12 adds the first state source adapter: Mahaswayam Rojgar (`sp.source.mahaswayam-rojgar`). No NCS, data.gov.in, NCVET, or DGT job adapter exists. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
+Executable adapters live under `apps/api/src/modules/ingestion/`. The test-only fixture `skillpulse-test-fixture` (`sp.source.demo-seed`) remains for Phase 5.4–5.11 tests. Phase 5.12 adds Mahaswayam Rojgar (`sp.source.mahaswayam-rojgar`). Phase 17 adds an **NCS-shaped** file/synthetic adapter (`sp.source.ncs`, `skillpulse-ncs`) — see [ncs-ingestion.md](ncs-ingestion.md). It does **not** claim live NCS API integration. Registered `accessMethod` values remain `WEB_REFERENCE` unless independently verified later.
 
 ## Raw storage (Phase 5.3)
 
@@ -286,7 +286,7 @@ POSSIBLE_DUPLICATE is not coerced to DUPLICATE. Phase 5.6 only emits it on the f
 
 **Retry:** raw storage always inserts a new row (not idempotent). Evidence and Job reuse their existing identity rules. Repeating the same source + `externalId` does not create a second Job.
 
-No HTTP ingestion API. No live NCS/Mahaswayam/data.gov.in fetch.
+No HTTP ingestion API. No live NCS/Mahaswayam/data.gov.in fetch. Phase 17 supports **file/synthetic** NCS-shaped ingest only ([ncs-ingestion.md](ncs-ingestion.md)).
 
 ## State-agnostic source ingestion (Phase 5.12)
 
@@ -335,6 +335,19 @@ Field mapping (fixture / documented export shape — not an official portal API 
 | (caller) `observedAt` / `ingestedAt` | `payload.observedAt` / `ingestedAt` |
 
 Missing source fields stay omitted/null. Skills are never extracted from title or description. Location strings are not parsed into `Location` rows (`locationId` stays null).
+
+### National Career Service (Phase 17)
+
+| | |
+| --- | --- |
+| DataSource | `sp.source.ncs` (registered, `geographicScope=INDIA`, `accessMethod=WEB_REFERENCE`) |
+| Adapter | `skillpulse-ncs` (`sources/ncs.ts`) |
+| Access states | `DISABLED` / `SYNTHETIC_FIXTURE` / `AUTHORIZED_FILE` / `AUTHORIZED_LIVE` (live **not implemented**) |
+| Live access | **Not implemented.** No authorized API client. Scraping not assumed permitted. |
+| What tests ingest | Synthetic fixture `data/sample/ingestion/ncs-maharashtra.sample.json` (`SYNTHETIC` — **not real NCS data**) |
+| CLI | `pnpm --filter api ncs:ingest -- --mode synthetic\|file [--state Maharashtra] [--dry-run]` |
+
+Source `functional_role` / `sector` remain in `sourceMetadata` and are **not** Phase 6 occupation/sector.
 
 ### How to add another state/source
 

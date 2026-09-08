@@ -67,7 +67,7 @@ test("duplicate adapter registration is rejected", () => {
 test("unknown adapter is rejected", () => {
   registerJobSourceAdapter(fixtureJobAdapter);
   assert.throws(
-    () => getJobSourceAdapter("sp.source.ncs"),
+    () => getJobSourceAdapter("sp.source.unknown-not-registered"),
     (error: unknown) =>
       error instanceof AppError &&
       error.statusCode === 404 &&

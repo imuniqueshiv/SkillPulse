@@ -4,7 +4,7 @@
     "name": "National Career Service",
     "type": "GOVERNMENT",
     "url": "https://www.ncs.gov.in/",
-    "description": "Ministry of Labour and Employment portal for jobseekers, employers and career services. Homepage verified. Public machine-readable API, bulk file dump, license and update frequency were not verified. Access method is a homepage reference only.",
+    "description": "Ministry of Labour and Employment portal for jobseekers, employers and career services. Homepage verified. Public machine-readable API, bulk file dump, license and update frequency were NOT VERIFIED. Access method remains WEB_REFERENCE. Phase 17 registers an NCS-shaped file/synthetic adapter (skillpulse-ncs); it does NOT claim live NCS integration or scraping permission. Synthetic fixture: data/sample/ingestion/ncs-maharashtra.sample.json (SYNTHETIC — not real NCS data).",
     "accessMethod": "WEB_REFERENCE",
     "domain": "JOBS",
     "geographicScope": "INDIA",

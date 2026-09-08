@@ -24,6 +24,8 @@ Sources → Ingestion + Provenance → Job Intelligence → Quality/Trust
 → Product API → Dashboard
 ```
 
+Phase 17 adds an **NCS-shaped** source adapter at the Phase 5 boundary (file / synthetic fixture). It does not rewrite Phases 6–8 and does not claim live NCS API access. See [ncs-ingestion.md](ncs-ingestion.md).
+
 The web app calls the API over HTTP (`NEXT_PUBLIC_API_URL`, default `http://localhost:4000`). Prisma is used only from `apps/api`.
 
 A FastAPI service exists at `services/intelligence` (`:8000`). It is optional for local web + API development and is not called by Express today.

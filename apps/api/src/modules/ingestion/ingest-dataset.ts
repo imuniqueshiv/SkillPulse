@@ -11,6 +11,7 @@ import {
 } from "./job-ingestion-pipeline";
 import { JOB_VALIDATION_STATUS } from "./job-validation";
 import { mahaswayamRojgarAdapter } from "./sources/mahaswayam-rojgar";
+import { ncsAdapter } from "./sources/ncs";
 
 /**
  * Built-in executable adapters. Add a future state/source here; do not branch
@@ -18,6 +19,7 @@ import { mahaswayamRojgarAdapter } from "./sources/mahaswayam-rojgar";
  */
 const BUILTIN_JOB_SOURCE_ADAPTERS: JobSourceAdapter<unknown>[] = [
   mahaswayamRojgarAdapter as JobSourceAdapter<unknown>,
+  ncsAdapter as JobSourceAdapter<unknown>,
 ];
 
 export type IngestSourceDatasetInput<TSource = unknown> = {

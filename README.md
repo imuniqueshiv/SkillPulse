@@ -286,6 +286,17 @@ Liveness / readiness: `GET /health`, `GET /ready` (DB), `GET /health/db`.
 
 Synthetic evaluation datasets live under `data/sample/evaluation/`. Ingestion fixtures under `data/sample/ingestion/` carry acquisition/provenance fields. Phase 7 quality eligibility gates demand and downstream signals.
 
+### NCS job-demand ingestion (Phase 17)
+
+Registered source: `sp.source.ncs` (National Career Service). File/synthetic adapter: `skillpulse-ncs`. Live NCS API is **not** implemented.
+
+```bash
+pnpm --filter api ncs:ingest -- --mode synthetic --dry-run
+pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra
+```
+
+Synthetic fixture: `data/sample/ingestion/ncs-maharashtra.sample.json` — **not real NCS data**. Details: [docs/ncs-ingestion.md](docs/ncs-ingestion.md).
+
 ### Limitations
 
 - No durable learner/supply registry in MVP; gap and employment need caller-provided observations.
@@ -294,6 +305,7 @@ Synthetic evaluation datasets live under `data/sample/evaluation/`. Ingestion fi
 - Rate limiting deferred for authenticated single-instance MVP ([docs/deployment.md](docs/deployment.md)).
 - Cloud deployment is documented but **not verified in-repo** without an operator-chosen host and credentials.
 - Authenticated browser smoke requires a live Clerk session (`SMOKE_BEARER_TOKEN` for API smoke).
+- NCS live access is **not configured**; synthetic/file modes only ([docs/ncs-ingestion.md](docs/ncs-ingestion.md)).
 
 ### Production deploy
 
