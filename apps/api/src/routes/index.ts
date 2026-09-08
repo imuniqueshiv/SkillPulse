@@ -49,6 +49,38 @@ router.get("/health/db", async (_req, res) => {
   }
 });
 
+/**
+ * Readiness for load balancers / deploy probes.
+ * Verifies PostgreSQL when DATABASE_URL is configured.
+ * Does not run intelligence pipelines. FastAPI is optional and not required.
+ */
+router.get("/ready", async (_req, res) => {
+  if (!env.DATABASE_URL) {
+    res.status(503).json({
+      status: "not_ready",
+      service: "skillpulse-api",
+      checks: { database: "unavailable" },
+    });
+    return;
+  }
+
+  try {
+    await getPrisma().$queryRaw`SELECT 1`;
+    res.status(200).json({
+      status: "ready",
+      service: "skillpulse-api",
+      checks: { database: "ok" },
+    });
+  } catch {
+    logger.error("Readiness check failed");
+    res.status(503).json({
+      status: "not_ready",
+      service: "skillpulse-api",
+      checks: { database: "unavailable" },
+    });
+  }
+});
+
 const v1 = Router();
 v1.use("/auth", authRouter);
 v1.use("/data-sources", dataSourceRouter);

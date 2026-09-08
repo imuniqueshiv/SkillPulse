@@ -32,6 +32,26 @@ Connected:
 
 Unavailable or unconfigured: HTTP 503 with `"database": "disconnected"`.
 
+## Readiness
+
+`GET /ready`
+
+Load-balancer / deploy readiness. Runs a cheap `SELECT 1` when `DATABASE_URL` is set.
+
+Ready:
+
+```json
+{
+  "status": "ready",
+  "service": "skillpulse-api",
+  "checks": { "database": "ok" }
+}
+```
+
+Not ready: HTTP 503 with `"status": "not_ready"`. Does not run intelligence pipelines. FastAPI is not required.
+
+Responses include `X-Request-Id`. Error bodies may include `code` and `requestId` (no stacks in production).
+
 Unknown routes return `{ "error": { "message": "Not Found", "statusCode": 404 } }`.
 
 ## Authentication

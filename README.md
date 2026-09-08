@@ -247,8 +247,12 @@ From the repo root: `pnpm install`. Python packages are not part of the pnpm wor
 **Frontend cannot reach the API**
 
 1. API terminal is running (`curl http://localhost:4000/health`).
-2. Web is opened at `http://localhost:3000` (CORS allows that origin only).
+2. Web is opened at an origin listed in `CORS_ORIGINS` (default `http://localhost:3000`).
 3. Dashboard user load calls `http://localhost:4000/api/v1/auth/me` with a Clerk session token. Unauthenticated API calls return 401.
+
+### Production deploy
+
+Provider-neutral steps, health/readiness, migrations, smoke test, and Neon recovery notes: [docs/deployment.md](docs/deployment.md).
 
 ### Checks
 
@@ -257,4 +261,6 @@ pnpm test
 pnpm lint
 pnpm typecheck
 pnpm build
+# with API running:
+npx tsx apps/api/scripts/smoke-production.ts
 ```

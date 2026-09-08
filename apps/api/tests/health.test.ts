@@ -60,3 +60,22 @@ test("GET /health/db reflects real database configuration", async () => {
   assert.equal(body.status, "ok");
   assert.equal(body.database, "connected");
 });
+
+test("GET /ready reflects readiness without running intelligence", async () => {
+  const response = await fetch(`${baseUrl}/ready`);
+  const body = (await response.json()) as {
+    status: string;
+    service: string;
+    checks: { database: string };
+  };
+  assert.equal(body.service, "skillpulse-api");
+  assert.ok(response.headers.get("x-request-id"));
+  if (!env.DATABASE_URL) {
+    assert.equal(response.status, 503);
+    assert.equal(body.status, "not_ready");
+    return;
+  }
+  assert.equal(response.status, 200);
+  assert.equal(body.status, "ready");
+  assert.equal(body.checks.database, "ok");
+});

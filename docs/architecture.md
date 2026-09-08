@@ -198,6 +198,22 @@ Phase 14 **exposes** existing SkillPulse intelligence through authenticated APIs
 
 `GET /api/v1/outcomes` SAMPLE metrics remain distinct from Phase 12 `employment-v1` and are labeled as SAMPLE in the UI.
 
+### Phase 15 — Production hardening & deployment
+
+```text
+Existing Phase 7–14 product
+        ↓
+Env validation · CORS · Helmet · request IDs · safe errors
+        ↓
+Health / Ready · migrate deploy · CI typecheck/build
+        ↓
+Deployable MVP (provider-neutral docs)
+```
+
+Phase 15 hardens security, observability, and deployability. It does **not** change Phase 7–13 analytical semantics. Rate limiting is intentionally deferred for the current authenticated MVP (documented in [deployment.md](deployment.md)).
+
+See [deployment.md](deployment.md).
+
 See [data-model.md](data-model.md).
 
 ```text

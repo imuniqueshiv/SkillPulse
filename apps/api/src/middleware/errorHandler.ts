@@ -4,7 +4,9 @@ import { AppError } from "../utils/errors";
 import { logger } from "../utils/logger";
 
 function redact(value: string): string {
-  return value.replace(/[a-z]+:\/\/\S+/gi, "[redacted]");
+  return value
+    .replace(/[a-z]+:\/\/\S+/gi, "[redacted]")
+    .replace(/Bearer\s+\S+/gi, "Bearer [redacted]");
 }
 
 function isPrismaError(err: unknown): boolean {
@@ -18,7 +20,7 @@ function isPrismaError(err: unknown): boolean {
 
 export function errorHandler(
   err: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction,
 ): void {
@@ -36,16 +38,32 @@ export function errorHandler(
     message = "Internal Server Error";
   }
 
+  const code = isAppError
+    ? `APP_${statusCode}`
+    : isPrismaError(err)
+      ? "DATABASE_ERROR"
+      : "INTERNAL_ERROR";
+
   logger.error("Request failed", {
+    requestId: req.requestId,
+    method: req.method,
+    path: req.originalUrl?.split("?")[0] ?? req.path,
     statusCode,
+    code,
     message: redact(rawMessage),
     name: err instanceof Error ? err.name : undefined,
   });
+
+  if (!res.getHeader("x-request-id") && req.requestId) {
+    res.setHeader("x-request-id", req.requestId);
+  }
 
   res.status(statusCode).json({
     error: {
       message,
       statusCode,
+      code,
+      requestId: req.requestId,
       ...(isProduction ||
       !(err instanceof Error) ||
       isPrismaError(err) ||

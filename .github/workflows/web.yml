@@ -1,11 +1,41 @@
 name: web
 
-# CI is not part of Phase 1. This placeholder keeps GitHub Actions from parsing an empty file.
 on:
+  push:
+    branches: [main, master]
+    paths:
+      - "apps/web/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/web.yml"
+  pull_request:
+    paths:
+      - "apps/web/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/web.yml"
   workflow_dispatch:
 
 jobs:
-  placeholder:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Web CI is not configured yet."
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Web typecheck
+        run: pnpm --filter web typecheck
+      - name: Web build
+        env:
+          # Build-time placeholders — not production secrets.
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_placeholder
+          CLERK_SECRET_KEY: sk_test_ci_placeholder
+          NEXT_PUBLIC_API_URL: http://localhost:4000
+        run: pnpm --filter web build

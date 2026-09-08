@@ -1,11 +1,48 @@
 name: api
 
-# CI is not part of Phase 1. This placeholder keeps GitHub Actions from parsing an empty file.
 on:
+  push:
+    branches: [main, master]
+    paths:
+      - "apps/api/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/api.yml"
+  pull_request:
+    paths:
+      - "apps/api/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/api.yml"
   workflow_dispatch:
 
 jobs:
-  placeholder:
+  validate:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
     steps:
-      - run: echo "API CI is not configured yet."
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: API typecheck
+        run: pnpm --filter api typecheck
+      - name: API build
+        run: pnpm --filter api build
+      - name: API unit/integration tests
+        env:
+          NODE_ENV: test
+          # Optional: set repository secret DATABASE_URL for Neon-backed tests.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+        run: pnpm --filter api test
+        continue-on-error: false
