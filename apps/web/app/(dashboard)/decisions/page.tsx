@@ -66,12 +66,13 @@ export default function DecisionsPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
         title="Decision Signals"
-        subtitle="Investigation signals for review — not autonomous government decisions."
+        subtitle="Investigation signals for review — not autonomous government decisions. NCS demand + DEMO supply scenario."
       />
       <EvidenceNote
         limitations={meta?.limitations}
         phaseVersions={meta?.phaseVersions}
         observations={observations || undefined}
+        includeDemo
         includeInsufficient={decisions.status === "INSUFFICIENT_DATA"}
       />
 

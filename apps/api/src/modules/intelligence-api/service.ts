@@ -41,6 +41,7 @@ import { JOB_QUALITY_ASSESSMENT_VERSION } from "../quality/contract";
 import { metaEnvelope } from "./access";
 import { MAX_INTELLIGENCE_LIMIT } from "./policy";
 import { getNcsDemandSourceStatus } from "../acquisition/demand-source-status";
+import { loadPersistedDemoObservations } from "./demo-observations";
 
 export type IntelligenceQueryFilters = {
   from: Date;
@@ -63,6 +64,18 @@ export type UpstreamIntelligenceBundle = {
   quality: QualitySummary;
   decisions: GovernmentDecisionSummary;
   limitations: string[];
+  programCatalogue: Array<{
+    courseId: string;
+    courseName: string;
+    organizationId: string;
+    organizationName: string | null;
+    isDemo: boolean;
+    skills: string[];
+  }>;
+  demoEvidence: {
+    supplyObservationCount: number;
+    employmentObservationCount: number;
+  };
 };
 
 /**
@@ -76,8 +89,14 @@ export async function loadUpstreamIntelligence(
     Math.max(1, filters.rankLimit),
     MAX_INTELLIGENCE_LIMIT,
   );
-  const supplyObservations = filters.supplyObservations ?? [];
-  const employmentObservations = filters.employmentObservations ?? [];
+  const persistedDemo =
+    filters.supplyObservations === undefined ||
+    filters.employmentObservations === undefined
+      ? await loadPersistedDemoObservations()
+      : { supply: [] as SupplyObservation[], employment: [] as EmploymentOutcomeObservation[] };
+  const supplyObservations = filters.supplyObservations ?? persistedDemo.supply;
+  const employmentObservations =
+    filters.employmentObservations ?? persistedDemo.employment;
 
   const limitations: string[] = [
     "Phase 14 is a product/API adapter — it does not recompute Phase 7–13 intelligence.",
@@ -88,10 +107,18 @@ export async function loadUpstreamIntelligence(
     limitations.push(
       "No labour-supply observations provided to the API — Phase 9 gaps reflect demand-only / INSUFFICIENT_DATA supply coverage.",
     );
+  } else {
+    limitations.push(
+      "Supply and training-capacity quantities include DEMO / SIMULATED fixtures — not official workforce or institute statistics.",
+    );
   }
   if (employmentObservations.length === 0) {
     limitations.push(
       "No employment outcome observations provided — Phase 12 rates remain null/insufficient; do not treat zero totals as proven employment outcomes.",
+    );
+  } else {
+    limitations.push(
+      "Employment outcome observations are DEMO / SIMULATED and UNVERIFIED — not government placement statistics. TRAINED ≠ CERTIFIED ≠ PLACED ≠ EMPLOYED.",
     );
   }
 
@@ -178,6 +205,18 @@ export async function loadUpstreamIntelligence(
     employment,
     quality,
     decisions,
+    programCatalogue: programViews.slice(0, 8).map((p) => ({
+      courseId: p.courseId,
+      courseName: p.courseName,
+      organizationId: p.organizationId,
+      organizationName: p.organizationName,
+      isDemo: p.isDemo,
+      skills: p.skills.map((s) => s.canonicalName).slice(0, 6),
+    })),
+    demoEvidence: {
+      supplyObservationCount: supplyObservations.length,
+      employmentObservationCount: employmentObservations.length,
+    },
     limitations: [
       ...limitations,
       ...demand.notes.slice(0, 2),
@@ -359,6 +398,7 @@ async function computeOverviewIntelligence(
           capacityStatus: n.capacity.status,
           intervention: n.intervention,
         })),
+        programs: bundle.programCatalogue,
       },
       employment: {
         status:
@@ -378,7 +418,9 @@ async function computeOverviewIntelligence(
         note:
           employmentCoverage === 0
             ? "INSUFFICIENT_DATA — no Phase 12 employment observations available to the product API."
-            : "TRAINED, CERTIFIED, PLACED, and EMPLOYED are distinct observational counts — not causal claims.",
+            : bundle.demoEvidence.employmentObservationCount > 0
+              ? "DEMO / SIMULATED UNVERIFIED observations — not government placement statistics. TRAINED, CERTIFIED, PLACED, and EMPLOYED are distinct."
+              : "TRAINED, CERTIFIED, PLACED, and EMPLOYED are distinct observational counts — not causal claims.",
       },
       decisions: {
         status:
@@ -400,6 +442,17 @@ async function computeOverviewIntelligence(
         eligibility: bundle.quality.eligibility,
         freshness: bundle.quality.freshness,
         intelligence: bundle.quality.intelligence,
+      },
+      evidenceMix: {
+        demand: "NCS",
+        supply:
+          bundle.demoEvidence.supplyObservationCount > 0 ? "DEMO" : "INSUFFICIENT_DATA",
+        employment:
+          bundle.demoEvidence.employmentObservationCount > 0
+            ? "DEMO"
+            : "INSUFFICIENT_DATA",
+        supplyObservationCount: bundle.demoEvidence.supplyObservationCount,
+        employmentObservationCount: bundle.demoEvidence.employmentObservationCount,
       },
     },
     meta: metaEnvelope({

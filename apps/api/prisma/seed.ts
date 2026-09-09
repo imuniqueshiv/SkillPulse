@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { config as loadDotenv } from "dotenv";
 import { resolve } from "node:path";
 import { seedDataSources } from "./seed-data-sources";
+import { seedDemoMvp } from "./seed-demo";
 import { seedTaxonomy } from "./seed-taxonomy";
 
 loadDotenv({ path: resolve(__dirname, "../../../.env") });
@@ -251,6 +252,8 @@ async function main(): Promise<void> {
       },
     }),
   ]);
+
+  await seedDemoMvp(prisma);
 }
 
 main()

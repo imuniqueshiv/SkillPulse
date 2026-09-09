@@ -1,0 +1,9 @@
+{
+  "classification": "DEMO / SIMULATED",
+  "note": "Synthetic Maharashtra-oriented fixtures for SkillPulse MVP workflow demonstration. Not official government statistics, not real workforce supply, not verified placement or institute performance. Do not replace the 260 real NCS job observations.",
+  "period": {
+    "from": "2026-08-01T00:00:00.000Z",
+    "to": "2026-09-15T00:00:00.000Z"
+  },
+  "sourceCode": "sp.source.demo-mvp"
+}

@@ -1,0 +1,30 @@
+{
+  "classification": "DEMO / SIMULATED",
+  "note": "Synthetic training providers. Not real institute performance evidence.",
+  "institutes": [
+    {
+      "id": "22222222-2222-4222-8222-000000000101",
+      "name": "[DEMO] Mumbai Employability Centre",
+      "type": "TRAINING_INSTITUTE",
+      "city": "Mumbai"
+    },
+    {
+      "id": "22222222-2222-4222-8222-000000000102",
+      "name": "[DEMO] Pune Skill Development Institute",
+      "type": "TRAINING_INSTITUTE",
+      "city": "Pune"
+    },
+    {
+      "id": "22222222-2222-4222-8222-000000000103",
+      "name": "[DEMO] Nagpur Vocational Centre",
+      "type": "TRAINING_INSTITUTE",
+      "city": "Nagpur"
+    },
+    {
+      "id": "22222222-2222-4222-8222-000000000104",
+      "name": "[DEMO] Nashik Service Skills Hub",
+      "type": "TRAINING_INSTITUTE",
+      "city": "Nashik"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "classification": "DEMO / SIMULATED",
+  "note": "Synthetic labour-supply and training-capacity observations. Quantities are illustrative only — not workforce census or authorized capacity. Insufficient vs NCS demand by design for MVP gap demonstration.",
+  "periodFrom": "2026-08-01T00:00:00.000Z",
+  "periodTo": "2026-09-15T00:00:00.000Z",
+  "geography": {
+    "country": "India",
+    "state": "Maharashtra",
+    "district": null,
+    "city": null,
+    "known": true
+  },
+  "observations": [
+    { "id": "22222222-2222-4222-8222-000000000401", "skillCode": "sp.skill.workplace-communication", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 8, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000402", "skillCode": "sp.skill.workplace-communication", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 6, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000403", "skillCode": "sp.skill.workplace-communication", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 5, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000404", "skillCode": "sp.skill.workplace-communication", "supplyType": "TRAINING_CAPACITY", "quantity": 12, "confidence": "LOW" },
+
+    { "id": "22222222-2222-4222-8222-000000000411", "skillCode": "sp.skill.customer-service", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 7, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000412", "skillCode": "sp.skill.customer-service", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 5, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000413", "skillCode": "sp.skill.customer-service", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 4, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000414", "skillCode": "sp.skill.customer-service", "supplyType": "TRAINING_CAPACITY", "quantity": 10, "confidence": "LOW" },
+
+    { "id": "22222222-2222-4222-8222-000000000421", "skillCode": "sp.skill.data-entry", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 9, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000422", "skillCode": "sp.skill.data-entry", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 6, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000423", "skillCode": "sp.skill.data-entry", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 5, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000424", "skillCode": "sp.skill.data-entry", "supplyType": "TRAINING_CAPACITY", "quantity": 14, "confidence": "LOW" },
+
+    { "id": "22222222-2222-4222-8222-000000000431", "skillCode": "sp.skill.digital-literacy", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 10, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000432", "skillCode": "sp.skill.digital-literacy", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 8, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000433", "skillCode": "sp.skill.digital-literacy", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 6, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000434", "skillCode": "sp.skill.digital-literacy", "supplyType": "TRAINING_CAPACITY", "quantity": 16, "confidence": "LOW" },
+
+    { "id": "22222222-2222-4222-8222-000000000441", "skillCode": "sp.skill.typing", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 8, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000442", "skillCode": "sp.skill.typing", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 7, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000443", "skillCode": "sp.skill.typing", "supplyType": "AVAILABLE_WORKFORCE", "quantity": 5, "confidence": "LOW" },
+    { "id": "22222222-2222-4222-8222-000000000444", "skillCode": "sp.skill.typing", "supplyType": "TRAINING_CAPACITY", "quantity": 12, "confidence": "LOW" }
+  ]
+}

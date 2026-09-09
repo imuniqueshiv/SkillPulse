@@ -158,6 +158,9 @@ export function EvidenceNote({
         color: "var(--sp-text-secondary)",
       }}
     >
+      <span style={{ fontWeight: 600, letterSpacing: "0.04em", fontSize: "0.7rem" }}>
+        DATA / EVIDENCE STATUS
+      </span>
       <Badge variant="success">REAL SOURCE</Badge>
       <Badge variant="success">NCS</Badge>
       <Badge variant="neutral">NOT OFFICIAL API</Badge>
@@ -167,13 +170,16 @@ export function EvidenceNote({
       ) : null}
       {observations != null && observations > 0 ? (
         <span>
-          {observations} captured NCS observations · public listing · not an official
-          NCS API feed
+          {observations} captured NCS observations · public listing snapshot · not an
+          official NCS API feed
         </span>
+      ) : null}
+      {includeDemo ? (
+        <span>Simulated data is for MVP workflow demonstration only.</span>
       ) : null}
       <details style={{ marginLeft: "auto" }}>
         <summary style={{ cursor: "pointer", color: "var(--sp-accent)" }}>
-          Data notes
+          Methodology
         </summary>
         <LimitationsPanel limitations={limitations} phaseVersions={phaseVersions} />
       </details>

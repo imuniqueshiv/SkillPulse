@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
 import { StatCard } from "@/components/ui/StatCard";
 import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
+import { SkillDemandBars } from "@/components/intelligence/SkillDemandBars";
 import {
   EvidenceNote,
   IntelligenceError,
@@ -14,14 +14,6 @@ import {
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
-type SkillRow = {
-  skillId: string;
-  canonicalName: string;
-  weightedDemand: string;
-  jobCount: string;
-  trend: string;
-};
-
 export default function DemandPage() {
   const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
 
@@ -29,45 +21,20 @@ export default function DemandPage() {
     status?: string;
     topSkills?: Array<Record<string, unknown>>;
     qualityCoverage?: Record<string, unknown>;
-    occupations?: Array<Record<string, unknown>>;
     geography?: Array<Record<string, unknown>>;
   };
   const source = (overview?.demandSource ?? {}) as {
     observationCount?: number;
     dataStatus?: string;
-    liveNcsData?: boolean;
-    source?: { name?: string };
-    lastSnapshot?: { accessMethod?: string };
   };
 
-  const skillRows: SkillRow[] = (demand.topSkills ?? []).map((s) => ({
+  const barRows = (demand.topSkills ?? []).map((s) => ({
     skillId: String(s.skillId ?? ""),
     canonicalName: String(s.canonicalName ?? ""),
+    jobCount: Number(s.jobCount ?? 0),
     weightedDemand: String(s.weightedDemand ?? "—"),
-    jobCount: String(s.jobCount ?? "—"),
     trend: String(s.trend ?? "INSUFFICIENT_DATA"),
   }));
-
-  const skillColumns = [
-    {
-      key: "canonicalName",
-      label: "Skill",
-      render: (row: SkillRow) =>
-        row.skillId ? (
-          <Link
-            href={`/skills/${encodeURIComponent(row.skillId)}`}
-            className="text-[var(--sp-accent)] underline"
-          >
-            {row.canonicalName || row.skillId}
-          </Link>
-        ) : (
-          row.canonicalName
-        ),
-    },
-    { key: "jobCount", label: "Jobs" },
-    { key: "weightedDemand", label: "Weighted demand" },
-    { key: "trend", label: "Trend" },
-  ];
 
   const geoRows = (demand.geography ?? [])
     .filter((g) => g.known)
@@ -81,10 +48,10 @@ export default function DemandPage() {
   const observations = Number(source.observationCount ?? 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
       <PageHeader
         title="Labour Demand"
-        subtitle="Captured NCS public job-listing observations — not an official NCS API feed."
+        subtitle="Skills employers are asking for in captured NCS Maharashtra job listings."
       />
       <EvidenceNote
         limitations={meta?.limitations}
@@ -102,43 +69,43 @@ export default function DemandPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
               gap: "0.75rem",
             }}
           >
             <StatCard
-              label="NCS observations"
+              label="Jobs analyzed"
               value={observations > 0 ? String(observations) : "Insufficient data"}
-              trend="Captured job cards"
+              trend="Captured NCS cards"
             />
             <StatCard
-              label="Skills ranked"
-              value={skillRows.length > 0 ? String(skillRows.length) : "Insufficient data"}
+              label="Skills identified"
+              value={barRows.length > 0 ? String(barRows.length) : "Insufficient data"}
               trend={demand.status}
             />
             <StatCard
-              label="Quality-analyzed jobs"
-              value={analyzed > 0 ? String(analyzed) : "Insufficient data"}
-              trend={source.dataStatus}
+              label="Locations"
+              value={geoRows.length > 0 ? String(geoRows.length) : "Insufficient data"}
+              trend="Resolved single-city cards"
             />
             <StatCard
-              label="Resolved locations"
-              value={geoRows.length > 0 ? String(geoRows.length) : "Insufficient data"}
-              trend="Single-city cards only"
+              label="Data quality"
+              value={analyzed > 0 ? String(analyzed) : "Insufficient data"}
+              trend={source.dataStatus}
             />
           </div>
 
           <Card>
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1rem" }}>Top skills</h3>
+              <h3 style={{ margin: 0, fontSize: "1rem" }}>Top demand skills</h3>
               <StatusBadge status={demand.status} />
             </div>
-            {skillRows.length === 0 ? (
+            {barRows.length === 0 ? (
               <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
                 Insufficient taxonomy-matched skills for ranking.
               </p>
             ) : (
-              <DataTable columns={skillColumns} rows={skillRows} highlightCount={5} />
+              <SkillDemandBars rows={barRows} />
             )}
           </Card>
 
@@ -146,17 +113,20 @@ export default function DemandPage() {
             <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Geography</h3>
             {geoRows.length === 0 ? (
               <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
-                Insufficient resolved location data. Multi-city NCS cards are not assigned a single city.
+                Insufficient resolved location data. Multi-city NCS cards are not assigned a
+                single city.
               </p>
             ) : (
-              <DataTable
-                columns={[
-                  { key: "place", label: "Place" },
-                  { key: "jobCount", label: "Jobs" },
-                  { key: "weightedDemand", label: "Weighted demand" },
-                ]}
-                rows={geoRows}
-              />
+              <div className="overflow-x-auto">
+                <DataTable
+                  columns={[
+                    { key: "place", label: "Place" },
+                    { key: "jobCount", label: "Jobs" },
+                    { key: "weightedDemand", label: "Weighted demand" },
+                  ]}
+                  rows={geoRows}
+                />
+              </div>
             )}
           </Card>
         </>

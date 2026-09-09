@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/Badge";
 import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
 import {
   EvidenceNote,
-  formatMetric,
   IntelligenceError,
   IntelligenceLoading,
   IntelligenceUnauthorized,
@@ -31,25 +30,14 @@ export default function SkillGapsPage() {
     status?: string;
     severeOrHighCount?: number;
     insufficientDataCount?: number;
-    shortagesCount?: number;
     topPriority?: Array<Record<string, unknown>>;
     coverage?: { demandSkills?: number; supplySkills?: number };
   };
+  const mix = (overview?.evidenceMix ?? {}) as { supply?: string };
   const source = (overview?.demandSource ?? {}) as { observationCount?: number };
   const observations = Number(source.observationCount ?? 0);
-  const supplyUnavailable =
-    Number(gaps.coverage?.supplySkills ?? 0) === 0 ||
-    Number(gaps.insufficientDataCount ?? 0) > 0;
-
-  const demandRows = (
-    ((overview?.demand as { topSkills?: Array<Record<string, unknown>> } | undefined)
-      ?.topSkills ?? [])
-  ).map((s) => ({
-    skillId: String(s.skillId ?? ""),
-    canonicalName: String(s.canonicalName ?? ""),
-    jobCount: String(s.jobCount ?? "—"),
-    weightedDemand: String(s.weightedDemand ?? "—"),
-  }));
+  const demoSupply = mix.supply === "DEMO";
+  const supplyUnavailable = !demoSupply && Number(gaps.coverage?.supplySkills ?? 0) === 0;
 
   const rows: GapRow[] = (gaps.topPriority ?? []).map((s) => ({
     skillId: String(s.skillId ?? ""),
@@ -76,20 +64,21 @@ export default function SkillGapsPage() {
         ),
     },
     { key: "severity", label: "Severity" },
-    { key: "shortage", label: "Shortage quantity" },
+    { key: "shortage", label: "Illustrative shortage" },
     { key: "confidence", label: "Confidence" },
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
       <PageHeader
         title="Skill Gaps"
-        subtitle="Demand versus workforce supply. Missing supply is not treated as zero."
+        subtitle="NCS demand versus workforce supply. Demo supply is not official government statistics."
       />
       <EvidenceNote
         limitations={meta?.limitations}
         phaseVersions={meta?.phaseVersions}
         observations={observations || undefined}
+        includeDemo={demoSupply}
         includeInsufficient={supplyUnavailable}
       />
       {unauthorized ? (
@@ -100,19 +89,22 @@ export default function SkillGapsPage() {
         <IntelligenceLoading />
       ) : (
         <>
-          {supplyUnavailable ? (
-            <Card>
-              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                <Badge variant="warning">WORKFORCE SUPPLY UNAVAILABLE</Badge>
-                <StatusBadge status={gaps.status} />
-              </div>
-              <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-                Demand is available from {observations || "captured"} NCS observations, but
-                comparable workforce-supply evidence has not been provided. SkillPulse does
-                not invent a gap from demand alone.
-              </p>
-            </Card>
-          ) : null}
+          <Card>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+              <Badge variant="success">DEMAND AVAILABLE</Badge>
+              {demoSupply ? (
+                <Badge variant="warning">DEMO SUPPLY</Badge>
+              ) : (
+                <Badge variant="warning">SUPPLY DATA LIMITED</Badge>
+              )}
+              <StatusBadge status={gaps.status} />
+            </div>
+            <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+              {demoSupply
+                ? `Demand is available from ${observations || "captured"} NCS observations. Workforce-supply quantities are DEMO / SIMULATED for MVP workflow — illustrative skill gap, not a government shortage determination.`
+                : `Demand is available from captured NCS observations. Comparable workforce-supply evidence is currently unavailable.`}
+            </p>
+          </Card>
 
           <div
             style={{
@@ -126,56 +118,31 @@ export default function SkillGapsPage() {
               value={
                 supplyUnavailable
                   ? "INSUFFICIENT DATA"
-                  : formatMetric(gaps.status, gaps.severeOrHighCount)
+                  : String(gaps.severeOrHighCount ?? "INSUFFICIENT DATA")
               }
-              trend={gaps.status}
+              trend={demoSupply ? "DEMO scenario" : gaps.status}
             />
             <StatCard
               label="Insufficient-data rows"
-              value={formatMetric("AVAILABLE", gaps.insufficientDataCount)}
-              trend="Missing supply ≠ zero"
+              value={String(gaps.insufficientDataCount ?? "INSUFFICIENT DATA")}
+              trend="Missing supply ≠ zero workers"
             />
           </div>
 
-          {rows.length > 0 ? (
-            <Card>
-              <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Priority gap skills</h3>
-              <DataTable columns={columns} rows={rows} highlightCount={3} />
-            </Card>
-          ) : (
-            <Card>
-              <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Demand-side evidence</h3>
-              {demandRows.length === 0 ? (
-                <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
-                  Insufficient comparable demand and supply evidence for ranked skill gaps.
-                </p>
-              ) : (
-                <DataTable
-                  columns={[
-                    {
-                      key: "canonicalName",
-                      label: "Skill",
-                      render: (row: (typeof demandRows)[0]) =>
-                        row.skillId ? (
-                          <Link
-                            href={`/skills/${encodeURIComponent(row.skillId)}`}
-                            className="text-[var(--sp-accent)] underline"
-                          >
-                            {row.canonicalName || row.skillId}
-                          </Link>
-                        ) : (
-                          row.canonicalName
-                        ),
-                    },
-                    { key: "jobCount", label: "Jobs" },
-                    { key: "weightedDemand", label: "Weighted demand" },
-                  ]}
-                  rows={demandRows}
-                  highlightCount={5}
-                />
-              )}
-            </Card>
-          )}
+          <Card>
+            <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>
+              {demoSupply ? "Illustrative skill gap (NCS demand vs DEMO supply)" : "Demand-side evidence"}
+            </h3>
+            {rows.length === 0 ? (
+              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
+                Insufficient comparable demand and supply evidence for ranked skill gaps.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <DataTable columns={columns} rows={rows} highlightCount={3} />
+              </div>
+            )}
+          </Card>
         </>
       )}
     </div>

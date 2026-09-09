@@ -86,6 +86,8 @@ export default function OutcomesPage() {
         <>
           <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
             <StatusBadge status={employment?.status} />
+            <Badge variant="warning">DEMO / SIMULATED</Badge>
+            <Badge variant="neutral">UNVERIFIED</Badge>
             {insufficient ? <Badge variant="warning">INSUFFICIENT DATA</Badge> : null}
             <span style={{ fontSize: "0.8125rem", color: "var(--sp-text-secondary)" }}>
               {insufficient

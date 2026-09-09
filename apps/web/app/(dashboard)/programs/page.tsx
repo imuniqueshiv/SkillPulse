@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
@@ -23,14 +22,21 @@ type NeedRow = {
   intervention: string;
 };
 
+type ProgramRow = {
+  courseId: string;
+  courseName: string;
+  provider: string;
+  skills: string;
+  evidence: string;
+};
+
 export default function ProgramsInstitutesPage() {
   const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
-  const [orgId, setOrgId] = useState("");
-  const [courseId, setCourseId] = useState("");
 
   const training = (overview?.training ?? {}) as {
     status?: string;
     topTrainingNeeds?: Array<Record<string, unknown>>;
+    programs?: Array<Record<string, unknown>>;
   };
   const source = (overview?.demandSource ?? {}) as { observationCount?: number };
   const observations = Number(source.observationCount ?? 0);
@@ -41,77 +47,26 @@ export default function ProgramsInstitutesPage() {
     capacityStatus: String(n.capacityStatus ?? "UNKNOWN"),
     intervention: String(n.intervention ?? "—"),
   }));
-
-  const columns = [
-    {
-      key: "canonicalName",
-      label: "Demand skill",
-      render: (row: NeedRow) =>
-        row.skillId ? (
-          <Link
-            href={`/skills/${encodeURIComponent(row.skillId)}`}
-            className="text-[var(--sp-accent)] underline"
-          >
-            {row.canonicalName}
-          </Link>
-        ) : (
-          row.canonicalName
-        ),
-    },
-    { key: "trainingNeed", label: "Training alignment" },
-    { key: "intervention", label: "Program / action" },
-    { key: "capacityStatus", label: "Provider capacity" },
-  ];
+  const programs: ProgramRow[] = (training.programs ?? []).map((p) => ({
+    courseId: String(p.courseId ?? ""),
+    courseName: String(p.courseName ?? "—"),
+    provider: String(p.organizationName ?? "—"),
+    skills: Array.isArray(p.skills) ? p.skills.map(String).join(", ") : "—",
+    evidence: p.isDemo ? "DEMO DATA" : "UNVERIFIED",
+  }));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
       <PageHeader
         title="Training & Programs"
-        subtitle="Demand skill → training alignment → program → provider. Capacity is not invented."
+        subtitle="High-demand skill → training need → program alignment. Capacity is not invented."
       />
       <EvidenceNote
         limitations={meta?.limitations}
         phaseVersions={meta?.phaseVersions}
         observations={observations || undefined}
         includeDemo
-        includeInsufficient={training.status === "INSUFFICIENT_DATA"}
       />
-
-      <Card>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "end" }}>
-          <label style={{ fontSize: "0.8125rem" }}>
-            Course ID
-            <input
-              aria-label="Course ID"
-              value={courseId}
-              onChange={(e) => setCourseId(e.target.value)}
-              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "14rem" }}
-            />
-          </label>
-          <Link
-            href={courseId.trim() ? `/courses/${encodeURIComponent(courseId.trim())}` : "#"}
-            className="text-[var(--sp-accent)] underline text-sm"
-            aria-disabled={!courseId.trim()}
-          >
-            Open program
-          </Link>
-          <label style={{ fontSize: "0.8125rem" }}>
-            Organization ID
-            <input
-              aria-label="Organization ID"
-              value={orgId}
-              onChange={(e) => setOrgId(e.target.value)}
-              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "14rem" }}
-            />
-          </label>
-          <Link
-            href={orgId.trim() ? `/programs/institutes/${encodeURIComponent(orgId.trim())}` : "#"}
-            className="text-[var(--sp-accent)] underline text-sm"
-          >
-            Open institute
-          </Link>
-        </div>
-      </Card>
 
       {unauthorized ? (
         <IntelligenceUnauthorized />
@@ -120,21 +75,83 @@ export default function ProgramsInstitutesPage() {
       ) : loading ? (
         <IntelligenceLoading />
       ) : (
-        <Card>
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginBottom: "0.75rem" }}>
-            <h3 style={{ margin: 0, fontSize: "1rem" }}>Training need from demand</h3>
-            <StatusBadge status={training.status} />
-            <Badge variant="warning">DEMO DATA</Badge>
-          </div>
-          {needs.length === 0 ? (
-            <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem", margin: 0 }}>
-              Authorized program capacity is not available. SkillPulse does not invent
-              training seats or provider capacity.
-            </p>
-          ) : (
-            <DataTable columns={columns} rows={needs} highlightCount={3} />
-          )}
-        </Card>
+        <>
+          <Card>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginBottom: "0.75rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1rem" }}>Training need from demand</h3>
+              <StatusBadge status={training.status} />
+              <Badge variant="warning">DEMO TRAINING DATA</Badge>
+            </div>
+            {needs.length === 0 ? (
+              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem", margin: 0 }}>
+                Authorized program capacity is not available. SkillPulse does not invent
+                training seats.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <DataTable
+                  highlightCount={3}
+                  columns={[
+                    {
+                      key: "canonicalName",
+                      label: "High-demand skill",
+                      render: (row: NeedRow) =>
+                        row.skillId ? (
+                          <Link
+                            href={`/skills/${encodeURIComponent(row.skillId)}`}
+                            className="text-[var(--sp-accent)] underline"
+                          >
+                            {row.canonicalName}
+                          </Link>
+                        ) : (
+                          row.canonicalName
+                        ),
+                    },
+                    { key: "trainingNeed", label: "Training need" },
+                    { key: "intervention", label: "Program alignment" },
+                    { key: "capacityStatus", label: "Capacity" },
+                  ]}
+                  rows={needs}
+                />
+              </div>
+            )}
+          </Card>
+
+          <Card>
+            <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Demo programs</h3>
+            {programs.length === 0 ? (
+              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem", margin: 0 }}>
+                No demo programs seeded yet.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <DataTable
+                  columns={[
+                    {
+                      key: "courseName",
+                      label: "Program",
+                      render: (row: ProgramRow) =>
+                        row.courseId ? (
+                          <Link
+                            href={`/courses/${encodeURIComponent(row.courseId)}`}
+                            className="text-[var(--sp-accent)] underline"
+                          >
+                            {row.courseName}
+                          </Link>
+                        ) : (
+                          row.courseName
+                        ),
+                    },
+                    { key: "provider", label: "Provider" },
+                    { key: "skills", label: "Skills covered" },
+                    { key: "evidence", label: "Evidence status" },
+                  ]}
+                  rows={programs}
+                />
+              </div>
+            )}
+          </Card>
+        </>
       )}
     </div>
   );

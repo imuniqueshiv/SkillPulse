@@ -1,0 +1,26 @@
+{
+  "classification": "DEMO / SIMULATED",
+  "note": "Intended MVP story only. Phase 13 still computes signals from NCS demand + demo supply/outcomes. Not autonomous government decisions.",
+  "story": [
+    {
+      "skillCode": "sp.skill.workplace-communication",
+      "demand": "Real NCS observations",
+      "supply": "DEMO insufficient workforce + limited training capacity",
+      "expectedCategoryHint": "SKILL_SHORTAGE or TRAINING_CAPACITY",
+      "actionHint": "Existing Phase 13 action types only"
+    },
+    {
+      "skillCode": "sp.skill.customer-service",
+      "demand": "Real NCS observations",
+      "supply": "DEMO insufficient workforce",
+      "expectedCategoryHint": "SKILL_SHORTAGE or TRAINING_CAPACITY"
+    },
+    {
+      "skillCode": "sp.skill.data-entry",
+      "demand": "Real NCS observations",
+      "supply": "DEMO insufficient workforce",
+      "outcomes": "DEMO UNVERIFIED trained/employed observations",
+      "expectedCategoryHint": "SKILL_SHORTAGE or EMPLOYMENT_OUTCOME"
+    }
+  ]
+}
