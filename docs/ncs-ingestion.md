@@ -50,18 +50,24 @@ Filters apply in the connector only. Core intelligence modules remain **state-ag
 
 Labelled: `acquisition: synthetic-fixture`, `accessClass: SYNTHETIC_FIXTURE`, note contains `NOT REAL NCS DATA`.
 
-## 6. Ingestion command
+## 6. Real Maharashtra snapshot (captured public listings)
+
+Local raw snapshot (do not rewrite):
+
+`data/raw/ncs/maharashtra/ncs-maharashtra-2026-09-08.json`
+
+- **source_file:** `https://ncs.gov.in/job-listing`
+- **access mode:** `AUTHORIZED_FILE` (local operator-supplied snapshot of public page cards)
+- **not** an official NCS API/feed
+- **not** synthetic demo data
+- **260** job cards in the file; webpage “total” (e.g. 3843) is metadata only — only JSON records are ingested
 
 ```bash
-pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --dry-run
-pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --district Pune
-pnpm --filter api ncs:ingest -- --mode file --input path/to/ncs-shaped.json --limit 100
-pnpm --filter api ncs:ingest -- --mode api
-pnpm --filter api ncs:ingest -- --mode public   # ACCESS_DENIED unless permitted + collector exists
-pnpm --filter api ncs:ingest -- --mode live     # exits non-zero
+pnpm --filter api ncs:ingest -- --mode file --input data/raw/ncs/maharashtra/ncs-maharashtra-2026-09-08.json --state Maharashtra --dry-run
+pnpm --filter api ncs:ingest -- --mode file --input data/raw/ncs/maharashtra/ncs-maharashtra-2026-09-08.json --state Maharashtra
 ```
 
-Reports: source, access mode, state/district, runId, snapshotId, checksum, parserVersion, totals (observed/valid/invalid/duplicates/unchanged/changed/persisted), unresolved skills, quality included/excluded, duration. Never prints secrets. Does not retrain ML models.
+Relative `posted` labels (`N hours/days ago`) are converted using the snapshot retrieval time when precise; imprecise labels (e.g. `30+ days ago`) leave `postedAt` unavailable and preserve `postedRaw` in source metadata.
 
 ## 7. Architecture flow
 

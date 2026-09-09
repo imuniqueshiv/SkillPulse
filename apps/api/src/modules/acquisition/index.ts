@@ -13,6 +13,8 @@ export {
   connectorForMode,
   createPublicPageConnector,
   defaultSyntheticFixturePath,
+  defaultMaharashtraRawSnapshotPath,
+  parseNcsShapedFile,
 } from "./connectors";
 export { computeRecordContentHash, computeBatchChecksum, ncsExternalId } from "./hash";
 export { runNcsAcquisition } from "./pipeline";

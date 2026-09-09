@@ -7,16 +7,15 @@ import { AppError } from "../../../utils/errors";
 import { NCS_SOURCE_CODE } from "./ncs-access";
 
 /**
- * SkillPulse NCS-shaped record for file / synthetic fixtures.
+ * SkillPulse NCS adapter input.
  *
- * This is NOT an official NCS API schema. Field names follow a SkillPulse
- * sample export designed to exercise Phase 5 mapping. Live NCS access is
- * unverified — see ncs-access.ts.
+ * Supports:
+ * - skillpulse-ncs-sample-v1 synthetic/authorized shaped records (job_id, …)
+ * - normalized public job-listing cards (via ncs-public-listing.ts)
  *
- * Source-provided fields (functional_role, sector, education, experience,
- * skills) stay in the observation / sourceMetadata. Phase 6 derived
- * occupation/skills are separate evidence.
+ * This is NOT an official NCS API schema. Live scraping is out of scope.
  */
+
 export type NcsSourceRecord = {
   job_id?: string;
   title?: string;
@@ -39,14 +38,35 @@ export type NcsSourceRecord = {
   notice_url?: string;
   observedAt: string;
   ingestedAt: string;
+  _listing?: {
+    source_file?: string;
+    posted_raw?: string;
+    applicants?: string;
+    employment_type?: string;
+    category?: string;
+    subcategory?: string;
+    locations?: string[];
+    logo?: string;
+    reported_total_on_page?: number | null;
+  };
 };
 
 export const NCS_ADAPTER_NAME = "skillpulse-ncs";
-export const NCS_ADAPTER_VERSION = "0.1.0";
+export const NCS_ADAPTER_VERSION = "0.2.0";
 export { NCS_SOURCE_CODE };
 
 function text(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() !== "" ? value : undefined;
+}
+
+function clampText(value: string | undefined, max: number): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+  if (value.length <= max) {
+    return value;
+  }
+  return `${value.slice(0, Math.max(0, max - 3))}...`;
 }
 
 function skillTerms(value: unknown): string[] | undefined {
@@ -75,10 +95,20 @@ export const ncsAdapter = createJobSourceAdapter<NcsSourceRecord>({
     const skills = [...(required ?? []), ...(preferred ?? [])];
     const uniqueSkills = skills.length > 0 ? [...new Set(skills)] : undefined;
 
+    const listingLocations = record._listing?.locations;
+    const locationRaw = clampText(
+      Array.isArray(listingLocations) && listingLocations.length > 0
+        ? listingLocations.join(", ")
+        : text(record.city) || text(record.district) || text(record.state)
+          ? [text(record.city), text(record.district), text(record.state)]
+              .filter((part): part is string => Boolean(part))
+              .join(", ")
+          : undefined,
+      500,
+    );
+
     const location = {
-      raw: [text(record.city), text(record.district), text(record.state)]
-        .filter((part): part is string => Boolean(part))
-        .join(", "),
+      raw: locationRaw,
       city: text(record.city),
       district: text(record.district),
       state: text(record.state),
@@ -115,6 +145,42 @@ export const ncsAdapter = createJobSourceAdapter<NcsSourceRecord>({
     }
     if (functionalRole) {
       sourceMetadata.sourceFunctionalRole = functionalRole;
+    }
+
+    const listing = record._listing;
+    if (listing) {
+      if (listing.source_file) {
+        sourceMetadata.sourceFile = listing.source_file;
+      }
+      if (listing.posted_raw) {
+        sourceMetadata.postedRaw = listing.posted_raw;
+      }
+      if (listing.applicants) {
+        // Applicants are observation metadata only — never demand quantity.
+        sourceMetadata.applicantsLabel = listing.applicants;
+      }
+      if (listing.employment_type) {
+        sourceMetadata.employmentType = listing.employment_type;
+      }
+      if (listing.category) {
+        sourceMetadata.sourceCategory = listing.category;
+      }
+      if (listing.subcategory) {
+        sourceMetadata.sourceSubcategory = listing.subcategory;
+      }
+      if (Array.isArray(listing.locations) && listing.locations.length > 0) {
+        sourceMetadata.sourceLocations = listing.locations;
+      }
+      if (listing.logo) {
+        sourceMetadata.logo = listing.logo;
+      }
+      if (
+        typeof listing.reported_total_on_page === "number" &&
+        Number.isFinite(listing.reported_total_on_page)
+      ) {
+        sourceMetadata.reportedTotalOnPage = listing.reported_total_on_page;
+      }
+      sourceMetadata.captureKind = "public-job-listing-snapshot";
     }
 
     return {

@@ -12,8 +12,21 @@ export function ncsExternalId(record: unknown): string | null {
   if (!isPlainObject(record)) {
     return null;
   }
-  const value = record.job_id;
-  return typeof value === "string" && value.trim() !== "" ? value.trim() : null;
+  const jobId = record.job_id;
+  if (typeof jobId === "string" && jobId.trim() !== "") {
+    return jobId.trim();
+  }
+  if (typeof jobId === "number" && Number.isFinite(jobId)) {
+    return String(jobId);
+  }
+  const id = record.id;
+  if (typeof id === "string" && id.trim() !== "") {
+    return id.trim();
+  }
+  if (typeof id === "number" && Number.isFinite(id)) {
+    return String(id);
+  }
+  return null;
 }
 
 /**

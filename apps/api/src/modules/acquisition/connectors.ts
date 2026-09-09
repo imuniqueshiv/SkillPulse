@@ -11,35 +11,26 @@ import {
   type NcsAccessMode,
 } from "../ingestion/sources/ncs-access";
 import { NCS_ADAPTER_VERSION } from "../ingestion/sources/ncs";
+import {
+  isPublicListingJobCard,
+  normalizePublicListingJob,
+  recordMatchesGeoFilter,
+} from "../ingestion/sources/ncs-public-listing";
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-function matchField(
-  record: Record<string, unknown>,
-  field: "state" | "district" | "city",
-  needle?: string,
-): boolean {
-  if (!needle || needle.trim() === "") {
-    return true;
-  }
-  const value = record[field];
-  return (
-    typeof value === "string" &&
-    value.trim().toLowerCase() === needle.trim().toLowerCase()
-  );
 }
 
 function filterRecords(
   records: Record<string, unknown>[],
   request: AcquireRequest,
 ): Record<string, unknown>[] {
-  let filtered = records.filter(
-    (row) =>
-      matchField(row, "state", request.state) &&
-      matchField(row, "district", request.district) &&
-      matchField(row, "city", request.city),
+  let filtered = records.filter((row) =>
+    recordMatchesGeoFilter(row, {
+      state: request.state,
+      district: request.district,
+      city: request.city,
+    }),
   );
   if (
     typeof request.limit === "number" &&
@@ -51,10 +42,24 @@ function filterRecords(
   return filtered;
 }
 
-function parseNcsShapedFile(path: string): {
+export type ParsedNcsFile = {
   records: Record<string, unknown>[];
   acquisition?: string;
-} {
+  sourceFile?: string;
+  reportedTotalOnPage?: number | null;
+  extractedCount?: number | null;
+};
+
+/**
+ * Load an NCS-shaped file.
+ * Supports:
+ * - { records: [...] } skillpulse sample / authorized shaped export
+ * - { jobs: [...] } captured public job-listing snapshot
+ */
+export function parseNcsShapedFile(
+  path: string,
+  retrievalTime: Date,
+): ParsedNcsFile {
   let parsed: unknown;
   try {
     parsed = JSON.parse(readFileSync(path, "utf8"));
@@ -64,16 +69,71 @@ function parseNcsShapedFile(path: string): {
       "NCS-shaped file is not valid JSON",
     );
   }
-  if (!isPlainObject(parsed) || !Array.isArray(parsed.records)) {
+  if (!isPlainObject(parsed)) {
     throw new AcquisitionError(
       ACQUISITION_FAILURE.SCHEMA_CHANGED,
-      "NCS-shaped file must contain a records array",
+      "NCS-shaped file must be a JSON object",
     );
   }
+
+  const sourceFile =
+    typeof parsed.source_file === "string" ? parsed.source_file : undefined;
+  const reportedTotalOnPage =
+    typeof parsed.total_jobs_reported_by_source === "number"
+      ? parsed.total_jobs_reported_by_source
+      : null;
+  const extractedCount =
+    typeof parsed.job_cards_extracted_from_provided_content === "number"
+      ? parsed.job_cards_extracted_from_provided_content
+      : null;
+
+  if (Array.isArray(parsed.jobs)) {
+    const records: Record<string, unknown>[] = [];
+    for (const row of parsed.jobs) {
+      if (!isPlainObject(row) || !isPublicListingJobCard(row)) {
+        continue;
+      }
+      const normalized = normalizePublicListingJob(row, {
+        retrievalTime,
+        sourceFile: sourceFile ?? "https://ncs.gov.in/job-listing",
+        reportedTotalOnPage,
+      });
+      if (normalized) {
+        records.push(normalized as unknown as Record<string, unknown>);
+      }
+    }
+    if (records.length === 0) {
+      throw new AcquisitionError(
+        ACQUISITION_FAILURE.SCHEMA_CHANGED,
+        "NCS public-listing file has a jobs array but no mappable job cards",
+      );
+    }
+    return {
+      records,
+      acquisition:
+        typeof parsed.acquisition === "string"
+          ? parsed.acquisition
+          : "public-listing-snapshot",
+      sourceFile,
+      reportedTotalOnPage,
+      extractedCount,
+    };
+  }
+
+  if (!Array.isArray(parsed.records)) {
+    throw new AcquisitionError(
+      ACQUISITION_FAILURE.SCHEMA_CHANGED,
+      "NCS-shaped file must contain a records or jobs array",
+    );
+  }
+
   return {
     records: parsed.records.filter(isPlainObject),
     acquisition:
       typeof parsed.acquisition === "string" ? parsed.acquisition : undefined,
+    sourceFile,
+    reportedTotalOnPage,
+    extractedCount,
   };
 }
 
@@ -103,6 +163,24 @@ export function defaultSyntheticFixturePath(): string {
   return found;
 }
 
+export function defaultMaharashtraRawSnapshotPath(): string {
+  const relative = "data/raw/ncs/maharashtra/ncs-maharashtra-2026-09-08.json";
+  const candidates = [
+    resolve(process.cwd(), relative),
+    resolve(process.cwd(), "../../", relative),
+    resolve(__dirname, "../../../../../", relative),
+    resolve(__dirname, "../../../../", relative),
+  ];
+  const found = candidates.find((path) => existsSync(path));
+  if (!found) {
+    throw new AcquisitionError(
+      ACQUISITION_FAILURE.SOURCE_UNAVAILABLE,
+      "Maharashtra NCS raw snapshot was not found",
+    );
+  }
+  return found;
+}
+
 export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
   return {
     mode: NCS_ACCESS_MODE.SYNTHETIC_FIXTURE,
@@ -110,7 +188,8 @@ export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
     identity: ncsIdentity(),
     async acquire(request: AcquireRequest): Promise<AcquiredBatch> {
       const path = request.inputPath ?? defaultSyntheticFixturePath();
-      const file = parseNcsShapedFile(path);
+      const retrievalTime = new Date(request.observedAt);
+      const file = parseNcsShapedFile(path, retrievalTime);
       if (file.acquisition !== "synthetic-fixture") {
         throw new AcquisitionError(
           ACQUISITION_FAILURE.SCHEMA_CHANGED,
@@ -121,7 +200,7 @@ export function createSyntheticFixtureConnector(): NcsAcquisitionConnector {
       return {
         records,
         sourceReference: path,
-        retrievalTime: new Date(request.observedAt),
+        retrievalTime,
         accessMethod: "SYNTHETIC_FIXTURE",
         checksum: computeBatchChecksum(records),
         parserVersion: NCS_ADAPTER_VERSION,
@@ -142,12 +221,16 @@ export function createAuthorizedFileConnector(): NcsAcquisitionConnector {
           "AUTHORIZED_FILE requires --input path to an operator-supplied dataset",
         );
       }
-      const file = parseNcsShapedFile(request.inputPath);
+      const retrievalTime = new Date(request.observedAt);
+      const file = parseNcsShapedFile(request.inputPath, retrievalTime);
       const records = filterRecords(file.records, request);
+      const sourceReference = file.sourceFile
+        ? `${file.sourceFile} :: ${request.inputPath}`
+        : request.inputPath;
       return {
         records,
-        sourceReference: request.inputPath,
-        retrievalTime: new Date(request.observedAt),
+        sourceReference,
+        retrievalTime,
         accessMethod: "AUTHORIZED_FILE",
         checksum: computeBatchChecksum(records),
         parserVersion: NCS_ADAPTER_VERSION,
@@ -221,19 +304,36 @@ export function createAuthorizedApiConnector(config: {
         ? parsed
         : isPlainObject(parsed) && Array.isArray(parsed.records)
           ? parsed.records
-          : null;
+          : isPlainObject(parsed) && Array.isArray(parsed.jobs)
+            ? parsed.jobs
+            : null;
       if (!recordsRaw) {
         throw new AcquisitionError(
           ACQUISITION_FAILURE.SCHEMA_CHANGED,
-          "Authorized NCS feed schema must be an array or { records: [] }",
+          "Authorized NCS feed schema must be an array or { records|jobs: [] }",
         );
       }
 
-      const records = filterRecords(recordsRaw.filter(isPlainObject), request);
+      const retrievalTime = new Date(request.observedAt);
+      const normalized = recordsRaw.filter(isPlainObject).map((row) => {
+        if (!isPublicListingJobCard(row)) {
+          return row;
+        }
+        return (
+          normalizePublicListingJob(row, {
+            retrievalTime,
+            sourceFile: baseUrl,
+          }) ?? row
+        );
+      });
+      const records = filterRecords(
+        normalized.filter(isPlainObject) as Record<string, unknown>[],
+        request,
+      );
       return {
         records,
         sourceReference: baseUrl,
-        retrievalTime: new Date(request.observedAt),
+        retrievalTime,
         accessMethod: "AUTHORIZED_API",
         checksum: computeBatchChecksum(records),
         parserVersion: NCS_ADAPTER_VERSION,
@@ -245,8 +345,7 @@ export function createAuthorizedApiConnector(config: {
 /**
  * PUBLIC_PAGE connector — permission-gated stub.
  * Never scrapes ncs.gov.in, never calls undocumented APIs, never bypasses controls.
- * Even when NCS_PUBLIC_PAGE_PERMITTED=true, collection is refused until a
- * documented compliant collector is implemented.
+ * Local captured snapshots are ingested via AUTHORIZED_FILE.
  */
 export function createPublicPageConnector(): NcsAcquisitionConnector {
   return {
@@ -262,7 +361,7 @@ export function createPublicPageConnector(): NcsAcquisitionConnector {
       }
       throw new AcquisitionError(
         ACQUISITION_FAILURE.ACCESS_DENIED,
-        "PUBLIC_PAGE collector is not implemented: SkillPulse will not scrape or reverse-engineer NCS. Use AUTHORIZED_FILE or AUTHORIZED_API.",
+        "PUBLIC_PAGE live collector is not implemented. Ingest a local captured snapshot with --mode file --input data/raw/ncs/...",
       );
     },
   };

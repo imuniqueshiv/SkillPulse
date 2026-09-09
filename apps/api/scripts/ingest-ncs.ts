@@ -3,16 +3,17 @@
  *
  * Usage:
  *   pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --dry-run
- *   pnpm --filter api ncs:ingest -- --mode synthetic --state Maharashtra --district Pune
- *   pnpm --filter api ncs:ingest -- --mode file --input path/to/file.json --limit 100
+ *   pnpm --filter api ncs:ingest -- --mode file --input data/raw/ncs/maharashtra/ncs-maharashtra-2026-09-08.json --state Maharashtra
  *   pnpm --filter api ncs:ingest -- --mode api
- *   pnpm --filter api ncs:ingest -- --mode public   # refused unless permitted + collector exists
  *
  * Does not print secrets. Does not retrain ML models. Does not scrape NCS.
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import {
+  defaultMaharashtraRawSnapshotPath,
+  parseNcsShapedFile,
+} from "../src/modules/acquisition/connectors";
 import { runNcsAcquisition } from "../src/modules/acquisition/pipeline";
 import { disconnectPrisma } from "../src/config/database";
 import { validateJobIngestion } from "../src/modules/ingestion/job-validation";
@@ -21,6 +22,7 @@ import {
   NCS_ACCESS_MODE,
   resolveNcsAccessMode,
 } from "../src/modules/ingestion/sources/ncs-access";
+import { recordMatchesGeoFilter } from "../src/modules/ingestion/sources/ncs-public-listing";
 import { ncsAdapter } from "../src/modules/ingestion/sources/ncs";
 
 type CliArgs = {
@@ -37,14 +39,6 @@ type CliArgs = {
   referenceTime: string;
 };
 
-type FixtureFile = {
-  sourceCode?: string;
-  acquisition?: string;
-  accessClass?: string;
-  note?: string;
-  records?: unknown[];
-};
-
 function parseArgs(argv: string[]): CliArgs {
   const args: CliArgs = {
     mode: process.env.NCS_ACQUISITION_MODE ?? "disabled",
@@ -53,6 +47,7 @@ function parseArgs(argv: string[]): CliArgs {
     ingestedAt: "2026-09-08T10:05:00.000Z",
     referenceTime: "2026-09-15T00:00:00.000Z",
   };
+  let ingestedAtExplicit = false;
 
   for (let i = 0; i < argv.length; i += 1) {
     const flag = argv[i];
@@ -79,11 +74,14 @@ function parseArgs(argv: string[]): CliArgs {
       args.dryRun = true;
     } else if (flag === "--expire-missing") {
       args.expireMissing = true;
+    } else if (flag === "--no-expire-missing") {
+      args.expireMissing = false;
     } else if (flag === "--observed-at" && next) {
       args.observedAt = next;
       i += 1;
     } else if (flag === "--ingested-at" && next) {
       args.ingestedAt = next;
+      ingestedAtExplicit = true;
       i += 1;
     } else if (flag === "--reference-time" && next) {
       args.referenceTime = next;
@@ -95,6 +93,15 @@ function parseArgs(argv: string[]): CliArgs {
       process.exit(0);
     }
   }
+
+  // Keep ingestedAt after observedAt unless the operator set it explicitly.
+  if (!ingestedAtExplicit) {
+    const observedMs = Date.parse(args.observedAt);
+    if (Number.isFinite(observedMs)) {
+      args.ingestedAt = new Date(observedMs + 5 * 60 * 1000).toISOString();
+    }
+  }
+
   return args;
 }
 
@@ -105,38 +112,14 @@ function defaultSyntheticPath(): string {
   );
 }
 
-function loadFixture(path: string): FixtureFile {
-  const raw = readFileSync(path, "utf8");
-  return JSON.parse(raw) as FixtureFile;
-}
-
-function filterRecords(
-  records: Record<string, unknown>[],
-  args: CliArgs,
-): Record<string, unknown>[] {
-  let filtered = records.filter((row) => {
-    const stateOk =
-      !args.state ||
-      (typeof row.state === "string" &&
-        row.state.trim().toLowerCase() === args.state.trim().toLowerCase());
-    const districtOk =
-      !args.district ||
-      (typeof row.district === "string" &&
-        row.district.trim().toLowerCase() === args.district.trim().toLowerCase());
-    const cityOk =
-      !args.city ||
-      (typeof row.city === "string" &&
-        row.city.trim().toLowerCase() === args.city.trim().toLowerCase());
-    return stateOk && districtOk && cityOk;
-  });
-  if (typeof args.limit === "number" && Number.isFinite(args.limit) && args.limit >= 0) {
-    filtered = filtered.slice(0, Math.floor(args.limit));
+function resolveFileInput(mode: string, input?: string): string {
+  if (input) {
+    return input;
   }
-  return filtered;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  if (mode === "SYNTHETIC_FIXTURE") {
+    return defaultSyntheticPath();
+  }
+  return defaultMaharashtraRawSnapshotPath();
 }
 
 async function dryRunIngest(
@@ -149,22 +132,44 @@ async function dryRunIngest(
   review: number;
   rejected: number;
   failed: number;
+  withoutPostedAt: number;
+  withoutState: number;
   unresolvedPreview: string[];
 }> {
   let valid = 0;
   let review = 0;
   let rejected = 0;
   let failed = 0;
+  let withoutPostedAt = 0;
+  let withoutState = 0;
   const unresolved = new Set<string>();
 
   for (const record of records) {
     try {
-      const mapped = ncsAdapter.parse({
+      const mapped = ncsAdapter.map({
         ...record,
         observedAt,
         ingestedAt,
       } as never);
       const validation = validateJobIngestion(mapped);
+      if (!mapped || typeof mapped !== "object") {
+        failed += 1;
+        continue;
+      }
+      const payload =
+        "payload" in mapped && mapped.payload && typeof mapped.payload === "object"
+          ? (mapped.payload as {
+              postedAt?: unknown;
+              location?: { state?: string };
+              sourceMetadata?: { skills?: unknown };
+            })
+          : {};
+      if (!payload.postedAt) {
+        withoutPostedAt += 1;
+      }
+      if (!payload.location?.state) {
+        withoutState += 1;
+      }
       if (validation.status === "REJECTED") {
         rejected += 1;
       } else if (validation.status === "REVIEW") {
@@ -172,7 +177,7 @@ async function dryRunIngest(
       } else {
         valid += 1;
       }
-      const skills = mapped.payload.sourceMetadata?.skills;
+      const skills = payload.sourceMetadata?.skills;
       if (Array.isArray(skills)) {
         for (const term of skills) {
           if (typeof term === "string") {
@@ -191,6 +196,8 @@ async function dryRunIngest(
     review,
     rejected,
     failed,
+    withoutPostedAt,
+    withoutState,
     unresolvedPreview: [...unresolved].sort().slice(0, 20),
   };
 }
@@ -241,46 +248,51 @@ async function main(): Promise<void> {
       return;
     }
 
-    const inputPath =
-      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
-        ? (args.input ?? defaultSyntheticPath())
-        : args.input;
-    if (!inputPath) {
-      console.error("--input is required for AUTHORIZED_FILE mode");
+    let inputPath: string;
+    try {
+      inputPath = resolveFileInput(mode, args.input);
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error);
       process.exitCode = 1;
       return;
     }
 
-    const fixture = loadFixture(inputPath);
+    const file = parseNcsShapedFile(inputPath, new Date(args.observedAt));
     if (
       mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE &&
-      fixture.acquisition !== "synthetic-fixture"
+      file.acquisition !== "synthetic-fixture"
     ) {
       console.error("Synthetic mode requires acquisition=synthetic-fixture");
       process.exitCode = 1;
       return;
     }
-    if (!Array.isArray(fixture.records)) {
-      console.error("Fixture must contain a records array");
-      process.exitCode = 1;
-      return;
+
+    let records = file.records.filter((row) =>
+      recordMatchesGeoFilter(row, {
+        state: args.state,
+        district: args.district,
+        city: args.city,
+      }),
+    );
+    if (typeof args.limit === "number" && Number.isFinite(args.limit) && args.limit >= 0) {
+      records = records.slice(0, Math.floor(args.limit));
     }
 
-    const preview = await dryRunIngest(
-      filterRecords(fixture.records.filter(isPlainObject), args),
-      args.observedAt,
-      args.ingestedAt,
-    );
+    const preview = await dryRunIngest(records, args.observedAt, args.ingestedAt);
     console.log(
       JSON.stringify(
         {
           source: "sp.source.ncs",
           mode,
+          inputPath,
+          sourceFile: file.sourceFile ?? null,
+          reportedTotalOnPage: file.reportedTotalOnPage ?? null,
+          extractedCountClaim: file.extractedCount ?? null,
           state: args.state ?? null,
           district: args.district ?? null,
           durationMs: Date.now() - started,
           ...preview,
-          note: "dry-run: no snapshot or canonical Job writes",
+          note: "dry-run: no snapshot or canonical Job writes; only records present in the JSON are counted",
         },
         null,
         2,
@@ -289,20 +301,30 @@ async function main(): Promise<void> {
     return;
   }
 
+  let inputPath: string | undefined;
+  try {
+    inputPath =
+      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE ||
+      mode === NCS_ACCESS_MODE.AUTHORIZED_FILE
+        ? resolveFileInput(mode, args.input)
+        : args.input;
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
+
   const result = await runNcsAcquisition({
     mode,
     observedAt: args.observedAt,
     ingestedAt: args.ingestedAt,
     referenceTime: new Date(args.referenceTime),
-    inputPath:
-      mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
-        ? (args.input ?? defaultSyntheticPath())
-        : args.input,
+    inputPath,
     state: args.state,
     district: args.district,
     city: args.city,
     limit: args.limit,
-    expireMissing: args.expireMissing,
+    expireMissing: args.expireMissing ?? false,
     processDownstream: true,
   });
 
@@ -317,6 +339,7 @@ async function main(): Promise<void> {
         runId: result.runId,
         snapshotId: result.snapshotId,
         checksum: result.checksum,
+        sourceReference: result.sourceReference,
         parserVersion: result.parserVersion,
         status: result.status,
         failureCode: result.failureCode,
@@ -334,11 +357,15 @@ async function main(): Promise<void> {
         unresolvedSkills: result.unresolvedSkillTerms,
         qualityIncluded: result.qualityIncluded,
         qualityExcluded: result.qualityExcluded,
-        realNcsDataIngested: false,
+        officialNcsApiFeed: false,
+        realCapturedPublicListingData:
+          mode === NCS_ACCESS_MODE.AUTHORIZED_FILE,
         note:
           mode === NCS_ACCESS_MODE.SYNTHETIC_FIXTURE
             ? "SYNTHETIC_FIXTURE is not real NCS labour-market data"
-            : undefined,
+            : mode === NCS_ACCESS_MODE.AUTHORIZED_FILE
+              ? "Local captured public job-listing snapshot — not an official NCS API feed; only JSON records are ingested"
+              : undefined,
       },
       null,
       2,
