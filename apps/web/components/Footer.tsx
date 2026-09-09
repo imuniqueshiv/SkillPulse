@@ -2,26 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-/* SkillPulse Logo SVG Mark */
-function SkillPulseLogoMark({ className = "h-7 w-7" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="36" height="36" rx="10" fill="#E85D2A" />
-      <path
-        d="M7 20H11L14.5 10L19 26L23.5 15L26 20H29"
-        stroke="#FFFFFF"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="14.5" cy="10" r="2.2" fill="#F28C5B" />
-      <circle cx="19" cy="26" r="2.2" fill="#FFF0E8" />
-      <circle cx="23.5" cy="15" r="2.2" fill="#F28C5B" />
-    </svg>
-  );
-}
+
 
 /* Compact Integrated Indian Landmark Architectural Skyline Base Graphic */
 function CompactIndianLandmarkBase() {
@@ -183,16 +167,16 @@ export function Footer() {
           
           {/* Column 1: BRAND */}
           <div className="lg:col-span-6 flex flex-col gap-2.5 pr-0 lg:pr-8">
-            <Link href="/" className="inline-flex items-center gap-2 group w-fit">
-              <SkillPulseLogoMark className="h-7 w-7 shrink-0 transition-transform group-hover:scale-105" />
-              <div className="flex flex-col">
-                <span className="text-base sm:text-lg font-bold tracking-tight text-[#3A2A25] leading-none">
-                  Skill<span className="text-[#E85D2A]">Pulse</span>
-                </span>
-                <span className="text-[0.5625rem] font-bold uppercase tracking-[0.14em] text-[#A94F3D] leading-tight mt-0.5">
-                  Workforce Intelligence
-                </span>
-              </div>
+            <Link href="/" className="inline-flex items-center gap-2 group w-fit" aria-label="SkillPulse Home">
+              <Image
+                src="/assets/skillpulse-logo.png"
+                alt="SkillPulse Logo"
+                width={180}
+                height={50}
+                priority
+                unoptimized
+                className="h-10 sm:h-11 w-auto object-contain shrink-0 transition-transform group-hover:scale-105"
+              />
             </Link>
 
             <p className="text-xs text-[#52433D] font-medium leading-relaxed max-w-md">
