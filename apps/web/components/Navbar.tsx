@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   useAuth,
@@ -45,24 +46,7 @@ declare global {
 /*                                SVG Icons                                   */
 /* -------------------------------------------------------------------------- */
 
-function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <rect width="36" height="36" rx="10" fill="#E85D2A" />
-      {/* Abstract SkillPulse Signal & Network Nodes */}
-      <path
-        d="M7 20H11L14.5 10L19 26L23.5 15L26 20H29"
-        stroke="#FFFFFF"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="14.5" cy="10" r="2.2" fill="#F28C5B" />
-      <circle cx="19" cy="26" r="2.2" fill="#FFF0E8" />
-      <circle cx="23.5" cy="15" r="2.2" fill="#F28C5B" />
-    </svg>
-  );
-}
+
 
 function HomeIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -628,15 +612,15 @@ export function Navbar() {
               className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85D2A] rounded-full py-0.5 pr-1"
               aria-label="SkillPulse Home"
             >
-              <LogoIcon className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 transition-transform group-hover:scale-105 duration-200 shadow-xs" />
-              <div className="flex flex-col">
-                <span className="text-[1rem] sm:text-[1.125rem] font-bold tracking-tight text-[#1F2933] leading-none">
-                  Skill<span className="text-[#E85D2A]">Pulse</span>
-                </span>
-                <span className="text-[0.5rem] sm:text-[0.5625rem] font-semibold uppercase tracking-[0.08em] text-[#64748B] leading-tight mt-0.5 hidden sm:block">
-                  Workforce Intelligence
-                </span>
-              </div>
+              <Image
+                src="/assets/skillpulse-logo.png"
+                alt="SkillPulse Logo"
+                width={160}
+                height={45}
+                priority
+                unoptimized
+                className="h-8 sm:h-9 md:h-10 w-auto object-contain shrink-0 transition-transform group-hover:scale-105 duration-200"
+              />
             </Link>
           </div>
 
@@ -1107,10 +1091,15 @@ export function Navbar() {
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-5 h-14 border-b border-[#E5D9D0] bg-[#FFF8F2]">
               <div className="flex items-center gap-2">
-                <LogoIcon className="w-7 h-7 shrink-0" />
-                <span className="font-bold text-base text-[#1F2933]">
-                  Skill<span className="text-[#E85D2A]">Pulse</span>
-                </span>
+                <Image
+                  src="/assets/skillpulse-logo.png"
+                  alt="SkillPulse Logo"
+                  width={140}
+                  height={40}
+                  priority
+                  unoptimized
+                  className="h-8 w-auto object-contain shrink-0"
+                />
               </div>
               <button
                 type="button"
