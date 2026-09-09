@@ -169,13 +169,13 @@ export function Footer() {
           <div className="lg:col-span-6 flex flex-col gap-2.5 pr-0 lg:pr-8">
             <Link href="/" className="inline-flex items-center gap-2 group w-fit" aria-label="SkillPulse Home">
               <Image
-                src="/assets/skillpulse-logo.png"
+                src="/assets/SkillPulse_logo_name.png"
                 alt="SkillPulse Logo"
-                width={180}
-                height={50}
+                width={380}
+                height={250}
                 priority
                 unoptimized
-                className="h-10 sm:h-11 w-auto object-contain shrink-0 transition-transform group-hover:scale-105"
+                className="h-18 sm:h-20 w-auto object-contain shrink-0 transition-transform group-hover:scale-105"
               />
             </Link>
 

@@ -613,7 +613,7 @@ export function Navbar() {
               aria-label="SkillPulse Home"
             >
               <Image
-                src="/assets/skillpulse-logo.png"
+                src="/assets/SkillPulse_logo_name.png"
                 alt="SkillPulse Logo"
                 width={160}
                 height={45}
