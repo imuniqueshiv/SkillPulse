@@ -145,5 +145,77 @@
     "category": "tourism",
     "skillType": "DOMAIN",
     "description": "Explaining places, routes and cultural context to visitors. Distinct from workplace communication."
+  },
+  {
+    "code": "sp.skill.data-entry",
+    "name": "Data Entry",
+    "canonicalName": "data entry",
+    "category": "foundational",
+    "skillType": "TECHNICAL",
+    "description": "Accurate entry of data into digital systems. Distinct from data analysis."
+  },
+  {
+    "code": "sp.skill.typing",
+    "name": "Typing",
+    "canonicalName": "typing",
+    "category": "foundational",
+    "skillType": "TECHNICAL",
+    "description": "Keyboard typing speed and accuracy for clerical work."
+  },
+  {
+    "code": "sp.skill.customer-service",
+    "name": "Customer Service",
+    "canonicalName": "customer service",
+    "category": "foundational",
+    "skillType": "TRANSVERSAL",
+    "description": "Serving and supporting customers in service interactions."
+  },
+  {
+    "code": "sp.skill.project-management",
+    "name": "Project Management",
+    "canonicalName": "project management",
+    "category": "foundational",
+    "skillType": "PROCESS",
+    "description": "Planning, coordinating and delivering project work."
+  },
+  {
+    "code": "sp.skill.data-analysis",
+    "name": "Data Analysis",
+    "canonicalName": "data analysis",
+    "category": "information-technology",
+    "skillType": "TECHNICAL",
+    "description": "Inspecting and interpreting data to support decisions. Distinct from data entry."
+  },
+  {
+    "code": "sp.skill.marketing",
+    "name": "Marketing",
+    "canonicalName": "marketing",
+    "category": "bfsi",
+    "skillType": "DOMAIN",
+    "description": "Promoting products or services to target audiences."
+  },
+  {
+    "code": "sp.skill.time-management",
+    "name": "Time Management",
+    "canonicalName": "time management",
+    "category": "foundational",
+    "skillType": "TRANSVERSAL",
+    "description": "Organising work to meet deadlines and priorities."
+  },
+  {
+    "code": "sp.skill.financial-analysis",
+    "name": "Financial Analysis",
+    "canonicalName": "financial analysis",
+    "category": "bfsi",
+    "skillType": "DOMAIN",
+    "description": "Analysing financial information for decisions. Distinct from financial accounting."
+  },
+  {
+    "code": "sp.skill.attention-to-detail",
+    "name": "Attention to Detail",
+    "canonicalName": "attention to detail",
+    "category": "foundational",
+    "skillType": "TRANSVERSAL",
+    "description": "Careful accuracy in completing work tasks."
   }
 ]

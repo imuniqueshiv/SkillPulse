@@ -7,6 +7,7 @@ import {
   type JobValidationResult,
 } from "./job-validation";
 import type { JobSkillNormalizationResult } from "./job-skill-normalization";
+import { resolveMaharashtraLocationId } from "./location-resolution";
 
 export type CanonicalJobPersistenceInput = {
   observationId: string;
@@ -179,12 +180,16 @@ async function loadJob(tx: Prisma.TransactionClient, id: string) {
 
 /**
  * Persist a canonical Job and JobSkill rows. Idempotent on (sourceId, externalId).
- * First write wins for Job fields. Missing JobSkills are added. Does not write Evidence.
+ * First write wins for core Job fields except locationId (filled when safely resolved).
+ * Missing JobSkills are added. Does not write Evidence.
  */
 export async function persistCanonicalJob(input: CanonicalJobPersistenceInput) {
   const plan = planCanonicalJobPersistence(input);
   const source = await resolveSource(plan.sourceId, plan.sourceCode);
   const prisma = getPrisma();
+  const record = requireEligibleRecord(input.validation);
+  const payload = record.payload;
+  const sourceLocations = payload.sourceMetadata?.sourceLocations;
 
   if (plan.skillIds.length > 0) {
     const found = await prisma.skill.findMany({
@@ -199,13 +204,25 @@ export async function persistCanonicalJob(input: CanonicalJobPersistenceInput) {
   // Neon remote latency can exceed Prisma's default 5s interactive timeout.
   return prisma.$transaction(
     async (tx) => {
+      const locationId = await resolveMaharashtraLocationId(tx, {
+        city: payload.location?.city,
+        state: payload.location?.state,
+        sourceLocations,
+      });
+
       const existing = await tx.job.findFirst({
         where: { sourceId: source.id, externalId: plan.externalId },
-        select: { id: true },
+        select: { id: true, locationId: true },
       });
 
       if (existing) {
         await syncJobSkills(tx, existing.id, plan.skillIds);
+        if (locationId && existing.locationId !== locationId) {
+          await tx.job.update({
+            where: { id: existing.id },
+            data: { locationId },
+          });
+        }
         return {
           job: await loadJob(tx, existing.id),
           created: false,
@@ -225,6 +242,7 @@ export async function persistCanonicalJob(input: CanonicalJobPersistenceInput) {
             expiresAt: plan.expiresAt,
             sourceUrl: plan.sourceUrl,
             isDemo: source.isDemo,
+            locationId: locationId ?? undefined,
           },
           select: { id: true },
         });
@@ -241,12 +259,18 @@ export async function persistCanonicalJob(input: CanonicalJobPersistenceInput) {
         ) {
           const raced = await tx.job.findFirst({
             where: { sourceId: source.id, externalId: plan.externalId },
-            select: { id: true },
+            select: { id: true, locationId: true },
           });
           if (!raced) {
             throw error;
           }
           await syncJobSkills(tx, raced.id, plan.skillIds);
+          if (locationId && raced.locationId !== locationId) {
+            await tx.job.update({
+              where: { id: raced.id },
+              data: { locationId },
+            });
+          }
           return {
             job: await loadJob(tx, raced.id),
             created: false,

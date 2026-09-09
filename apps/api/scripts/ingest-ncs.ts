@@ -34,6 +34,7 @@ type CliArgs = {
   limit?: number;
   dryRun: boolean;
   expireMissing?: boolean;
+  force: boolean;
   observedAt: string;
   ingestedAt: string;
   referenceTime: string;
@@ -43,6 +44,7 @@ function parseArgs(argv: string[]): CliArgs {
   const args: CliArgs = {
     mode: process.env.NCS_ACQUISITION_MODE ?? "disabled",
     dryRun: false,
+    force: false,
     observedAt: "2026-09-08T10:00:00.000Z",
     ingestedAt: "2026-09-08T10:05:00.000Z",
     referenceTime: "2026-09-15T00:00:00.000Z",
@@ -72,6 +74,8 @@ function parseArgs(argv: string[]): CliArgs {
       i += 1;
     } else if (flag === "--dry-run") {
       args.dryRun = true;
+    } else if (flag === "--force") {
+      args.force = true;
     } else if (flag === "--expire-missing") {
       args.expireMissing = true;
     } else if (flag === "--no-expire-missing") {
@@ -326,6 +330,7 @@ async function main(): Promise<void> {
     limit: args.limit,
     expireMissing: args.expireMissing ?? false,
     processDownstream: true,
+    forceReprocess: args.force,
   });
 
   console.log(

@@ -11,6 +11,8 @@ export function normalizeTerm(raw: string): string {
     .replace(/[\u201C\u201D\u201E]/g, '"')
     .toLowerCase()
     .replace(/['"]/g, "")
+    // Drop parenthetical qualifiers: "Microsoft Excel (intermediate level)" → excel path via alias surface.
+    .replace(/\([^)]*\)/g, " ")
     .replace(/[^\p{L}\p{N}+#./]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();

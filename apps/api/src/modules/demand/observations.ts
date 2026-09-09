@@ -122,6 +122,8 @@ export async function loadDemandObservations(
       gte: filters.from,
       lt: filters.to,
     },
+    // Demo/synthetic fixtures never contribute to production demand analysis.
+    isDemo: false,
   };
   if (filters.sourceId) {
     jobWhere.sourceId = filters.sourceId;

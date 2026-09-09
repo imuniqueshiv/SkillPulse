@@ -23,6 +23,7 @@ import {
 import { computeRecordContentHash, ncsExternalId } from "./hash";
 import { explicitWithdrawalStatus } from "./lifecycle";
 import { persistIngestionSnapshot } from "./snapshot";
+import { resolveMaharashtraLocationId } from "../ingestion/location-resolution";
 
 export type NcsAcquisitionInput = {
   mode: NcsAccessMode;
@@ -37,6 +38,8 @@ export type NcsAcquisitionInput = {
   limit?: number;
   expireMissing?: boolean;
   processDownstream?: boolean;
+  /** Re-run Phase 5–7 even when contentHash is unchanged (enrichment). */
+  forceReprocess?: boolean;
   apiBaseUrl?: string | null;
   apiToken?: string | null;
   runId?: string;
@@ -130,6 +133,11 @@ async function applyCurrentState(
   const mapped = ncsAdapter.parse(record as never);
   const payload = mapped.payload;
   const prisma = getPrisma();
+  const locationId = await resolveMaharashtraLocationId(prisma, {
+    city: payload.location?.city,
+    state: payload.location?.state,
+    sourceLocations: payload.sourceMetadata?.sourceLocations,
+  });
   await prisma.job.update({
     where: { id: jobId },
     data: {
@@ -139,6 +147,7 @@ async function applyCurrentState(
       postedAt: payload.postedAt ?? null,
       sourceUrl: payload.sourceUrl ?? null,
       lifecycleStatus,
+      ...(locationId ? { locationId } : {}),
     },
   });
 }
@@ -365,7 +374,12 @@ export async function runNcsAcquisition(
 
     const withdrawal = explicitWithdrawalStatus(record);
     const prior = externalId ? byExternalId.get(externalId) : undefined;
-    if (prior && prior.contentHash === contentHash && !withdrawal) {
+    if (
+      prior &&
+      prior.contentHash === contentHash &&
+      !withdrawal &&
+      !input.forceReprocess
+    ) {
       skipped += 1;
       duplicates += 1;
       await prisma.job.update({
