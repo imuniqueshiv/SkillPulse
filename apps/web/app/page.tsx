@@ -291,32 +291,34 @@ function SkillPulseHeroArtwork() {
       <IndiaScrollMap />
 
       {/* ═══════════════════════════════════════════════════════
-          S1 — HERO (Full-Bleed High HD Heritage Background)
+          S1 — HERO (Full-bleed illustration from viewport top)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B]/50 backdrop-blur-[1px] min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
+      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B] min-h-[100svh] -mt-[4.75rem] flex items-center">
         {/* Top Brand Accent Line */}
         <div className="absolute top-0 left-0 right-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
-        {/* Full-Bleed HD Background Image (No card/box container, no crop, no quality degradation) */}
-        <div className="absolute inset-0 z-0 select-none pointer-events-none">
-          <Image
-            src="/assets/hero-sun-temple-4k.png"
-            alt="Konark Sun Temple Indian Heritage Architecture 4K"
-            fill
-            priority
-            quality={100}
-            unoptimized
-            sizes="100vw"
-            className="object-cover object-center sm:object-[70%_50%]"
-          />
+        {/* Full-bleed illustration with subtle zoom-in */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 sp-hero-zoom will-change-transform">
+            <Image
+              src="/assets/hero_illustration_img.jpg"
+              alt="Stylized warm skyline illustration of global landmarks under a sun with an airplane silhouette"
+              fill
+              priority
+              quality={100}
+              unoptimized
+              sizes="100vw"
+              className="object-cover object-[center_40%] scale-105"
+            />
+          </div>
 
-          {/* Intelligently balanced dark gradient backdrops behind text for WCAG AA readability without washing out original heritage image */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#160E0B]/75 via-[#160E0B]/50 to-transparent z-10" />
+          {/* Dark gradient for text readability over the illustration */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#160E0B]/75 via-[#160E0B]/45 to-[#160E0B]/20 z-10" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#160E0B] to-transparent opacity-60" />
         </div>
 
-        {/* Content Container */}
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full">
+        {/* Content clears the sticky transparent navbar */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-16 lg:pb-20 w-full">
           <div className="max-w-2xl">
 
             {/* Content Block */}

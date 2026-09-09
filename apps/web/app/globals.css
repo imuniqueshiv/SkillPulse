@@ -360,9 +360,31 @@ body {
   }
 }
 
+/* ============================================================
+   Hero background subtle zoom-in
+   ============================================================ */
+
+@keyframes sp-hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.sp-hero-zoom {
+  animation: sp-hero-zoom 18s ease-out forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [class*="animate-[indiaPulse"] {
     animation: none !important;
     opacity: 0.4 !important;
+  }
+
+  .sp-hero-zoom {
+    animation: none !important;
+    transform: scale(1.05);
   }
 }

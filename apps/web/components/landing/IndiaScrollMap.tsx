@@ -75,7 +75,7 @@ export function IndiaScrollMap() {
         {/* Full-Bleed Widescreen 3D Relief India Map Image */}
         <div className="relative w-full h-full mix-blend-multiply opacity-85 filter contrast-[1.14] brightness-[1.04] saturate-[1.12]">
           <Image
-            src="/assets/map-of-india.jpg"
+            src="/assets/skillpulse_bg_ind_map.png"
             alt=""
             fill
             priority

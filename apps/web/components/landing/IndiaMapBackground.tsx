@@ -117,7 +117,7 @@ export function IndiaMapBackground() {
       >
         {/* India satellite map image */}
         <Image
-          src="/assets/india-map-bg.jpg"
+          src="/assets/skillpulse_bg_ind_map.png"
           alt=""
           fill
           quality={100}

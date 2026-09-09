@@ -555,14 +555,21 @@ export function Navbar() {
   const isTrainingActive = TRAINING_ITEMS.some((item) => pathname.startsWith(item.href));
   const isDashboardsActive = DASHBOARDS_ITEMS.some((item) => pathname.startsWith(item.href));
 
+  const isHome = pathname === "/";
+
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-2.5 pt-2 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
+      className={
+        isHome
+          ? "sticky top-0 z-50 w-full bg-transparent pb-2.5 pt-2 select-none border-b border-transparent overflow-visible"
+          : "sticky top-0 z-50 w-full bg-gradient-to-b from-[#FFF8F2] via-[#FFF5EE]/90 to-[#FFF8F2]/60 pb-2.5 pt-2 relative select-none border-b border-[#E5D9D0]/50 shadow-xs overflow-visible"
+      }
     >
       {/* ------------------------------------------------------------------ */}
       {/* BACKGROUND DECORATIONS (Soft arcs, wave background & pulse line)  */}
       {/* ------------------------------------------------------------------ */}
+      {!isHome && (
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         {/* Soft pale orange bottom-left arc */}
         <div className="absolute -left-16 -bottom-20 w-64 h-64 rounded-full bg-gradient-to-tr from-[#FFF0E8] via-[#FAD5C2]/40 to-transparent blur-2xl opacity-80" />
@@ -586,16 +593,8 @@ export function Navbar() {
           />
         </svg>
 
-        {/* Subtle Institutional Watermark Backdrop (Right side) */}
-        <div className="hidden xl:flex flex-col items-end absolute right-6 top-2 pointer-events-none opacity-25 select-none">
-          <span className="text-[0.5625rem] font-serif italic tracking-wider text-[#64748B] uppercase">
-            Empowering
-          </span>
-          <span className="text-[0.625rem] font-medium tracking-tight text-[#E85D2A]">
-            Maharashtra&apos;s Workforce
-          </span>
-        </div>
       </div>
+      )}
 
       {/* ------------------------------------------------------------------ */}
       {/* FLOATING SOFT NAVBAR CONTAINER                                    */}
