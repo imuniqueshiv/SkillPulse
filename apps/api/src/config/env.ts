@@ -51,6 +51,25 @@ const envSchema = z
       (v) => (v === "" || v === undefined || v === null ? 24 : v),
       z.coerce.number().int().min(1).max(168),
     ),
+    /**
+     * Local-only demo Bearer token. Ignored when NODE_ENV=production.
+     * Must be set explicitly; never defaults on.
+     */
+    SKILLPULSE_DEV_AUTH_TOKEN: z.preprocess(
+      emptyToUndefined,
+      z.string().min(16).optional(),
+    ),
+    SKILLPULSE_DEV_CLERK_USER_ID: z.preprocess(
+      emptyToUndefined,
+      z.string().min(1).optional(),
+    ),
+    /** Local-only default application role for synced Clerk users. Ignored in production. */
+    SKILLPULSE_DEV_DEFAULT_ROLE: z.preprocess(
+      emptyToUndefined,
+      z
+        .enum(["PLATFORM_ADMIN", "GOVERNMENT_MANAGER", "INSTITUTE_ADMIN"])
+        .optional(),
+    ),
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV !== "production") return;
@@ -93,9 +112,19 @@ if (parsed.data.NODE_ENV === "production" && corsOrigins.includes("*")) {
   );
 }
 
+const isProduction = parsed.data.NODE_ENV === "production";
+
 export const env = {
   ...parsed.data,
   corsOrigins,
   trustProxy:
     parsed.data.TRUST_PROXY ?? parsed.data.NODE_ENV === "production",
+  /** Production never enables local demo auth, even if the vars are present. */
+  devAuthToken: isProduction ? undefined : parsed.data.SKILLPULSE_DEV_AUTH_TOKEN,
+  devClerkUserId: isProduction
+    ? undefined
+    : parsed.data.SKILLPULSE_DEV_CLERK_USER_ID,
+  devDefaultRole: isProduction
+    ? undefined
+    : parsed.data.SKILLPULSE_DEV_DEFAULT_ROLE,
 };

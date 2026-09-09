@@ -9,6 +9,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import {
   fetchIntelligenceOverview,
   IntelligenceApiError,
+  resolveAccessToken,
   type IntelligenceMeta,
 } from "@/lib/api";
 import {
@@ -42,7 +43,7 @@ export default function SkillsIntelligencePage() {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
+        const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
           return;
@@ -133,7 +134,7 @@ export default function SkillsIntelligencePage() {
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
         title="Skill Intelligence"
-        subtitle="Canonical Skill IDs from Phase 8–13 adapters. Display names are not identity keys."
+        subtitle="Canonical skills from Phase 8 demand on captured NCS observations. Display names are not identity keys. Gap rows may use DEMO/insufficient supply."
       />
       {loading ? (
         <IntelligenceLoading />

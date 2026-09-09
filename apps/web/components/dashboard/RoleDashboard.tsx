@@ -7,6 +7,7 @@ import {
   fetchCurrentUser,
   fetchIntelligenceOverview,
   IntelligenceApiError,
+  resolveAccessToken,
   type ApplicationUser,
   type IntelligenceMeta,
 } from "@/lib/api";
@@ -131,7 +132,7 @@ export function RoleDashboard() {
       setError(null);
       setUnauthorized(false);
       try {
-        const token = await getToken();
+        const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
           setLoading(false);
@@ -256,11 +257,31 @@ export function RoleDashboard() {
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
         title={`SkillPulse ${title} Overview`}
-        subtitle="Bounded dashboard over Phase 7–13 intelligence. Values are not fabricated placeholders."
+        subtitle="Evidence-backed labour-market intelligence for government review — not autonomous policy."
       />
 
       <Card>
-        <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Job demand source</h3>
+        <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>What SkillPulse is</h3>
+        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+          SkillPulse turns captured job-demand observations into skill, gap, training, and
+          decision-support views. Real NCS evidence is labelled separately from DEMO catalogue data.
+        </p>
+        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "0.75rem", fontSize: "0.875rem" }}>
+          <Link href="/demand" className="text-[var(--sp-accent)] underline">Labour Demand</Link>
+          <Link href="/skills" className="text-[var(--sp-accent)] underline">Skills</Link>
+          <Link href="/gaps" className="text-[var(--sp-accent)] underline">Skill Gaps</Link>
+          <Link href="/programs" className="text-[var(--sp-accent)] underline">Training</Link>
+          <Link href="/outcomes" className="text-[var(--sp-accent)] underline">Outcomes</Link>
+          <Link href="/decisions" className="text-[var(--sp-accent)] underline">Government Decisions</Link>
+        </div>
+      </Card>
+
+      <Card>
+        <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Real demand foundation (NCS)</h3>
+        <p style={{ margin: "0 0 0.75rem", fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+          Captured public job-listing snapshot from ncs.gov.in/job-listing — not an official NCS API feed.
+          Only records present in the snapshot are counted.
+        </p>
         <div
           style={{
             display: "grid",
@@ -284,7 +305,7 @@ export function RoleDashboard() {
           </div>
           <div>
             <div style={{ color: "var(--sp-text-secondary)" }}>Observations</div>
-            <div>{overview.demandSource?.observationCount ?? 0}</div>
+            <div>{overview.demandSource?.observationCount ?? "Insufficient data"} NCS job observations</div>
           </div>
           <div>
             <div style={{ color: "var(--sp-text-secondary)" }}>Data status</div>
@@ -355,6 +376,35 @@ export function RoleDashboard() {
         <StatusBadge status={overview.employment?.status} />
         <StatusBadge status={overview.dataQuality?.status} />
       </div>
+
+      <Card>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", gap: "1rem", flexWrap: "wrap" }}>
+          <h3 style={{ margin: 0, fontSize: "1rem" }}>Top demand skills (Phase 8)</h3>
+          <Link href="/demand" className="text-[var(--sp-accent)] text-sm underline">
+            Open labour demand
+          </Link>
+        </div>
+        {(overview.demand?.topSkills ?? []).length === 0 ? (
+          <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
+            Insufficient taxonomy-matched skills for ranking.
+          </p>
+        ) : (
+          <DataTable
+            columns={[
+              { key: "canonicalName", label: "Skill" },
+              { key: "weightedDemand", label: "Weighted demand" },
+              { key: "jobCount", label: "Jobs" },
+              { key: "trend", label: "Trend" },
+            ]}
+            rows={(overview.demand?.topSkills ?? []).map((s) => ({
+              canonicalName: String(s.canonicalName ?? s.skillId ?? "—"),
+              weightedDemand: String(s.weightedDemand ?? "—"),
+              jobCount: String(s.jobCount ?? "—"),
+              trend: String(s.trend ?? "INSUFFICIENT_DATA"),
+            }))}
+          />
+        )}
+      </Card>
 
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", gap: "1rem", flexWrap: "wrap" }}>

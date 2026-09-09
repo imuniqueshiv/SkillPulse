@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import Link from "next/link";
 import { fetchRecommendations, submitAuditFeedback } from "@/lib/api";
 
 interface EvidenceTrace {
@@ -56,9 +57,19 @@ export default function RecommendationsPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
-        title="Explainable Recommendation Engine"
-        subtitle="Policy interventions, curriculum updates, and workforce pathways backed by transparent evidence traces."
+        title="Recommendations (DEMO)"
+        subtitle="SAMPLE catalogue of mock policy cards — not Phase 13 decision intelligence. Use Decision Signals for evidence-backed government review."
       />
+
+      <Card>
+        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+          These recommendations are DEMO/SAMPLE fixtures. They must not be treated as SkillPulse
+          government decision signals.{" "}
+          <Link href="/decisions" className="text-[var(--sp-accent)] underline">
+            Open Decision Signals
+          </Link>
+        </p>
+      </Card>
 
       {feedbackSuccess && (
         <div style={{ padding: "0.75rem 1rem", background: "#dcfce7", color: "#166534", borderRadius: "6px", fontWeight: 600 }}>

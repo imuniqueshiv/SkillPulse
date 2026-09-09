@@ -1,141 +1,204 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { Card } from "@/components/ui/Card";
-import { DataTable } from "@/components/ui/DataTable";
-import { fetchOutcomes } from "@/lib/api";
+import {
+  fetchIntelligenceOverview,
+  IntelligenceApiError,
+  resolveAccessToken,
+  type IntelligenceMeta,
+} from "@/lib/api";
+import {
+  formatMetric,
+  IntelligenceEmpty,
+  IntelligenceError,
+  IntelligenceLoading,
+  LimitationsPanel,
+  StatusBadge,
+} from "@/components/intelligence/IntelligenceStates";
 
-interface DistrictRecord extends Record<string, unknown> {
-  district: string;
-  placementRate: number;
-  traineesCount: number;
-  topSector: string;
-}
+type EmploymentView = {
+  status?: string;
+  note?: string | null;
+  trainingToEmployment?: { status?: string; value?: number | null };
+  trainingToPlacement?: { status?: string; value?: number | null };
+  certificationToEmployment?: { status?: string; value?: number | null };
+  totals?: {
+    trained?: number;
+    certified?: number;
+    placed?: number;
+    employed?: number;
+    uniqueLearners?: number;
+  };
+  skillUtilization?: {
+    knownOutcomes?: number;
+    full?: number;
+    unknown?: number;
+    rate?: number | null;
+  };
+  evidenceCoverage?: { totalObservations?: number };
+};
 
-interface OutcomeSummary {
-  overallPlacementRate?: number;
-  placementRateLift?: string;
-  wageGrowthPercentage?: string;
-  averageTimeToHireDays?: number;
-  skillMatchAccuracy?: number;
-}
-
-interface OutcomesData {
-  summary?: OutcomeSummary;
-  districtBreakdown?: DistrictRecord[];
-}
-
-function CheckCircleIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-      <polyline points="22 4 12 14.01 9 11.01" />
-    </svg>
-  );
-}
-
-function TrendingUpIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-      <polyline points="17 6 23 6 23 12" />
-    </svg>
-  );
-}
-
-function ClockIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
+function pct(status: string | undefined, value: number | null | undefined): string {
+  if (status === "INSUFFICIENT_DATA" || value == null) {
+    return "Insufficient data";
+  }
+  return `${Math.round(value * 100)}%`;
 }
 
 export default function OutcomesPage() {
-  const [outcomes, setOutcomes] = useState<OutcomesData | null>(null);
+  const { getToken, isLoaded } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [employment, setEmployment] = useState<EmploymentView | null>(null);
+  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
 
   useEffect(() => {
-    async function loadData() {
+    if (!isLoaded) return;
+    void (async () => {
       setLoading(true);
-      const res = await fetchOutcomes();
-      if (res?.data) setOutcomes(res.data as OutcomesData);
-      setLoading(false);
-    }
-    loadData();
-  }, []);
+      setError(null);
+      try {
+        const token = await resolveAccessToken(getToken);
+        if (!token) {
+          setError("Unable to load intelligence.");
+          return;
+        }
+        const result = await fetchIntelligenceOverview(token, { limit: 20 });
+        setEmployment((result.data.employment as EmploymentView) ?? null);
+        setMeta(result.meta);
+      } catch (err) {
+        setError(
+          err instanceof IntelligenceApiError
+            ? err.message
+            : "Unable to load intelligence.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [getToken, isLoaded]);
 
-  const summary = outcomes?.summary || {};
-  const districtData = outcomes?.districtBreakdown || [];
-
-  const columns = [
-    { key: "district", label: "District / Region" },
-    {
-      key: "placementRate",
-      label: "Placement Rate",
-      render: (row: DistrictRecord) => <strong style={{ color: "#16a34a" }}>{row.placementRate}%</strong>
-    },
-    {
-      key: "traineesCount",
-      label: "Verified Trainees",
-      render: (row: DistrictRecord) => row.traineesCount?.toLocaleString()
-    },
-    { key: "topSector", label: "Primary Hiring Sector" }
-  ];
+  const totals = employment?.totals ?? {};
+  const observations = employment?.evidenceCoverage?.totalObservations ?? 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
-        title="Outcomes (SAMPLE UI)"
-        subtitle="Demo SAMPLE metrics from GET /api/v1/outcomes — not Phase 12 employment-v1 intelligence. Use Decision Signals and Overview for authenticated employment adapters."
+        title="Employment Outcomes"
+        subtitle="Phase 12 observational outcomes. TRAINED, CERTIFIED, PLACED, EMPLOYED, and SKILL_UTILIZED are distinct — SkillPulse does not claim causality."
       />
 
-      <Card>
-        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-          These values are SAMPLE UI fixtures. They must not be treated as production employment evidence.
-        </p>
-      </Card>
+      {loading ? (
+        <IntelligenceLoading />
+      ) : error ? (
+        <IntelligenceError message={error} />
+      ) : !employment ? (
+        <IntelligenceEmpty />
+      ) : (
+        <>
+          <Card>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
+              <StatusBadge status={employment.status} />
+              <span style={{ fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+                {employment.note ??
+                  (observations === 0
+                    ? "No authorized employment observations in this period."
+                    : `${observations} employment observations.`)}
+              </span>
+            </div>
+          </Card>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
-        <StatCard
-          label="Overall Placement Rate (SAMPLE)"
-          value={summary.overallPlacementRate != null ? `${summary.overallPlacementRate}%` : "Insufficient data"}
-          trend={summary.placementRateLift || "SAMPLE endpoint"}
-          icon={<CheckCircleIcon />}
-        />
-        <StatCard
-          label="Average Wage Growth (SAMPLE)"
-          value={summary.wageGrowthPercentage || "Insufficient data"}
-          trend="SAMPLE endpoint"
-          icon={<TrendingUpIcon />}
-        />
-        <StatCard
-          label="Time-to-Hire (SAMPLE)"
-          value={summary.averageTimeToHireDays != null ? `${summary.averageTimeToHireDays} days` : "Insufficient data"}
-          trend="SAMPLE endpoint"
-          icon={<ClockIcon />}
-        />
-        <StatCard
-          label="Skill Match Accuracy (SAMPLE)"
-          value={summary.skillMatchAccuracy != null ? `${summary.skillMatchAccuracy}%` : "Insufficient data"}
-          trend="SAMPLE endpoint"
-          icon={<CheckCircleIcon />}
-        />
-      </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            <StatCard
+              label="Trained (exclusive)"
+              value={formatMetric(employment.status, totals.trained)}
+              trend="TRAINED ≠ placed"
+            />
+            <StatCard
+              label="Certified (exclusive)"
+              value={formatMetric(employment.status, totals.certified)}
+              trend="Never inferred from placement"
+            />
+            <StatCard
+              label="Placed (exclusive)"
+              value={formatMetric(employment.status, totals.placed)}
+              trend="PLACED ≠ currently employed"
+            />
+            <StatCard
+              label="Employed (exclusive)"
+              value={formatMetric(employment.status, totals.employed)}
+              trend="Observational count"
+            />
+          </div>
 
-      <Card>
-        <h3 style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--color-neutral-900)", marginBottom: "1rem" }}>
-          Regional District Outcome Performance
-        </h3>
-        {loading ? (
-          <div style={{ padding: "2rem", textAlign: "center", color: "var(--color-neutral-500)" }}>Loading Outcome Statistics...</div>
-        ) : (
-          <DataTable columns={columns} data={districtData} />
-        )}
-      </Card>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            <StatCard
+              label="Training → placement"
+              value={pct(
+                employment.trainingToPlacement?.status,
+                employment.trainingToPlacement?.value,
+              )}
+              trend={employment.trainingToPlacement?.status}
+            />
+            <StatCard
+              label="Training → employment"
+              value={pct(
+                employment.trainingToEmployment?.status,
+                employment.trainingToEmployment?.value,
+              )}
+              trend={employment.trainingToEmployment?.status}
+            />
+            <StatCard
+              label="Certification → employment"
+              value={pct(
+                employment.certificationToEmployment?.status,
+                employment.certificationToEmployment?.value,
+              )}
+              trend={employment.certificationToEmployment?.status}
+            />
+            <StatCard
+              label="Skill utilized (known)"
+              value={formatMetric(
+                employment.status,
+                employment.skillUtilization?.full,
+              )}
+              trend={
+                employment.skillUtilization?.rate == null
+                  ? "INSUFFICIENT_DATA"
+                  : `mean ratio ${employment.skillUtilization.rate}`
+              }
+            />
+          </div>
+
+          <Card>
+            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>Evidence notes</h3>
+            <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+              Rates are withheld when cohort linkage or denominators are missing. Zero exclusive
+              counts with INSUFFICIENT_DATA status means no authorized outcome dataset — not a
+              verified 0% placement rate. Demo employment fixtures, if present in evaluation, are
+              not government placement statistics.
+            </p>
+          </Card>
+
+          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
+        </>
+      )}
     </div>
   );
 }

@@ -97,45 +97,39 @@ export default function CoursesPage() {
   return (
     <div className="space-y-6 sp-fade-in">
       <PageHeader
-        title="Course Catalog & Accredited Programs"
-        subtitle="Skill development courses aligned with National Skill Qualification Framework (NSQF)"
-        actions={
-          <button
-            className="px-4 py-2 text-xs font-medium text-white rounded-md transition-all duration-150 cursor-pointer"
-            style={{ background: "var(--sp-accent)" }}
-          >
-            + Create Course
-          </button>
-        }
+        title="Course Catalog (DEMO)"
+        subtitle="Illustrative NSQF-style catalogue for product walkthrough — not authorized training-capacity evidence. Use Training & Programs for Phase 10–11 intelligence."
       />
+
+      <Card>
+        <p className="text-sm" style={{ color: "var(--sp-text-secondary)", margin: 0 }}>
+          Enrolment and completion figures below are DEMO placeholders. They are not government statistics.
+        </p>
+      </Card>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sp-stagger">
         <StatCard
-          label="Active Courses"
-          value="412"
-          trend="+12"
-          trendDirection="up"
+          label="Active Courses (DEMO)"
+          value="DEMO"
+          trend="Not official capacity"
           icon={<BookOpenIcon />}
         />
         <StatCard
-          label="Total Enrolled"
-          value="45,210"
-          trend="+15.4%"
-          trendDirection="up"
+          label="Total Enrolled (DEMO)"
+          value="DEMO"
+          trend="Not official enrolment"
           icon={<UsersIcon />}
         />
         <StatCard
-          label="Partner Institutes"
-          value="86"
-          trend="+4"
-          trendDirection="up"
+          label="Partner Institutes (DEMO)"
+          value="DEMO"
+          trend="Not official providers"
           icon={<BuildingIcon />}
         />
         <StatCard
-          label="Avg Completion Rate"
-          value="78.4%"
-          trend="+3.2%"
-          trendDirection="up"
+          label="Avg Completion Rate (DEMO)"
+          value="DEMO"
+          trend="Not official outcomes"
           icon={<AwardIcon />}
         />
       </div>

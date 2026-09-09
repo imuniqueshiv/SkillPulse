@@ -8,7 +8,7 @@ export interface StatCardProps {
   value: string;
   trend?: string;
   trendDirection?: 'up' | 'down' | 'neutral';
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   className?: string;
 }
 

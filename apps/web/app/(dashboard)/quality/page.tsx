@@ -8,6 +8,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import {
   fetchQualityIntelligence,
   IntelligenceApiError,
+  resolveAccessToken,
   type IntelligenceMeta,
 } from "@/lib/api";
 import {
@@ -35,7 +36,7 @@ export default function QualityPage() {
       setError(null);
       setUnauthorized(false);
       try {
-        const token = await getToken();
+        const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
           return;

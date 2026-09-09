@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPrisma } from "../config/database";
+import { pingDatabase } from "../config/database";
 import { env } from "../config/env";
 import { authRouter } from "../modules/auth/auth.routes";
 import { dataSourceRouter } from "../modules/data-sources/data-source.routes";
@@ -32,21 +32,22 @@ router.get("/health/db", async (_req, res) => {
     return;
   }
 
-  try {
-    await getPrisma().$queryRaw`SELECT 1`;
-    res.status(200).json({
-      status: "ok",
-      service: "skillpulse-api",
-      database: "connected",
-    });
-  } catch {
+  const ok = await pingDatabase();
+  if (!ok) {
     logger.error("Database health check failed");
     res.status(503).json({
       status: "error",
       service: "skillpulse-api",
       database: "disconnected",
     });
+    return;
   }
+
+  res.status(200).json({
+    status: "ok",
+    service: "skillpulse-api",
+    database: "connected",
+  });
 });
 
 /**
@@ -64,21 +65,22 @@ router.get("/ready", async (_req, res) => {
     return;
   }
 
-  try {
-    await getPrisma().$queryRaw`SELECT 1`;
-    res.status(200).json({
-      status: "ready",
-      service: "skillpulse-api",
-      checks: { database: "ok" },
-    });
-  } catch {
+  const ok = await pingDatabase();
+  if (!ok) {
     logger.error("Readiness check failed");
     res.status(503).json({
       status: "not_ready",
       service: "skillpulse-api",
       checks: { database: "unavailable" },
     });
+    return;
   }
+
+  res.status(200).json({
+    status: "ready",
+    service: "skillpulse-api",
+    checks: { database: "ok" },
+  });
 });
 
 const v1 = Router();

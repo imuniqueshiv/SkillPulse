@@ -88,8 +88,8 @@ export default function CurriculaPage() {
   return (
     <div className="space-y-6 sp-fade-in">
       <PageHeader
-        title="Curriculum Pathways & Qualification Packs"
-        subtitle="Structured, outcome-driven learning pathways aligned to NSQF levels"
+        title="Curriculum Pathways (DEMO)"
+        subtitle="Hardcoded SAMPLE qualification packs — not Phase 10 curriculum intelligence. Use Training & Programs for Phase 10–11."
         actions={
           <button
             className="px-4 py-2 text-xs font-medium text-white rounded-md transition-all duration-150 cursor-pointer"
@@ -102,7 +102,7 @@ export default function CurriculaPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sp-stagger">
         <StatCard
-          label="Active Curricula"
+          label="Active Curricula (DEMO)"
           value="64"
           trend="+6"
           trendDirection="up"

@@ -52,18 +52,20 @@ const navGroups = [
   {
     group: "Intelligence",
     items: [
-      { label: "Skill Intelligence", href: "/skills", icon: IconSkills },
-      { label: "Programs & Institutes", href: "/programs", icon: IconCourses },
+      { label: "Labour Demand", href: "/demand", icon: IconJobs },
+      { label: "Skills", href: "/skills", icon: IconSkills },
+      { label: "Skill Gaps", href: "/gaps", icon: IconGaps },
+      { label: "Training & Programs", href: "/programs", icon: IconCourses },
+      { label: "Outcomes", href: "/outcomes", icon: IconOutcomes },
       { label: "Decision Signals", href: "/decisions", icon: IconRecommendations },
-      { label: "Data Quality", href: "/quality", icon: IconGaps },
+      { label: "Data Quality", href: "/quality", icon: IconCurricula },
     ],
   },
   {
-    group: "Catalogue",
+    group: "Catalogue (DEMO)",
     items: [
-      { label: "Jobs", href: "/jobs", icon: IconJobs },
-      { label: "Courses", href: "/courses", icon: IconCurricula },
-      { label: "Outcomes (SAMPLE)", href: "/outcomes", icon: IconOutcomes },
+      { label: "Jobs (DEMO)", href: "/jobs", icon: IconEmployers },
+      { label: "Courses (DEMO)", href: "/courses", icon: IconCurricula },
     ],
   },
 ];
@@ -131,7 +133,9 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                 </div>
               )}
               {group.items.map((item, iIdx) => {
-                const isActive = pathname === item.href;
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
                 const Icon = item.icon;
                 return (
                   <Link

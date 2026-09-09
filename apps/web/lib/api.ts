@@ -1,4 +1,18 @@
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const localDemoToken =
+  process.env.NODE_ENV === "production"
+    ? undefined
+    : process.env.NEXT_PUBLIC_SKILLPULSE_DEV_AUTH_TOKEN;
+
+export async function resolveAccessToken(
+  getToken: () => Promise<string | null>,
+): Promise<string | null> {
+  const clerkToken = await getToken();
+  if (clerkToken) {
+    return clerkToken;
+  }
+  return localDemoToken ?? null;
+}
 
 export type ApplicationUser = {
   id: string;
@@ -59,10 +73,15 @@ async function intelligenceFetch<T>(
   }
   const qs = query.toString();
   const url = `${apiBase}${path}${qs ? `?${qs}` : ""}`;
-  const response = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+  } catch {
+    throw new IntelligenceApiError("Unable to reach the SkillPulse API.", 0);
+  }
   const body = (await response.json().catch(() => ({}))) as {
     data?: T;
     meta?: IntelligenceMeta;

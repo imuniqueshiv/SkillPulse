@@ -272,6 +272,26 @@ export async function getOverviewIntelligence(
           trend: s.trend.direction,
         })),
         qualityCoverage: bundle.demand.qualityCoverage,
+        occupations: bundle.demand.occupations.slice(0, 8).map((o) => ({
+          occupationId: o.occupationId,
+          name: o.name,
+          jobCount: o.jobCount,
+          weightedDemand: o.weightedDemand,
+        })),
+        sectors: bundle.demand.sectors.slice(0, 8).map((s) => ({
+          sectorId: s.sectorId,
+          name: s.name,
+          jobCount: s.jobCount,
+          weightedDemand: s.weightedDemand,
+        })),
+        geography: bundle.demand.geography.slice(0, 8).map((g) => ({
+          city: g.city,
+          district: g.district,
+          state: g.state,
+          known: g.known,
+          jobCount: g.jobCount,
+          weightedDemand: g.weightedDemand,
+        })),
       },
       gaps: {
         status:
@@ -313,11 +333,19 @@ export async function getOverviewIntelligence(
             ? ("AVAILABLE" as const)
             : ("INSUFFICIENT_DATA" as const),
         trainingToEmployment: metricOrInsufficient(employmentRate),
+        trainingToPlacement: metricOrInsufficient(
+          bundle.employment.rates.trainingToPlacement.value,
+        ),
+        certificationToEmployment: metricOrInsufficient(
+          bundle.employment.rates.certificationToEmployment.value,
+        ),
+        totals: bundle.employment.totals,
+        skillUtilization: bundle.employment.skillUtilization,
         evidenceCoverage: bundle.employment.evidenceCoverage,
         note:
           employmentCoverage === 0
             ? "INSUFFICIENT_DATA — no Phase 12 employment observations available to the product API."
-            : null,
+            : "TRAINED, CERTIFIED, PLACED, and EMPLOYED are distinct observational counts — not causal claims.",
       },
       decisions: {
         status:

@@ -1,4 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
+import { env } from "../config/env";
 import { syncApplicationUser } from "../modules/users/users.service";
 import { verifyClerkAccessToken } from "../integrations/clerk/verify-token";
 import { AppError } from "../utils/errors";
@@ -25,7 +26,13 @@ export function requireAuth(): RequestHandler {
         throw new AppError(401, "Unauthorized");
       }
 
-      const identity = await verifyClerkAccessToken(token);
+      const identity =
+        env.devAuthToken && token === env.devAuthToken
+          ? {
+              clerkUserId:
+                env.devClerkUserId ?? "skillpulse_local_gov_manager",
+            }
+          : await verifyClerkAccessToken(token);
       const user = await syncApplicationUser(identity.clerkUserId);
 
       req.auth = { clerkUserId: identity.clerkUserId };

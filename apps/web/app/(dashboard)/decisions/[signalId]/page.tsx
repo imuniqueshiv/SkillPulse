@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import {
   fetchDecisionSignalDetail,
   IntelligenceApiError,
+  resolveAccessToken,
   type IntelligenceMeta,
 } from "@/lib/api";
 import {
@@ -34,7 +35,7 @@ export default function DecisionDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
+        const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
           return;

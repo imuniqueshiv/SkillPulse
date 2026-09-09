@@ -94,8 +94,8 @@ export default function EmployersPage() {
   return (
     <div className="space-y-6 sp-fade-in">
       <PageHeader
-        title="Employer Network & Industry Partners"
-        subtitle="Organizations contributing real-time hiring demand and skill validation"
+        title="Employer Network (DEMO)"
+        subtitle="Hardcoded SAMPLE partner cards — not Phase 12 employer intelligence. Use Outcomes and Decision Signals for observational evidence."
         actions={
           <button
             className="px-4 py-2 text-xs font-medium text-white rounded-md transition-all duration-150 cursor-pointer"
@@ -108,7 +108,7 @@ export default function EmployersPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sp-stagger">
         <StatCard
-          label="Verified Employers"
+          label="Verified Employers (DEMO)"
           value="1,240"
           trend="+24"
           trendDirection="up"

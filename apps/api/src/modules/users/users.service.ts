@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { env } from "../../config/env";
 import { getPrisma } from "../../config/database";
 import type { RequestUser } from "../../types/express";
 
@@ -30,6 +31,19 @@ export async function syncApplicationUser(clerkUserId: string): Promise<RequestU
   });
 
   if (existing) {
+    if (env.devDefaultRole && existing.role === "LEARNER") {
+      const promoted = await prisma.user.update({
+        where: { clerkUserId },
+        data: { role: env.devDefaultRole },
+        select: {
+          id: true,
+          clerkUserId: true,
+          role: true,
+          organizationId: true,
+        },
+      });
+      return toRequestUser(promoted);
+    }
     return toRequestUser(existing);
   }
 
@@ -37,7 +51,7 @@ export async function syncApplicationUser(clerkUserId: string): Promise<RequestU
     const created = await prisma.user.create({
       data: {
         clerkUserId,
-        role: "LEARNER",
+        role: env.devDefaultRole ?? "LEARNER",
       },
       select: {
         id: true,

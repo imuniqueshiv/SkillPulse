@@ -2,11 +2,13 @@ export const publicPaths = ["/", "/sign-in", "/sign-up"] as const;
 
 export const protectedPathPrefixes = [
   "/dashboard",
+  "/demand",
   "/jobs",
   "/skills",
   "/courses",
   "/curricula",
   "/gaps",
+  "/training",
   "/recommendations",
   "/employers",
   "/outcomes",

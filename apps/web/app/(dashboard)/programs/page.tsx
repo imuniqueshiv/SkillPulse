@@ -9,10 +9,10 @@ import { DataTable } from "@/components/ui/DataTable";
 import {
   fetchIntelligenceOverview,
   IntelligenceApiError,
+  resolveAccessToken,
   type IntelligenceMeta,
 } from "@/lib/api";
 import {
-  IntelligenceEmpty,
   IntelligenceError,
   IntelligenceLoading,
   LimitationsPanel,
@@ -43,7 +43,7 @@ export default function ProgramsInstitutesPage() {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
+        const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
           return;
@@ -101,7 +101,7 @@ export default function ProgramsInstitutesPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
         title="Programs & Institutes"
-        subtitle="Phase 10–11 training and institute intelligence. Geography is not inferred for courses without location evidence."
+        subtitle="Phase 10–11 training need and institute views. Capacity is UNKNOWN when unauthorized — never treated as zero. Demo course catalogues are labelled separately."
       />
 
       <Card>
@@ -145,16 +145,25 @@ export default function ProgramsInstitutesPage() {
         <IntelligenceLoading />
       ) : error ? (
         <IntelligenceError message={error} />
-      ) : needs.length === 0 ? (
-        <IntelligenceEmpty />
       ) : (
         <>
-          <div>
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
             <StatusBadge status={trainingStatus} />
+            <span style={{ fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+              Training need is not curriculum gap. Capacity UNKNOWN is not zero. Demo course
+              catalogues are labelled separately.
+            </span>
           </div>
           <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Top training needs</h3>
-            <DataTable columns={columns} rows={needs} />
+            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Top training needs (Phase 10)</h3>
+            {needs.length === 0 ? (
+              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
+                Insufficient training-need evidence. Authorized program capacity is not available —
+                SkillPulse does not invent training seats.
+              </p>
+            ) : (
+              <DataTable columns={columns} rows={needs} />
+            )}
           </Card>
           <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
         </>

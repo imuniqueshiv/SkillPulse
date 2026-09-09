@@ -21,7 +21,7 @@ export function formatMetric(
 
 export function StatusBadge({ status }: { status?: string }) {
   if (!status) return <Badge variant="neutral">UNKNOWN</Badge>;
-  if (status === "AVAILABLE" || status === "SUCCESS") {
+  if (status === "AVAILABLE" || status === "SUCCESS" || status === "AUTHORIZED_FILE") {
     return <Badge variant="success">{status}</Badge>;
   }
   if (

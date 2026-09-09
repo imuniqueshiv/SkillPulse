@@ -126,33 +126,39 @@ export default function JobsPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       <PageHeader
-        title="Job Market Intelligence"
-        subtitle="Real-time labor market job posting ingestion, skill extraction, and confidence scoring."
+        title="Job Catalogue (DEMO)"
+        subtitle="SAMPLE UI from a synthetic Mahaswayam fixture — not the 260 real NCS observations. Use Labour Demand for Phase 8 NCS demand."
       />
+
+      <Card>
+        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+          These listings are DEMO/SAMPLE catalogue records. They must not be treated as live NCS or verified government postings.
+        </p>
+      </Card>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         <StatCard
-          label="Ingested Job Notices"
-          value={analytics?.totalPostings ? analytics.totalPostings.toLocaleString() : "14,850"}
-          trend="+14% this month"
+          label="Ingested Job Notices (DEMO)"
+          value={analytics?.totalPostings != null ? analytics.totalPostings.toLocaleString() : "Insufficient data"}
+          trend="DEMO catalogue"
           icon={<BriefcaseIcon />}
         />
         <StatCard
-          label="Verified High Confidence"
-          value={analytics?.verifiedPostings ? analytics.verifiedPostings.toLocaleString() : "13,920"}
-          trend="93.7% accuracy rate"
+          label="Verified High Confidence (DEMO)"
+          value={analytics?.verifiedPostings != null ? analytics.verifiedPostings.toLocaleString() : "Insufficient data"}
+          trend="DEMO catalogue"
           icon={<ShieldCheckIcon />}
         />
         <StatCard
-          label="Average Confidence"
-          value={analytics?.confidenceAverage ? `${Math.round(analytics.confidenceAverage * 100)}%` : "91.2%"}
-          trend="Validation engine pass"
+          label="Average Confidence (DEMO)"
+          value={analytics?.confidenceAverage != null ? `${Math.round(analytics.confidenceAverage * 100)}%` : "Insufficient data"}
+          trend="DEMO catalogue"
           icon={<TrendingUpIcon />}
         />
         <StatCard
-          label="Freshness Index"
-          value={analytics?.freshnessIndexDays ? `${analytics.freshnessIndexDays} days` : "4.2 days"}
-          trend="Average post age"
+          label="Freshness Index (DEMO)"
+          value={analytics?.freshnessIndexDays != null ? `${analytics.freshnessIndexDays} days` : "Insufficient data"}
+          trend="DEMO catalogue"
           icon={<ClockIcon />}
         />
       </div>
@@ -160,7 +166,7 @@ export default function JobsPage() {
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--color-neutral-900)" }}>
-            Live Standardized Job Postings ({jobs.length})
+            Live Standardized Job Postings (DEMO, {jobs.length})
           </h3>
           <input
             type="text"
