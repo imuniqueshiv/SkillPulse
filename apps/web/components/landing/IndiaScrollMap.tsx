@@ -3,33 +3,39 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 
-/* ── City intelligence nodes positioned over satellite map ── */
-const INTELLIGENCE_CITIES = [
-  { name: "Delhi", top: "26%", left: "47%" },
-  { name: "Mumbai", top: "52%", left: "34%" },
-  { name: "Pune", top: "55%", left: "37%" },
-  { name: "Bengaluru", top: "72%", left: "44%" },
-  { name: "Hyderabad", top: "62%", left: "47%" },
-  { name: "Chennai", top: "73%", left: "53%" },
-  { name: "Kolkata", top: "42%", left: "70%" },
-  { name: "Ahmedabad", top: "44%", left: "31%" },
-  { name: "Jaipur", top: "34%", left: "41%" },
-  { name: "Lucknow", top: "33%", left: "54%" },
-] as const;
+/* ═══════════════════════════════════════════════════════════════════
+   IndiaScrollMap — Global Scroll-Driven 3D Tricolor Relief India Map
+   
+   Renders the uploaded high-resolution "map of india.jpg" relief image
+   that continuously pans from North → Central → South India as the user
+   scrolls the landing page.
+   
+   Performance & Accessibility:
+   - requestAnimationFrame scroll tracking with passive listeners
+   - GPU-accelerated CSS transforms (translate3d)
+   - Zero React re-renders during scroll
+   - prefers-reduced-motion fallback
+   - pointer-events: none, aria-hidden="true"
+   ═══════════════════════════════════════════════════════════════════ */
 
 export function IndiaScrollMap() {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    const mapEl = mapRef.current;
-    if (!mapEl) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     function onScroll() {
+      if (prefersReducedMotion) return;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
       rafRef.current = requestAnimationFrame(() => {
-        if (!mapEl) return;
+        if (!container) return;
 
         const scrollY = window.scrollY;
         const docHeight = document.documentElement.scrollHeight;
@@ -39,12 +45,12 @@ export function IndiaScrollMap() {
 
         const progress = Math.min(1, Math.max(0, scrollY / maxScroll));
 
-        // Pan map smoothly from North India (top) to South India (bottom)
-        // translateY goes from +10% (showing North India) to -30% (showing South India)
-        const translateY = 10 - progress * 40;
-        const scale = 1.05 + progress * 0.08;
+        // Pan map smoothly from North India (top) → Central India → South India (bottom)
+        // translateY: +14% (North India focused) → -30% (South India focused)
+        const translateY = 14 - progress * 44;
+        const scale = 1.05 + progress * 0.06;
 
-        mapEl.style.transform = `translate3d(0, ${translateY}%, 0) scale(${scale})`;
+        container.style.transform = `translate3d(0, ${translateY}%, 0) scale(${scale})`;
       });
     }
 
@@ -61,43 +67,36 @@ export function IndiaScrollMap() {
 
   return (
     <div
-      className="fixed inset-0 z-[1] pointer-events-none select-none overflow-hidden bg-slate-950"
+      className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden bg-[#FBFBFA]"
       aria-hidden="true"
     >
-      {/* Scrollable Map Container */}
+      {/* Scrollable Map Image Container — Oversized for continuous North→South travel */}
       <div
-        ref={mapRef}
-        className="absolute inset-x-0 -top-[20%] -bottom-[20%] w-full h-[140%] will-change-transform transition-transform duration-100 ease-out"
+        ref={containerRef}
+        className="absolute inset-x-0 -top-[20%] -bottom-[20%] w-full h-[140%] will-change-transform transition-transform duration-75 ease-out flex items-center justify-center"
         style={{
-          transform: "translate3d(0, 10%, 0) scale(1.05)",
+          transform: "translate3d(0, 14%, 0) scale(1.05)",
         }}
       >
-        {/* High-Resolution Satellite Night Lights India Map Image (Ultra Crisp & Vivid) */}
-        <Image
-          src="/assets/india-map-bg.jpg"
-          alt="India Map Night Satellite View"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center opacity-100 filter contrast-[1.45] brightness-[1.3] saturate-[1.25]"
-        />
+        {/* Uploaded High-Resolution 3D Relief India Map Image */}
+        <div className="relative w-full h-full max-w-[1400px] mx-auto mix-blend-multiply opacity-80 filter contrast-[1.12] brightness-[1.03] saturate-[1.1]">
+          <Image
+            src="/assets/map-of-india.jpg"
+            alt=""
+            fill
+            priority
+            unoptimized
+            sizes="100vw"
+            className="object-contain object-center scale-110 sm:scale-125 lg:scale-135"
+          />
+        </div>
 
-        {/* Soft subtle edge gradients only */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950/30" />
-
-        {/* Pulsing City Intelligence Nodes across India */}
-        {INTELLIGENCE_CITIES.map((city) => (
-          <div
-            key={city.name}
-            className="absolute flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
-            style={{ top: city.top, left: city.left }}
-          >
-            <span className="absolute w-8 h-8 rounded-full bg-amber-400/60 animate-ping" />
-            <span className="absolute w-4 h-4 rounded-full bg-amber-300 shadow-[0_0_12px_#fbbf24]" />
-            <span className="relative w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_#ffffff]" />
-          </div>
-        ))}
+        {/* Subtle SkillPulse Warm Amber/Orange Radial Glow behind map outline (#F15A24) */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(241,90,36,0.08)_0%,transparent_70%)] pointer-events-none" />
       </div>
+
+      {/* Subtle Readability Vignette — keeps text sharp across all sections */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/30 pointer-events-none" />
     </div>
   );
 }

@@ -293,7 +293,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S1 — HERO (Full-Bleed High HD Heritage Background)
           ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B]/30 min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
+      <section ref={heroRef.ref} className="relative z-[2] overflow-hidden bg-[#160E0B]/50 backdrop-blur-[1px] min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] flex items-center">
         {/* Top Brand Accent Line */}
         <div className="absolute top-0 left-0 right-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#E85D2A] via-[#F28C5B] to-[#E85D2A]" />
 
@@ -378,7 +378,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S3 — WHERE SKILLS MEET DEMAND (Feature)
           ═══════════════════════════════════════════════════════ */}
-      <section id="feature-section" ref={featureRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/20 backdrop-blur-[1px]">
+      <section id="feature-section" ref={featureRef.ref} className="relative z-[2] py-16 lg:py-24 bg-white/50 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
 
@@ -443,7 +443,7 @@ function SkillPulseHeroArtwork() {
       {/* ═══════════════════════════════════════════════════════
           S4 — FROM EVIDENCE TO ACTION (Timeline)
           ═══════════════════════════════════════════════════════ */}
-      <section id="how-it-works" ref={timelineRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFFCF9]/20 backdrop-blur-[1px]">
+      <section id="how-it-works" ref={timelineRef.ref} className="relative z-[2] py-16 lg:py-24 bg-[#FFFCF9]/50 backdrop-blur-[1px]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className={`text-center max-w-2xl mx-auto mb-12 transition-all duration-700 ${timelineRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <span className="inline-flex items-center gap-2 justify-center text-[11px] font-bold uppercase tracking-[0.15em] text-[#E85D2A] mb-4">
