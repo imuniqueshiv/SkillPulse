@@ -15,7 +15,7 @@ import {
   EvidenceList,
   IntelligenceError,
   IntelligenceLoading,
-  LimitationsPanel,
+  EvidenceNote,
   PriorityBadge,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
@@ -122,7 +122,7 @@ export default function DecisionDetailPage() {
             <EvidenceList evidence={evidence as never} />
           </Card>
 
-          <LimitationsPanel
+          <EvidenceNote
             limitations={(signal.limitations as string[]) ?? meta?.limitations}
             phaseVersions={
               (signal.phaseVersions as Record<string, string | null>) ??

@@ -17,7 +17,7 @@ import {
   formatMetric,
   IntelligenceError,
   IntelligenceLoading,
-  LimitationsPanel,
+  EvidenceNote,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
@@ -137,7 +137,7 @@ export default function SkillDetailPage() {
             <EvidenceList evidence={evidence as never} />
           </Card>
 
-          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
+          <EvidenceNote limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
         </>
       )}
     </div>

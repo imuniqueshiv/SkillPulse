@@ -1,21 +1,17 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
+import { Badge } from "@/components/ui/Badge";
+import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
 import {
-  fetchIntelligenceOverview,
-  IntelligenceApiError,
-  resolveAccessToken,
-  type IntelligenceMeta,
-} from "@/lib/api";
-import {
+  EvidenceNote,
   IntelligenceError,
   IntelligenceLoading,
-  LimitationsPanel,
+  IntelligenceUnauthorized,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
@@ -28,58 +24,28 @@ type NeedRow = {
 };
 
 export default function ProgramsInstitutesPage() {
-  const { getToken, isLoaded } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [needs, setNeeds] = useState<NeedRow[]>([]);
-  const [trainingStatus, setTrainingStatus] = useState<string | undefined>();
-  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
+  const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
   const [orgId, setOrgId] = useState("");
   const [courseId, setCourseId] = useState("");
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    void (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = await resolveAccessToken(getToken);
-        if (!token) {
-          setError("Unable to load intelligence.");
-          return;
-        }
-        const result = await fetchIntelligenceOverview(token, { limit: 20 });
-        const training = result.data.training as {
-          status?: string;
-          topTrainingNeeds?: Array<Record<string, unknown>>;
-        };
-        setTrainingStatus(training?.status);
-        setNeeds(
-          (training?.topTrainingNeeds ?? []).map((n) => ({
-            skillId: String(n.skillId ?? ""),
-            canonicalName: String(n.canonicalName ?? ""),
-            trainingNeed: String(n.trainingNeed ?? ""),
-            capacityStatus: String(n.capacityStatus ?? ""),
-            intervention: String(n.intervention ?? ""),
-          })),
-        );
-        setMeta(result.meta);
-      } catch (err) {
-        setError(
-          err instanceof IntelligenceApiError
-            ? err.message
-            : "Unable to load intelligence.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [getToken, isLoaded]);
+  const training = (overview?.training ?? {}) as {
+    status?: string;
+    topTrainingNeeds?: Array<Record<string, unknown>>;
+  };
+  const source = (overview?.demandSource ?? {}) as { observationCount?: number };
+  const observations = Number(source.observationCount ?? 0);
+  const needs: NeedRow[] = (training.topTrainingNeeds ?? []).map((n) => ({
+    skillId: String(n.skillId ?? ""),
+    canonicalName: String(n.canonicalName ?? ""),
+    trainingNeed: String(n.trainingNeed ?? "INSUFFICIENT_DATA"),
+    capacityStatus: String(n.capacityStatus ?? "UNKNOWN"),
+    intervention: String(n.intervention ?? "—"),
+  }));
 
   const columns = [
     {
       key: "canonicalName",
-      label: "Skill",
+      label: "Demand skill",
       render: (row: NeedRow) =>
         row.skillId ? (
           <Link
@@ -92,28 +58,34 @@ export default function ProgramsInstitutesPage() {
           row.canonicalName
         ),
     },
-    { key: "trainingNeed", label: "Training need" },
-    { key: "capacityStatus", label: "Capacity" },
-    { key: "intervention", label: "Intervention" },
+    { key: "trainingNeed", label: "Training alignment" },
+    { key: "intervention", label: "Program / action" },
+    { key: "capacityStatus", label: "Provider capacity" },
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
-        title="Programs & Institutes"
-        subtitle="Phase 10–11 training need and institute views. Capacity is UNKNOWN when unauthorized — never treated as zero. Demo course catalogues are labelled separately."
+        title="Training & Programs"
+        subtitle="Demand skill → training alignment → program → provider. Capacity is not invented."
+      />
+      <EvidenceNote
+        limitations={meta?.limitations}
+        phaseVersions={meta?.phaseVersions}
+        observations={observations || undefined}
+        includeDemo
+        includeInsufficient={training.status === "INSUFFICIENT_DATA"}
       />
 
       <Card>
-        <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Open by canonical ID</h3>
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "end" }}>
-          <label style={{ fontSize: "0.875rem" }}>
+          <label style={{ fontSize: "0.8125rem" }}>
             Course ID
             <input
               aria-label="Course ID"
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "16rem" }}
+              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "14rem" }}
             />
           </label>
           <Link
@@ -121,52 +93,48 @@ export default function ProgramsInstitutesPage() {
             className="text-[var(--sp-accent)] underline text-sm"
             aria-disabled={!courseId.trim()}
           >
-            Open program intelligence
+            Open program
           </Link>
-          <label style={{ fontSize: "0.875rem" }}>
+          <label style={{ fontSize: "0.8125rem" }}>
             Organization ID
             <input
               aria-label="Organization ID"
               value={orgId}
               onChange={(e) => setOrgId(e.target.value)}
-              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "16rem" }}
+              style={{ display: "block", marginTop: "0.25rem", padding: "0.35rem 0.5rem", minWidth: "14rem" }}
             />
           </label>
           <Link
             href={orgId.trim() ? `/programs/institutes/${encodeURIComponent(orgId.trim())}` : "#"}
             className="text-[var(--sp-accent)] underline text-sm"
           >
-            Open institute intelligence
+            Open institute
           </Link>
         </div>
       </Card>
 
-      {loading ? (
-        <IntelligenceLoading />
+      {unauthorized ? (
+        <IntelligenceUnauthorized />
       ) : error ? (
         <IntelligenceError message={error} />
+      ) : loading ? (
+        <IntelligenceLoading />
       ) : (
-        <>
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
-            <StatusBadge status={trainingStatus} />
-            <span style={{ fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-              Training need is not curriculum gap. Capacity UNKNOWN is not zero. Demo course
-              catalogues are labelled separately.
-            </span>
+        <Card>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginBottom: "0.75rem" }}>
+            <h3 style={{ margin: 0, fontSize: "1rem" }}>Training need from demand</h3>
+            <StatusBadge status={training.status} />
+            <Badge variant="warning">DEMO DATA</Badge>
           </div>
-          <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Top training needs (Phase 10)</h3>
-            {needs.length === 0 ? (
-              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
-                Insufficient training-need evidence. Authorized program capacity is not available —
-                SkillPulse does not invent training seats.
-              </p>
-            ) : (
-              <DataTable columns={columns} rows={needs} />
-            )}
-          </Card>
-          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
-        </>
+          {needs.length === 0 ? (
+            <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem", margin: 0 }}>
+              Authorized program capacity is not available. SkillPulse does not invent
+              training seats or provider capacity.
+            </p>
+          ) : (
+            <DataTable columns={columns} rows={needs} highlightCount={3} />
+          )}
+        </Card>
       )}
     </div>
   );

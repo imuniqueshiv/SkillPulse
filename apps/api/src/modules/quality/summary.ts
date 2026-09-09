@@ -100,7 +100,6 @@ export async function summarizeQualityAssessments(
       eligibility: true,
       result: true,
     },
-    orderBy: [{ jobId: "asc" }, { id: "asc" }],
   });
 
   const eligibility = emptyEligibility();

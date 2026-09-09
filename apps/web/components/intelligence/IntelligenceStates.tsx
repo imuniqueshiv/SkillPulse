@@ -57,11 +57,35 @@ export function PriorityBadge({ priority }: { priority?: string }) {
 
 export function IntelligenceLoading() {
   return (
-    <Card>
-      <p style={{ textAlign: "center", color: "var(--sp-text-secondary)" }}>
-        Loading intelligence...
-      </p>
-    </Card>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: "0.75rem",
+        }}
+      >
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            style={{
+              height: "5.5rem",
+              borderRadius: "0.75rem",
+              background: "var(--sp-bg-hover)",
+              border: "1px solid var(--sp-border)",
+            }}
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          height: "11rem",
+          borderRadius: "0.75rem",
+          background: "var(--sp-bg-hover)",
+          border: "1px solid var(--sp-border)",
+        }}
+      />
+    </div>
   );
 }
 
@@ -110,6 +134,53 @@ export function IntelligenceEmpty() {
   );
 }
 
+export function EvidenceNote({
+  limitations,
+  phaseVersions,
+  observations,
+  includeDemo,
+  includeInsufficient,
+}: {
+  limitations?: string[];
+  phaseVersions?: Record<string, string | null | undefined>;
+  observations?: number;
+  includeDemo?: boolean;
+  includeInsufficient?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.5rem",
+        alignItems: "center",
+        fontSize: "0.8125rem",
+        color: "var(--sp-text-secondary)",
+      }}
+    >
+      <Badge variant="success">REAL SOURCE</Badge>
+      <Badge variant="success">NCS</Badge>
+      <Badge variant="neutral">NOT OFFICIAL API</Badge>
+      {includeDemo ? <Badge variant="warning">DEMO DATA</Badge> : null}
+      {includeInsufficient ? (
+        <Badge variant="warning">INSUFFICIENT DATA</Badge>
+      ) : null}
+      {observations != null && observations > 0 ? (
+        <span>
+          {observations} captured NCS observations · public listing · not an official
+          NCS API feed
+        </span>
+      ) : null}
+      <details style={{ marginLeft: "auto" }}>
+        <summary style={{ cursor: "pointer", color: "var(--sp-accent)" }}>
+          Data notes
+        </summary>
+        <LimitationsPanel limitations={limitations} phaseVersions={phaseVersions} />
+      </details>
+    </div>
+  );
+}
+
 export function LimitationsPanel({
   limitations,
   phaseVersions,
@@ -119,15 +190,12 @@ export function LimitationsPanel({
 }) {
   if (!limitations?.length && !phaseVersions) return null;
   return (
-    <Card>
-      <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>
-        Limitations &amp; phase versions
-      </h3>
+    <div style={{ marginTop: "0.5rem", maxWidth: "48rem" }}>
       {phaseVersions && (
         <p
           style={{
-            margin: "0 0 0.75rem",
-            fontSize: "0.8125rem",
+            margin: "0 0 0.5rem",
+            fontSize: "0.75rem",
             color: "var(--sp-text-secondary)",
           }}
         >
@@ -142,16 +210,16 @@ export function LimitationsPanel({
           style={{
             margin: 0,
             paddingLeft: "1.25rem",
-            fontSize: "0.875rem",
+            fontSize: "0.8125rem",
             color: "var(--sp-text-secondary)",
           }}
         >
-          {limitations.slice(0, 8).map((item) => (
+          {limitations.slice(0, 6).map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       )}
-    </Card>
+    </div>
   );
 }
 

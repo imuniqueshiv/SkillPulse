@@ -1,22 +1,16 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
 import {
-  fetchIntelligenceOverview,
-  IntelligenceApiError,
-  resolveAccessToken,
-  type IntelligenceMeta,
-} from "@/lib/api";
-import {
+  EvidenceNote,
   formatMetric,
-  IntelligenceEmpty,
   IntelligenceError,
   IntelligenceLoading,
-  LimitationsPanel,
+  IntelligenceUnauthorized,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
@@ -44,159 +38,135 @@ type EmploymentView = {
 
 function pct(status: string | undefined, value: number | null | undefined): string {
   if (status === "INSUFFICIENT_DATA" || value == null) {
-    return "Insufficient data";
+    return "INSUFFICIENT DATA";
   }
   return `${Math.round(value * 100)}%`;
 }
 
+function outcomeValue(
+  employmentStatus: string | undefined,
+  value: number | null | undefined,
+): string {
+  if (employmentStatus === "INSUFFICIENT_DATA" || value == null) {
+    return "INSUFFICIENT DATA";
+  }
+  return formatMetric(employmentStatus, value);
+}
+
 export default function OutcomesPage() {
-  const { getToken, isLoaded } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [employment, setEmployment] = useState<EmploymentView | null>(null);
-  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    void (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = await resolveAccessToken(getToken);
-        if (!token) {
-          setError("Unable to load intelligence.");
-          return;
-        }
-        const result = await fetchIntelligenceOverview(token, { limit: 20 });
-        setEmployment((result.data.employment as EmploymentView) ?? null);
-        setMeta(result.meta);
-      } catch (err) {
-        setError(
-          err instanceof IntelligenceApiError
-            ? err.message
-            : "Unable to load intelligence.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [getToken, isLoaded]);
-
+  const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
+  const employment = (overview?.employment ?? null) as EmploymentView | null;
+  const source = (overview?.demandSource ?? {}) as { observationCount?: number };
+  const ncsObservations = Number(source.observationCount ?? 0);
   const totals = employment?.totals ?? {};
-  const observations = employment?.evidenceCoverage?.totalObservations ?? 0;
+  const outcomeObservations = employment?.evidenceCoverage?.totalObservations ?? 0;
+  const insufficient = employment?.status === "INSUFFICIENT_DATA" || outcomeObservations === 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
         title="Employment Outcomes"
-        subtitle="Phase 12 observational outcomes. TRAINED, CERTIFIED, PLACED, EMPLOYED, and SKILL_UTILIZED are distinct — SkillPulse does not claim causality."
+        subtitle="TRAINED, CERTIFIED, PLACED, EMPLOYED, and SKILL UTILIZED are distinct observational counts — not causal claims."
+      />
+      <EvidenceNote
+        limitations={meta?.limitations}
+        phaseVersions={meta?.phaseVersions}
+        observations={ncsObservations || undefined}
+        includeDemo
+        includeInsufficient={insufficient}
       />
 
-      {loading ? (
-        <IntelligenceLoading />
+      {unauthorized ? (
+        <IntelligenceUnauthorized />
       ) : error ? (
         <IntelligenceError message={error} />
-      ) : !employment ? (
-        <IntelligenceEmpty />
+      ) : loading ? (
+        <IntelligenceLoading />
       ) : (
         <>
-          <Card>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
-              <StatusBadge status={employment.status} />
-              <span style={{ fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-                {employment.note ??
-                  (observations === 0
-                    ? "No authorized employment observations in this period."
-                    : `${observations} employment observations.`)}
-              </span>
-            </div>
-          </Card>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+            <StatusBadge status={employment?.status} />
+            {insufficient ? <Badge variant="warning">INSUFFICIENT DATA</Badge> : null}
+            <span style={{ fontSize: "0.8125rem", color: "var(--sp-text-secondary)" }}>
+              {insufficient
+                ? "No authorized employment observations. Zeros are not shown as placement results."
+                : employment?.note}
+            </span>
+          </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1rem",
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+              gap: "0.75rem",
             }}
           >
             <StatCard
-              label="Trained (exclusive)"
-              value={formatMetric(employment.status, totals.trained)}
+              label="Trained"
+              value={outcomeValue(employment?.status, totals.trained)}
               trend="TRAINED ≠ placed"
             />
             <StatCard
-              label="Certified (exclusive)"
-              value={formatMetric(employment.status, totals.certified)}
-              trend="Never inferred from placement"
+              label="Certified"
+              value={outcomeValue(employment?.status, totals.certified)}
+              trend="Not inferred from placement"
             />
             <StatCard
-              label="Placed (exclusive)"
-              value={formatMetric(employment.status, totals.placed)}
-              trend="PLACED ≠ currently employed"
+              label="Placed"
+              value={outcomeValue(employment?.status, totals.placed)}
+              trend="PLACED ≠ employed"
             />
             <StatCard
-              label="Employed (exclusive)"
-              value={formatMetric(employment.status, totals.employed)}
+              label="Employed"
+              value={outcomeValue(employment?.status, totals.employed)}
               trend="Observational count"
             />
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1rem",
-            }}
-          >
             <StatCard
-              label="Training → placement"
-              value={pct(
-                employment.trainingToPlacement?.status,
-                employment.trainingToPlacement?.value,
-              )}
-              trend={employment.trainingToPlacement?.status}
-            />
-            <StatCard
-              label="Training → employment"
-              value={pct(
-                employment.trainingToEmployment?.status,
-                employment.trainingToEmployment?.value,
-              )}
-              trend={employment.trainingToEmployment?.status}
-            />
-            <StatCard
-              label="Certification → employment"
-              value={pct(
-                employment.certificationToEmployment?.status,
-                employment.certificationToEmployment?.value,
-              )}
-              trend={employment.certificationToEmployment?.status}
-            />
-            <StatCard
-              label="Skill utilized (known)"
-              value={formatMetric(
-                employment.status,
-                employment.skillUtilization?.full,
-              )}
-              trend={
-                employment.skillUtilization?.rate == null
-                  ? "INSUFFICIENT_DATA"
-                  : `mean ratio ${employment.skillUtilization.rate}`
+              label="Skill utilized"
+              value={
+                employment?.skillUtilization?.rate == null || insufficient
+                  ? "INSUFFICIENT DATA"
+                  : formatMetric(employment?.status, employment.skillUtilization.full)
               }
+              trend="Known utilization only"
             />
           </div>
 
           <Card>
-            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>Evidence notes</h3>
-            <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-              Rates are withheld when cohort linkage or denominators are missing. Zero exclusive
-              counts with INSUFFICIENT_DATA status means no authorized outcome dataset — not a
-              verified 0% placement rate. Demo employment fixtures, if present in evaluation, are
-              not government placement statistics.
-            </p>
+            <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Conversion rates</h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: "0.75rem",
+              }}
+            >
+              <StatCard
+                label="Training → placement"
+                value={pct(
+                  employment?.trainingToPlacement?.status,
+                  employment?.trainingToPlacement?.value,
+                )}
+                trend={employment?.trainingToPlacement?.status}
+              />
+              <StatCard
+                label="Training → employment"
+                value={pct(
+                  employment?.trainingToEmployment?.status,
+                  employment?.trainingToEmployment?.value,
+                )}
+                trend={employment?.trainingToEmployment?.status}
+              />
+              <StatCard
+                label="Certification → employment"
+                value={pct(
+                  employment?.certificationToEmployment?.status,
+                  employment?.certificationToEmployment?.value,
+                )}
+                trend={employment?.certificationToEmployment?.status}
+              />
+            </div>
           </Card>
-
-          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
         </>
       )}
     </div>

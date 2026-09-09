@@ -1,23 +1,16 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { DataTable } from "@/components/ui/DataTable";
 import { StatCard } from "@/components/ui/StatCard";
+import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
 import {
-  fetchIntelligenceOverview,
-  IntelligenceApiError,
-  resolveAccessToken,
-  type IntelligenceMeta,
-} from "@/lib/api";
-import {
-  IntelligenceEmpty,
+  EvidenceNote,
   IntelligenceError,
   IntelligenceLoading,
-  LimitationsPanel,
+  IntelligenceUnauthorized,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
@@ -30,44 +23,13 @@ type SkillRow = {
 };
 
 export default function DemandPage() {
-  const { getToken, isLoaded } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
-  const [overview, setOverview] = useState<Record<string, unknown> | null>(null);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    void (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = await resolveAccessToken(getToken);
-        if (!token) {
-          setError("Unable to load intelligence.");
-          return;
-        }
-        const result = await fetchIntelligenceOverview(token, { limit: 20 });
-        setOverview(result.data);
-        setMeta(result.meta);
-      } catch (err) {
-        setError(
-          err instanceof IntelligenceApiError
-            ? err.message
-            : "Unable to load intelligence.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [getToken, isLoaded]);
+  const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
 
   const demand = (overview?.demand ?? {}) as {
     status?: string;
     topSkills?: Array<Record<string, unknown>>;
     qualityCoverage?: Record<string, unknown>;
     occupations?: Array<Record<string, unknown>>;
-    sectors?: Array<Record<string, unknown>>;
     geography?: Array<Record<string, unknown>>;
   };
   const source = (overview?.demandSource ?? {}) as {
@@ -102,21 +64,11 @@ export default function DemandPage() {
           row.canonicalName
         ),
     },
-    { key: "weightedDemand", label: "Weighted demand" },
     { key: "jobCount", label: "Jobs" },
+    { key: "weightedDemand", label: "Weighted demand" },
     { key: "trend", label: "Trend" },
   ];
 
-  const occRows = (demand.occupations ?? []).map((o) => ({
-    name: String(o.name ?? "UNCLASSIFIED"),
-    jobCount: String(o.jobCount ?? "—"),
-    weightedDemand: String(o.weightedDemand ?? "—"),
-  }));
-  const sectorRows = (demand.sectors ?? []).map((s) => ({
-    name: String(s.name ?? "UNCLASSIFIED"),
-    jobCount: String(s.jobCount ?? "—"),
-    weightedDemand: String(s.weightedDemand ?? "—"),
-  }));
   const geoRows = (demand.geography ?? [])
     .filter((g) => g.known)
     .map((g) => ({
@@ -126,105 +78,72 @@ export default function DemandPage() {
     }));
 
   const analyzed = Number(demand.qualityCoverage?.analyzed ?? 0);
-  const caution = Number(demand.qualityCoverage?.caution ?? 0);
   const observations = Number(source.observationCount ?? 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
         title="Labour Demand"
-        subtitle="Phase 8 demand from captured NCS public job-listing observations — not an official NCS API feed."
+        subtitle="Captured NCS public job-listing observations — not an official NCS API feed."
       />
-      {loading ? (
-        <IntelligenceLoading />
+      <EvidenceNote
+        limitations={meta?.limitations}
+        phaseVersions={meta?.phaseVersions}
+        observations={observations || undefined}
+      />
+      {unauthorized ? (
+        <IntelligenceUnauthorized />
       ) : error ? (
         <IntelligenceError message={error} />
-      ) : !overview ? (
-        <IntelligenceEmpty />
+      ) : loading ? (
+        <IntelligenceLoading />
       ) : (
         <>
-          <Card>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
-              <StatusBadge status={demand.status} />
-              <StatusBadge status={source.dataStatus} />
-              <span style={{ fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-                {source.source?.name ?? "National Career Service"} · captured public listings
-                {source.liveNcsData ? "" : " · not live API"}
-                {source.lastSnapshot?.accessMethod
-                  ? ` · ${source.lastSnapshot.accessMethod}`
-                  : ""}
-              </span>
-            </div>
-          </Card>
-
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1rem",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gap: "0.75rem",
             }}
           >
             <StatCard
               label="NCS observations"
               value={observations > 0 ? String(observations) : "Insufficient data"}
-              trend="Captured job cards only"
+              trend="Captured job cards"
+            />
+            <StatCard
+              label="Skills ranked"
+              value={skillRows.length > 0 ? String(skillRows.length) : "Insufficient data"}
+              trend={demand.status}
             />
             <StatCard
               label="Quality-analyzed jobs"
               value={analyzed > 0 ? String(analyzed) : "Insufficient data"}
-              trend={caution > 0 ? `${caution} caution-eligible` : demand.status}
+              trend={source.dataStatus}
+            />
+            <StatCard
+              label="Resolved locations"
+              value={geoRows.length > 0 ? String(geoRows.length) : "Insufficient data"}
+              trend="Single-city cards only"
             />
           </div>
 
           <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Top skills (Phase 8)</h3>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1rem" }}>Top skills</h3>
+              <StatusBadge status={demand.status} />
+            </div>
             {skillRows.length === 0 ? (
               <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
                 Insufficient taxonomy-matched skills for ranking.
               </p>
             ) : (
-              <DataTable columns={skillColumns} rows={skillRows} />
+              <DataTable columns={skillColumns} rows={skillRows} highlightCount={5} />
             )}
           </Card>
 
           <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Occupations</h3>
-            {occRows.length === 0 ? (
-              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
-                Insufficient classified occupation data.
-              </p>
-            ) : (
-              <DataTable
-                columns={[
-                  { key: "name", label: "Occupation" },
-                  { key: "jobCount", label: "Jobs" },
-                  { key: "weightedDemand", label: "Weighted demand" },
-                ]}
-                rows={occRows}
-              />
-            )}
-          </Card>
-
-          <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Sectors</h3>
-            {sectorRows.length === 0 ? (
-              <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
-                Insufficient classified sector data.
-              </p>
-            ) : (
-              <DataTable
-                columns={[
-                  { key: "name", label: "Sector" },
-                  { key: "jobCount", label: "Jobs" },
-                  { key: "weightedDemand", label: "Weighted demand" },
-                ]}
-                rows={sectorRows}
-              />
-            )}
-          </Card>
-
-          <Card>
-            <h3 style={{ margin: "0 0 1rem", fontSize: "1rem" }}>Geography</h3>
+            <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Geography</h3>
             {geoRows.length === 0 ? (
               <p style={{ color: "var(--sp-text-secondary)", fontSize: "0.875rem" }}>
                 Insufficient resolved location data. Multi-city NCS cards are not assigned a single city.
@@ -240,8 +159,6 @@ export default function DemandPage() {
               />
             )}
           </Card>
-
-          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
         </>
       )}
     </div>

@@ -1,25 +1,18 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
-import { DataTable } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
+import { useIntelligenceOverview } from "@/lib/useIntelligenceOverview";
 import {
-  fetchDecisionSignals,
-  IntelligenceApiError,
-  resolveAccessToken,
-  type IntelligenceMeta,
-} from "@/lib/api";
-import {
-  IntelligenceEmpty,
+  EvidenceNote,
   IntelligenceError,
   IntelligenceLoading,
   IntelligenceUnauthorized,
-  LimitationsPanel,
   PriorityBadge,
+  StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
 
 type SignalRow = {
@@ -29,107 +22,62 @@ type SignalRow = {
   confidence: string;
   action: string;
   signalId: string;
+  rationale: string;
 };
 
 export default function DecisionsPage() {
-  const { getToken, isLoaded } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [unauthorized, setUnauthorized] = useState(false);
-  const [rows, setRows] = useState<SignalRow[]>([]);
-  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
+  const { loading, error, unauthorized, overview, meta } = useIntelligenceOverview();
   const [priority, setPriority] = useState("");
   const [category, setCategory] = useState("");
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    void (async () => {
-      setLoading(true);
-      setError(null);
-      setUnauthorized(false);
-      try {
-        const token = await resolveAccessToken(getToken);
-        if (!token) {
-          setError("Unable to load intelligence.");
-          return;
-        }
-        const result = await fetchDecisionSignals(token, {
-          limit: 20,
-          priority: priority || undefined,
-          category: category || undefined,
-        });
-        setRows(
-          (result.data.signals ?? []).map((s) => ({
-            priority: String(s.priority ?? ""),
-            category: String(s.category ?? ""),
-            target: String(
-              (s.target as { skillCanonicalName?: string } | undefined)
-                ?.skillCanonicalName ??
-                (s.target as { skillId?: string } | undefined)?.skillId ??
-                "—",
-            ),
-            confidence: String(s.confidence ?? ""),
-            action: String(s.actionType ?? ""),
-            signalId: String(s.signalId ?? ""),
-          })),
-        );
-        setMeta(result.meta);
-      } catch (err) {
-        if (err instanceof IntelligenceApiError && err.status === 403) {
-          setUnauthorized(true);
-        } else {
-          setError("Unable to load intelligence.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [getToken, isLoaded, priority, category]);
+  const decisions = (overview?.decisions ?? {}) as {
+    status?: string;
+    highPriorityCount?: number;
+    topSignals?: Array<Record<string, unknown>>;
+  };
+  const source = (overview?.demandSource ?? {}) as { observationCount?: number };
+  const observations = Number(source.observationCount ?? 0);
 
-  const columns = useMemo(
-    () => [
-      {
-        key: "priority",
-        label: "Priority",
-        render: (row: SignalRow) => <PriorityBadge priority={row.priority} />,
-      },
-      { key: "category", label: "Category" },
-      { key: "target", label: "Target" },
-      {
-        key: "confidence",
-        label: "Confidence",
-        render: (row: SignalRow) => <Badge variant="neutral">{row.confidence}</Badge>,
-      },
-      { key: "action", label: "Action" },
-      {
-        key: "signalId",
-        label: "Detail",
-        render: (row: SignalRow) =>
-          row.signalId ? (
-            <Link
-              href={`/decisions/${encodeURIComponent(row.signalId)}`}
-              className="text-[var(--sp-accent)] underline"
-            >
-              Explain
-            </Link>
-          ) : (
-            "—"
-          ),
-      },
-    ],
-    [],
+  const allRows: SignalRow[] = useMemo(
+    () =>
+      (decisions.topSignals ?? []).map((s) => ({
+        priority: String(s.priority ?? ""),
+        category: String(s.category ?? ""),
+        target: String(
+          (s.target as { skillCanonicalName?: string } | undefined)?.skillCanonicalName ??
+            (s.target as { skillId?: string } | undefined)?.skillId ??
+            "—",
+        ),
+        confidence: String(s.confidence ?? ""),
+        action: String(s.actionType ?? ""),
+        signalId: String(s.signalId ?? ""),
+        rationale: String(s.rationale ?? ""),
+      })),
+    [decisions.topSignals],
   );
 
+  const rows = allRows.filter((row) => {
+    if (priority && row.priority !== priority) return false;
+    if (category && row.category !== category) return false;
+    return true;
+  });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
         title="Decision Signals"
-        subtitle="Phase 13 decision-support signals for investigation and review — not autonomous policy actions."
+        subtitle="Investigation signals for review — not autonomous government decisions."
+      />
+      <EvidenceNote
+        limitations={meta?.limitations}
+        phaseVersions={meta?.phaseVersions}
+        observations={observations || undefined}
+        includeInsufficient={decisions.status === "INSUFFICIENT_DATA"}
       />
 
       <Card>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-          <label style={{ fontSize: "0.875rem" }}>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "end" }}>
+          <label style={{ fontSize: "0.8125rem" }}>
             Priority
             <select
               aria-label="Filter by priority"
@@ -145,7 +93,7 @@ export default function DecisionsPage() {
               <option value="INSUFFICIENT_DATA">INSUFFICIENT_DATA</option>
             </select>
           </label>
-          <label style={{ fontSize: "0.875rem" }}>
+          <label style={{ fontSize: "0.8125rem" }}>
             Category
             <select
               aria-label="Filter by category"
@@ -162,22 +110,83 @@ export default function DecisionsPage() {
               <option value="PROGRAM_REVIEW">PROGRAM_REVIEW</option>
             </select>
           </label>
+          {decisions.highPriorityCount != null ? (
+            <span style={{ fontSize: "0.8125rem", color: "var(--sp-text-secondary)" }}>
+              {decisions.highPriorityCount} high-priority signals in overview
+            </span>
+          ) : null}
         </div>
       </Card>
 
-      {loading ? (
-        <IntelligenceLoading />
-      ) : unauthorized ? (
+      {unauthorized ? (
         <IntelligenceUnauthorized message="You are not authorized to view decision intelligence." />
       ) : error ? (
         <IntelligenceError message={error} />
+      ) : loading ? (
+        <IntelligenceLoading />
       ) : rows.length === 0 ? (
-        <IntelligenceEmpty />
+        <Card>
+          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
+            No sufficient evidence available for this view. Filters do not re-run the
+            decision pipeline.
+          </p>
+        </Card>
       ) : (
-        <>
-          <DataTable columns={columns} rows={rows} />
-          <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
-        </>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {rows.map((row) => (
+            <Card key={row.signalId || `${row.priority}-${row.target}`}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+                  gap: "0.75rem",
+                  alignItems: "start",
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--sp-text-secondary)", letterSpacing: "0.04em" }}>
+                    SIGNAL
+                  </div>
+                  <div style={{ fontWeight: 600, marginTop: "0.25rem" }}>{row.target}</div>
+                  <Badge variant="neutral">{row.category || "—"}</Badge>
+                </div>
+                <div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--sp-text-secondary)", letterSpacing: "0.04em" }}>
+                    PRIORITY
+                  </div>
+                  <div style={{ marginTop: "0.25rem" }}>
+                    <PriorityBadge priority={row.priority} />
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--sp-text-secondary)", letterSpacing: "0.04em" }}>
+                    ACTION
+                  </div>
+                  <div style={{ marginTop: "0.35rem", fontSize: "0.875rem" }}>{row.action || "—"}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--sp-text-secondary)", letterSpacing: "0.04em" }}>
+                    EVIDENCE
+                  </div>
+                  <div style={{ marginTop: "0.35rem", fontSize: "0.8125rem", color: "var(--sp-text-secondary)" }}>
+                    {row.rationale || "INSUFFICIENT DATA"}
+                  </div>
+                  <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <StatusBadge status={row.confidence} />
+                    {row.signalId ? (
+                      <Link
+                        href={`/decisions/${encodeURIComponent(row.signalId)}`}
+                        className="text-[var(--sp-accent)] underline text-sm"
+                      >
+                        Explain
+                      </Link>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );

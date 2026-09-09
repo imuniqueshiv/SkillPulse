@@ -12,6 +12,8 @@ export interface DataTableProps<T = Record<string, unknown>> {
   rows?: T[];
   data?: T[];
   className?: string;
+  /** Emphasize the first N rows (highest-ranked skills, signals, etc.). */
+  highlightCount?: number;
 }
 
 export function DataTable<T extends Record<string, unknown>>({
@@ -19,6 +21,7 @@ export function DataTable<T extends Record<string, unknown>>({
   rows,
   data,
   className = '',
+  highlightCount = 0,
 }: DataTableProps<T>) {
   const tableData = rows || data || [];
 
@@ -56,7 +59,15 @@ export function DataTable<T extends Record<string, unknown>>({
             <tr
               key={idx}
               className="transition-colors duration-150 ease-out hover:bg-[var(--sp-bg-hover)]"
-              style={{ background: idx % 2 === 1 ? '#F8FAFC' : undefined }}
+              style={{
+                background:
+                  idx < highlightCount
+                    ? 'var(--sp-accent-muted)'
+                    : idx % 2 === 1
+                      ? '#F8FAFC'
+                      : undefined,
+                fontWeight: idx < highlightCount ? 600 : undefined,
+              }}
             >
               {columns.map((col) => (
                 <td

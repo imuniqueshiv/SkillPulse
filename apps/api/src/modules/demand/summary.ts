@@ -9,7 +9,7 @@ import {
   aggregateQualificationDemand,
 } from "./experience";
 import { aggregateGeographyDemand } from "./geography";
-import { loadDemandObservations } from "./observations";
+import { loadDemandObservationPair } from "./observations";
 import { aggregateOccupationDemand } from "./occupations";
 import {
   previousPeriodOfEqualDuration,
@@ -36,14 +36,8 @@ export async function summarizeDemand(
   const filters = resolveFilters(input);
   const previous = previousPeriodOfEqualDuration(filters.from, filters.to);
 
-  const [currentLoad, previousLoad] = await Promise.all([
-    loadDemandObservations(filters),
-    loadDemandObservations({
-      ...filters,
-      from: previous.from,
-      to: previous.to,
-    }),
-  ]);
+  const { current: currentLoad, previous: previousLoad } =
+    await loadDemandObservationPair(filters);
 
   const weightedEligibleJobs = currentLoad.qualityCoverage.weightedEligibleJobs;
 

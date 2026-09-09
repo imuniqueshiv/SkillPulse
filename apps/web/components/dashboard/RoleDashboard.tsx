@@ -4,9 +4,11 @@ import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS,
   fetchCurrentUser,
   fetchIntelligenceOverview,
   IntelligenceApiError,
+  peekIntelligenceOverview,
   resolveAccessToken,
   type ApplicationUser,
   type IntelligenceMeta,
@@ -15,13 +17,13 @@ import { Card } from "@/components/ui/Card";
 import { StatCard } from "@/components/ui/StatCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
-import { SkeletonLoader } from "@/components/ui/SkeletonLoader";
 import {
+  EvidenceNote,
   formatMetric,
   IntelligenceEmpty,
   IntelligenceError,
+  IntelligenceLoading,
   IntelligenceUnauthorized,
-  LimitationsPanel,
   PriorityBadge,
   StatusBadge,
 } from "@/components/intelligence/IntelligenceStates";
@@ -117,40 +119,60 @@ type OverviewData = {
 
 export function RoleDashboard() {
   const { getToken, isLoaded } = useAuth();
+  const cached = peekIntelligenceOverview(DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS);
   const [user, setUser] = useState<ApplicationUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
   const [unauthorized, setUnauthorized] = useState(false);
-  const [overview, setOverview] = useState<OverviewData | null>(null);
-  const [meta, setMeta] = useState<IntelligenceMeta | null>(null);
+  const [overview, setOverview] = useState<OverviewData | null>(
+    (cached?.data as OverviewData | undefined) ?? null,
+  );
+  const [meta, setMeta] = useState<IntelligenceMeta | null>(cached?.meta ?? null);
 
   useEffect(() => {
     if (!isLoaded) return;
 
     void (async () => {
-      setLoading(true);
+      const warm = peekIntelligenceOverview(DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS);
+      if (!warm) {
+        setLoading(true);
+      }
       setError(null);
       setUnauthorized(false);
       try {
         const token = await resolveAccessToken(getToken);
         if (!token) {
           setError("Unable to load intelligence.");
-          setLoading(false);
           return;
         }
-        const appUser = await fetchCurrentUser(token);
+        const [appUser, overviewResult] = await Promise.all([
+          fetchCurrentUser(token),
+          fetchIntelligenceOverview(token, DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS).catch(
+            (err: unknown) => err,
+          ),
+        ]);
         setUser(appUser);
 
         if (appUser.role === "LEARNER") {
           setOverview(null);
           setUnauthorized(true);
-          setLoading(false);
           return;
         }
 
-        const result = await fetchIntelligenceOverview(token, { limit: 20 });
-        setOverview(result.data as OverviewData);
-        setMeta(result.meta);
+        if (overviewResult instanceof IntelligenceApiError && overviewResult.status === 403) {
+          setUnauthorized(true);
+          return;
+        }
+        if (overviewResult instanceof Error) {
+          throw overviewResult;
+        }
+
+        const envelope = overviewResult as {
+          data: OverviewData;
+          meta: IntelligenceMeta;
+        };
+        setOverview(envelope.data);
+        setMeta(envelope.meta);
       } catch (err) {
         if (err instanceof IntelligenceApiError && err.status === 403) {
           setUnauthorized(true);
@@ -163,17 +185,22 @@ export function RoleDashboard() {
     })();
   }, [getToken, isLoaded]);
 
-  if (loading) {
+  const role = user?.role ?? "LEARNER";
+  const title = ROLE_TITLES[role] ?? "Dashboard";
+  const observations = overview?.demandSource?.observationCount;
+
+  if (loading && !overview) {
     return (
-      <div className="space-y-6">
-        <SkeletonLoader variant="text" count={2} />
-        <SkeletonLoader variant="stat" count={4} />
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <PageHeader
+          title="SkillPulse Overview"
+          subtitle="Evidence-backed labour-market intelligence for government review."
+        />
+        <EvidenceNote />
+        <IntelligenceLoading />
       </div>
     );
   }
-
-  const role = user?.role ?? "LEARNER";
-  const title = ROLE_TITLES[role] ?? "Dashboard";
 
   if (unauthorized) {
     return (
@@ -254,88 +281,26 @@ export function RoleDashboard() {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PageHeader
         title={`SkillPulse ${title} Overview`}
-        subtitle="Evidence-backed labour-market intelligence for government review — not autonomous policy."
+        subtitle="Labour-market intelligence for government review — not autonomous policy."
       />
-
-      <Card>
-        <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>What SkillPulse is</h3>
-        <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-          SkillPulse turns captured job-demand observations into skill, gap, training, and
-          decision-support views. Real NCS evidence is labelled separately from DEMO catalogue data.
-        </p>
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "0.75rem", fontSize: "0.875rem" }}>
-          <Link href="/demand" className="text-[var(--sp-accent)] underline">Labour Demand</Link>
-          <Link href="/skills" className="text-[var(--sp-accent)] underline">Skills</Link>
-          <Link href="/gaps" className="text-[var(--sp-accent)] underline">Skill Gaps</Link>
-          <Link href="/programs" className="text-[var(--sp-accent)] underline">Training</Link>
-          <Link href="/outcomes" className="text-[var(--sp-accent)] underline">Outcomes</Link>
-          <Link href="/decisions" className="text-[var(--sp-accent)] underline">Government Decisions</Link>
-        </div>
-      </Card>
-
-      <Card>
-        <h3 style={{ margin: "0 0 0.75rem", fontSize: "1rem" }}>Real demand foundation (NCS)</h3>
-        <p style={{ margin: "0 0 0.75rem", fontSize: "0.875rem", color: "var(--sp-text-secondary)" }}>
-          Captured public job-listing snapshot from ncs.gov.in/job-listing — not an official NCS API feed.
-          Only records present in the snapshot are counted.
-        </p>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-            gap: "0.75rem",
-            fontSize: "0.875rem",
-          }}
-        >
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Source</div>
-            <div>{overview.demandSource?.source?.name ?? "National Career Service"}</div>
-          </div>
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Scope</div>
-            <div>
-              {overview.demandSource?.scope?.state ?? "Maharashtra"}
-              {overview.demandSource?.scope?.district
-                ? ` / ${overview.demandSource.scope.district}`
-                : ""}
-            </div>
-          </div>
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Observations</div>
-            <div>{overview.demandSource?.observationCount ?? "Insufficient data"} NCS job observations</div>
-          </div>
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Data status</div>
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <StatusBadge status={overview.demandSource?.dataStatus} />
-              {overview.demandSource?.liveNcsData ? null : (
-                <span style={{ color: "var(--sp-text-secondary)", fontSize: "0.75rem" }}>
-                  not live NCS
-                </span>
-              )}
-            </div>
-          </div>
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Last observed</div>
-            <div>
-              {overview.demandSource?.lastObservedAt
-                ? new Date(overview.demandSource.lastObservedAt).toLocaleString()
-                : "INSUFFICIENT_DATA"}
-            </div>
-          </div>
-          <div>
-            <div style={{ color: "var(--sp-text-secondary)" }}>Evidence</div>
-            <div>
-              {overview.demandSource?.lastSnapshot?.id
-                ? `snapshot ${overview.demandSource.lastSnapshot.id.slice(0, 8)}… (${overview.demandSource.lastSnapshot.accessMethod ?? "—"})`
-                : "INSUFFICIENT_DATA"}
-            </div>
-          </div>
-        </div>
-      </Card>
+      <EvidenceNote
+        limitations={meta?.limitations}
+        phaseVersions={meta?.phaseVersions}
+        observations={observations}
+        includeDemo
+        includeInsufficient={overview.employment?.status === "INSUFFICIENT_DATA"}
+      />
+      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", fontSize: "0.875rem" }}>
+        <Link href="/demand" className="text-[var(--sp-accent)] underline">Labour Demand</Link>
+        <Link href="/skills" className="text-[var(--sp-accent)] underline">Skills</Link>
+        <Link href="/gaps" className="text-[var(--sp-accent)] underline">Skill Gaps</Link>
+        <Link href="/programs" className="text-[var(--sp-accent)] underline">Training</Link>
+        <Link href="/outcomes" className="text-[var(--sp-accent)] underline">Outcomes</Link>
+        <Link href="/decisions" className="text-[var(--sp-accent)] underline">Decisions</Link>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         <StatCard
@@ -390,6 +355,7 @@ export function RoleDashboard() {
           </p>
         ) : (
           <DataTable
+            highlightCount={5}
             columns={[
               { key: "canonicalName", label: "Skill" },
               { key: "weightedDemand", label: "Weighted demand" },
@@ -435,7 +401,6 @@ export function RoleDashboard() {
         </p>
       </Card>
 
-      <LimitationsPanel limitations={meta?.limitations} phaseVersions={meta?.phaseVersions} />
     </div>
   );
 }

@@ -99,15 +99,62 @@ async function intelligenceFetch<T>(
   };
 }
 
+export const DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS = { limit: 20 };
+
+type OverviewEnvelope = IntelligenceEnvelope<Record<string, unknown>>;
+type OverviewCacheEntry = {
+  at: number;
+  promise: Promise<OverviewEnvelope>;
+  value?: OverviewEnvelope;
+};
+
+const OVERVIEW_CLIENT_TTL_MS = 45_000;
+const overviewClientCache = new Map<string, OverviewCacheEntry>();
+
+function overviewCacheKey(
+  params?: { from?: string; to?: string; state?: string; limit?: number },
+) {
+  return JSON.stringify(params ?? DEFAULT_INTELLIGENCE_OVERVIEW_PARAMS);
+}
+
+export function peekIntelligenceOverview(
+  params?: { from?: string; to?: string; state?: string; limit?: number },
+): OverviewEnvelope | null {
+  const hit = overviewClientCache.get(overviewCacheKey(params));
+  if (hit?.value && Date.now() - hit.at < OVERVIEW_CLIENT_TTL_MS) {
+    return hit.value;
+  }
+  return null;
+}
+
 export async function fetchIntelligenceOverview(
   token: string,
   params?: { from?: string; to?: string; state?: string; limit?: number },
 ) {
-  return intelligenceFetch<Record<string, unknown>>(
+  const key = overviewCacheKey(params);
+  const now = Date.now();
+  const hit = overviewClientCache.get(key);
+  if (hit && now - hit.at < OVERVIEW_CLIENT_TTL_MS) {
+    return hit.promise;
+  }
+  const promise = intelligenceFetch<Record<string, unknown>>(
     "/api/v1/intelligence/overview",
     token,
     params,
-  );
+  )
+    .then((result) => {
+      const entry = overviewClientCache.get(key);
+      if (entry) {
+        entry.value = result;
+      }
+      return result;
+    })
+    .catch((err) => {
+      overviewClientCache.delete(key);
+      throw err;
+    });
+  overviewClientCache.set(key, { at: now, promise });
+  return promise;
 }
 
 export async function fetchSkillIntelligence(

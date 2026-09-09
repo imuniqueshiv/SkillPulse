@@ -111,26 +111,27 @@ export async function loadUpstreamIntelligence(
     }),
   ]);
 
-  const gaps = await summarizeSkillGaps({
-    from: filters.from,
-    to: filters.to,
-    demand: {
-      skillId: filters.skillId,
-      occupationId: filters.occupationId,
-      sectorId: filters.sectorId,
-      geography: filters.geography,
+  const [gaps, programViews] = await Promise.all([
+    summarizeSkillGaps({
+      from: filters.from,
+      to: filters.to,
+      demand: {
+        skillId: filters.skillId,
+        occupationId: filters.occupationId,
+        sectorId: filters.sectorId,
+        geography: filters.geography,
+        rankLimit,
+      },
+      supplyObservations,
+      demandSummaryOverride: demand,
       rankLimit,
-    },
-    supplyObservations,
-    demandSummaryOverride: demand,
-    rankLimit,
-  });
-
-  // One program load → Phase 10 → Phase 11 (no duplicate Phase 10 / N× loadTrainingPrograms).
-  const programViews = await loadTrainingPrograms({
-    includeDemo: true,
-    limit: Math.min(Math.max(rankLimit * 4, 20), 100),
-  });
+    }),
+    // Independent of gaps — one program load → Phase 10 → Phase 11.
+    loadTrainingPrograms({
+      includeDemo: true,
+      limit: Math.min(Math.max(rankLimit * 4, 20), 100),
+    }),
+  ]);
   const trainingCapacityBySkill = extractTrainingCapacity(supplyObservations);
   const training = summarizeTrainingIntelligence({
     gapSummary: gaps,
@@ -234,6 +235,38 @@ function summarizeSignalRow(s: DecisionSignal) {
 }
 
 export async function getOverviewIntelligence(
+  filters: IntelligenceQueryFilters,
+) {
+  const cacheKey = JSON.stringify({
+    from: filters.from.toISOString(),
+    to: filters.to.toISOString(),
+    state: filters.geography?.state ?? null,
+    district: filters.geography?.district ?? null,
+    skillId: filters.skillId ?? null,
+    occupationId: filters.occupationId ?? null,
+    sectorId: filters.sectorId ?? null,
+    rankLimit: filters.rankLimit,
+  });
+  const cached = overviewCache.get(cacheKey);
+  if (cached && Date.now() - cached.at < OVERVIEW_CACHE_TTL_MS) {
+    return cached.promise;
+  }
+
+  const promise = computeOverviewIntelligence(filters).catch((err) => {
+    overviewCache.delete(cacheKey);
+    throw err;
+  });
+  overviewCache.set(cacheKey, { at: Date.now(), promise });
+  return promise;
+}
+
+const OVERVIEW_CACHE_TTL_MS = 45_000;
+const overviewCache = new Map<
+  string,
+  { at: number; promise: ReturnType<typeof computeOverviewIntelligence> }
+>();
+
+async function computeOverviewIntelligence(
   filters: IntelligenceQueryFilters,
 ) {
   const [bundle, demandSource] = await Promise.all([
@@ -356,7 +389,7 @@ export async function getOverviewIntelligence(
         highPriorityCount:
           bundle.decisions.priorityCounts.critical +
           bundle.decisions.priorityCounts.high,
-        topSignals: bundle.decisions.signals.slice(0, 10).map(summarizeSignalRow),
+        topSignals: bundle.decisions.signals.slice(0, 20).map(summarizeSignalRow),
       },
       dataQuality: {
         status:

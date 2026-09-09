@@ -16,8 +16,8 @@ import type {
   DemandLocationRef,
   DemandQualityCoverage,
 } from "./contract";
-import { resolveFilters } from "./period";
-import { qualityWeight } from "./policy";
+import { resolveFilters, previousPeriodOfEqualDuration } from "./period";
+import { MAX_DEMAND_JOB_LIMIT, qualityWeight } from "./policy";
 import { buildSkillsFromIntelligence } from "./skills-util";
 
 export type LoadDemandObservationsResult = {
@@ -116,13 +116,79 @@ export async function loadDemandObservations(
     JOB_INTELLIGENCE_PROCESSOR_VERSION;
 
   const prisma = getPrisma();
+  const jobWhere = buildJobWhere(filters);
 
+  const jobs = await prisma.job.findMany({
+    where: jobWhere,
+    select: demandJobSelect(assessmentVersion, intelligenceProcessorVersion),
+    orderBy: [{ postedAt: "asc" }, { id: "asc" }],
+    skip: filters.offset,
+    take: filters.limit,
+  });
+
+  return observationsFromLoadedJobs({
+    jobs,
+    filters,
+    assessmentVersion,
+    intelligenceProcessorVersion,
+  });
+}
+
+/**
+ * One Job round-trip for current + previous windows. Same eligibility/skill
+ * rules as loadDemandObservations — split in memory, no formula change.
+ */
+export async function loadDemandObservationPair(input: DemandFilters): Promise<{
+  current: LoadDemandObservationsResult;
+  previous: LoadDemandObservationsResult;
+}> {
+  const filters = resolveFilters(input);
+  const previous = previousPeriodOfEqualDuration(filters.from, filters.to);
+  const assessmentVersion =
+    filters.assessmentVersion?.trim() || JOB_QUALITY_ASSESSMENT_VERSION;
+  const intelligenceProcessorVersion =
+    filters.intelligenceProcessorVersion?.trim() ||
+    JOB_INTELLIGENCE_PROCESSOR_VERSION;
+
+  const prisma = getPrisma();
+  const jobs = await prisma.job.findMany({
+    where: buildJobWhere({ ...filters, from: previous.from, to: filters.to }),
+    select: demandJobSelect(assessmentVersion, intelligenceProcessorVersion),
+    orderBy: [{ postedAt: "asc" }, { id: "asc" }],
+    take: Math.min(Math.max(filters.limit * 2, filters.limit), MAX_DEMAND_JOB_LIMIT),
+  });
+
+  const currentJobs = jobs.filter((job) => {
+    const t = job.postedAt?.getTime();
+    return t != null && t >= filters.from.getTime() && t < filters.to.getTime();
+  });
+  const previousJobs = jobs.filter((job) => {
+    const t = job.postedAt?.getTime();
+    return t != null && t >= previous.from.getTime() && t < previous.to.getTime();
+  });
+
+  return {
+    current: observationsFromLoadedJobs({
+      jobs: currentJobs,
+      filters,
+      assessmentVersion,
+      intelligenceProcessorVersion,
+    }),
+    previous: observationsFromLoadedJobs({
+      jobs: previousJobs,
+      filters: { ...filters, from: previous.from, to: previous.to },
+      assessmentVersion,
+      intelligenceProcessorVersion,
+    }),
+  };
+}
+
+function buildJobWhere(filters: DemandFilters): Prisma.JobWhereInput {
   const jobWhere: Prisma.JobWhereInput = {
     postedAt: {
       gte: filters.from,
       lt: filters.to,
     },
-    // Demo/synthetic fixtures never contribute to production demand analysis.
     isDemo: false,
   };
   if (filters.sourceId) {
@@ -154,31 +220,67 @@ export async function loadDemandObservations(
       jobWhere.location = locationFilter;
     }
   }
-  // skillId is applied after Phase 6 skill dedupe (canonical intelligence), not JobSkill.
+  return jobWhere;
+}
 
-  const jobs = await prisma.job.findMany({
-    where: jobWhere,
-    select: {
-      id: true,
-      postedAt: true,
-      sourceId: true,
-      locationId: true,
-      location: {
-        select: {
-          id: true,
-          country: true,
-          state: true,
-          district: true,
-          city: true,
-        },
+function demandJobSelect(
+  assessmentVersion: string,
+  intelligenceProcessorVersion: string,
+) {
+  return {
+    id: true,
+    postedAt: true,
+    sourceId: true,
+    locationId: true,
+    location: {
+      select: {
+        id: true,
+        country: true,
+        state: true,
+        district: true,
+        city: true,
       },
     },
-    orderBy: [{ postedAt: "asc" }, { id: "asc" }],
-    skip: filters.offset,
-    take: filters.limit,
-  });
+    qualityAssessments: {
+      where: { assessmentVersion, status: "PROCESSED" as const },
+      select: { eligibility: true },
+      take: 1,
+    },
+    intelligenceRecords: {
+      where: {
+        processorVersion: intelligenceProcessorVersion,
+        status: "PROCESSED" as const,
+      },
+      select: { result: true },
+      take: 1,
+    },
+  };
+}
 
-  const jobIds = jobs.map((job) => job.id);
+type LoadedDemandJob = {
+  id: string;
+  postedAt: Date | null;
+  sourceId: string | null;
+  locationId: string | null;
+  location: {
+    id: string;
+    country: string;
+    state: string;
+    district: string | null;
+    city: string | null;
+  } | null;
+  qualityAssessments: Array<{ eligibility: string }>;
+  intelligenceRecords: Array<{ result: unknown }>;
+};
+
+function observationsFromLoadedJobs(input: {
+  jobs: LoadedDemandJob[];
+  filters: DemandFilters;
+  assessmentVersion: string;
+  intelligenceProcessorVersion: string;
+}): LoadDemandObservationsResult {
+  const { jobs, filters, assessmentVersion, intelligenceProcessorVersion } =
+    input;
   const qualityCoverage: DemandQualityCoverage = {
     totalObservations: jobs.length,
     included: 0,
@@ -190,7 +292,7 @@ export async function loadDemandObservations(
     weightedEligibleJobs: 0,
   };
 
-  if (jobIds.length === 0) {
+  if (jobs.length === 0) {
     return {
       observations: [],
       qualityCoverage,
@@ -200,39 +302,6 @@ export async function loadDemandObservations(
     };
   }
 
-  const assessments = await prisma.jobQualityAssessment.findMany({
-    where: {
-      jobId: { in: jobIds },
-      assessmentVersion,
-      status: "PROCESSED",
-    },
-    select: {
-      jobId: true,
-      eligibility: true,
-    },
-  });
-  const eligibilityByJob = new Map(
-    assessments.map((row) => [row.jobId, asEligibility(row.eligibility)]),
-  );
-
-  const intelligenceRows = await prisma.jobIntelligence.findMany({
-    where: {
-      jobId: { in: jobIds },
-      processorVersion: intelligenceProcessorVersion,
-      status: "PROCESSED",
-    },
-    select: {
-      jobId: true,
-      result: true,
-    },
-  });
-  const intelligenceByJob = new Map(
-    intelligenceRows.map((row) => [
-      row.jobId,
-      row.result as JobIntelligenceResult,
-    ]),
-  );
-
   const observations: DemandJobObservation[] = [];
 
   for (const job of jobs) {
@@ -241,14 +310,17 @@ export async function loadDemandObservations(
       continue;
     }
 
-    const eligibility = eligibilityByJob.get(job.id);
-    if (!eligibility) {
+    const eligibilityRaw = job.qualityAssessments[0]?.eligibility;
+    if (!eligibilityRaw) {
       qualityCoverage.missingQuality += 1;
       continue;
     }
+    const eligibility = asEligibility(eligibilityRaw);
 
     const qWeight = qualityWeight(eligibility);
-    const intelligence = intelligenceByJob.get(job.id) ?? null;
+    const intelligence =
+      (job.intelligenceRecords[0]?.result as JobIntelligenceResult | undefined) ??
+      null;
     const skillsAll =
       qWeight > 0 ? buildSkillsFromIntelligence(intelligence, eligibility) : [];
 
