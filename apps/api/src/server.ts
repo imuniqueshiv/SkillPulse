@@ -1,9 +1,8 @@
-import { createApp } from "./app";
+
+import app from "./app";
 import { disconnectPrisma } from "./config/database";
 import { env } from "./config/env";
 import { logger } from "./utils/logger";
-
-const app = createApp();
 
 const server = app.listen(env.API_PORT, () => {
   logger.info("API started", {
