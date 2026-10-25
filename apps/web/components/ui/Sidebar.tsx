@@ -73,17 +73,30 @@ const navGroups = [
 export interface SidebarProps {
   isMobileOpen: boolean;
   onMobileClose: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 const emptySubscribe = () => () => {};
 
-export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({
+  isMobileOpen,
+  onMobileClose,
+  isCollapsed: controlledCollapsed,
+  onToggleCollapse,
+}: SidebarProps) {
   const pathname = usePathname();
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const isCollapsed =
+    controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
 
   const toggleCollapse = () => {
-    setIsCollapsed((prev) => !prev);
+    if (onToggleCollapse) {
+      onToggleCollapse();
+    } else {
+      setInternalCollapsed((prev) => !prev);
+    }
   };
 
   if (!mounted) {
