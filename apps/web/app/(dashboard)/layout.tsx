@@ -13,6 +13,7 @@ export default function DashboardLayout({
 }>) {
   const { userId } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   if (!userId) {
     redirect("/sign-in");
@@ -20,20 +21,27 @@ export default function DashboardLayout({
 
   return (
     <div
-      className="min-h-screen flex"
+      className="h-[calc(100dvh-64px)] flex overflow-hidden w-full max-w-full"
       style={{ background: "var(--sp-bg-base)" }}
     >
       {/* Sidebar */}
       <Sidebar
         isMobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
+        isCollapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
       />
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-[var(--sp-sidebar-width)]" id="main-content">
+      <div
+        className={`flex-1 flex flex-col min-w-0 h-full overflow-hidden transition-all duration-150 ease-out ${
+          isCollapsed ? "lg:ml-[64px]" : "lg:ml-[256px]"
+        }`}
+        id="main-content"
+      >
         <TopBar onMobileMenuToggle={() => setMobileMenuOpen((prev) => !prev)} />
 
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8">
           <div className="max-w-[1400px] mx-auto">{children}</div>
         </main>
       </div>

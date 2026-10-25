@@ -150,11 +150,13 @@ export function Footer() {
     !pathname?.startsWith("/sign-in") &&
     !pathname?.startsWith("/sign-up");
 
+  if (isDashboardRoute) {
+    return null;
+  }
+
   return (
     <footer
-      className={`w-full bg-[#FFF7EF] border-t border-[#E8D4C5] relative z-[30] overflow-hidden select-none text-[#3A2A25] transition-all duration-150 ${
-        isDashboardRoute ? "lg:ml-[var(--sp-sidebar-width,256px)]" : "w-full"
-      }`}
+      className="w-full bg-[#FFF7EF] border-t border-[#E8D4C5] relative z-[30] overflow-hidden select-none text-[#3A2A25] transition-all duration-150"
       aria-label="Site Footer"
     >
       {/* 1. Top Terracotta/Orange Accent Bar */}
